@@ -1,0 +1,33 @@
+name: CompassEx
+main: de.philworld.bukkit.compassex.CompassEx
+version: 0.0.1
+commands:
+   compass:
+      description: Points your compass towards something.
+      usage: |
+        Wrong usage of /<command>
+        * /<command> reset - Resets the compass to spawn.
+        * /<command> player [player] - Points the compass to given players position.
+        * /<command> pos [x] [y] [z] - Points to the given position.
+        * /<command> live [player] - Tracks the given player live.
+        * /<command> hide - Protect yourself against tracking.
+        * /<command> hidden - Are you hidden right now?
+        
+permissions:
+    'compassex.*':
+        description: Gives access to all the CompassEx commands.
+    compassex.live:
+        description: Tracks the given player live.
+        default: true
+    compassex.reset:
+        description: Resets the compass to spawn.
+        default: true
+    compassex.pos:
+        description: Sets the compass to the given position.
+        default: true
+    compassex.player:
+        description: Tracks the given player.
+        default: true
+    compassex.hide:
+    	description: Protect from being tracked from others.
+    	default:true

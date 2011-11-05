@@ -4,6 +4,7 @@ version: 0.0.1
 commands:
    compass:
       description: Points your compass towards something.
+      aliases: [cp, compassex]
       usage: |
         Wrong usage of /<command>
         * /<command> reset - Resets the compass to spawn.
@@ -16,6 +17,14 @@ commands:
 permissions:
     'compassex.*':
         description: Gives access to all the CompassEx commands.
+        default: op
+        children:
+            compassex.live: true
+            compassex.reset: true
+            compassex.pos: true
+            compassex.player: true
+            compass.hide: true
+            compass.admin: true
     compassex.live:
         description: Tracks the given player live.
         default: true
@@ -29,5 +38,8 @@ permissions:
         description: Tracks the given player.
         default: true
     compassex.hide:
-    	description: Protect from being tracked from others.
-    	default:true
+        description: Protect from being tracked from others.
+        default: true
+    compass.admin:
+        description: Allows the user to even track hidden users.
+        default: op

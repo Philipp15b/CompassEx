@@ -12,7 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CompassEx extends JavaPlugin {
@@ -30,6 +33,11 @@ public class CompassEx extends JavaPlugin {
     @Override
     public void onEnable() {
         loadConfiguration();
+        
+        PluginManager pm = getServer().getPluginManager();
+        
+        pm.registerEvent(Event.Type.PLAYER_QUIT, new CompassExPlayerListener(this), Priority.Normal, this);
+       
         PluginDescriptionFile pff = this.getDescription();
         log.info(pff.getName() +  " " + pff.getVersion() + " is enabled.");
     }
@@ -184,11 +192,11 @@ public class CompassEx extends JavaPlugin {
         			stopLiveTask(p);
         			
         			// Workaround to give arguments to the task (WTH...)
-        			class CompassTask implements Runnable {
+        			class UpdateCompassTask implements Runnable {
     			        Player watcher;
     			        Player target;
     			        
-    			        CompassTask(Player p, Player t) {
+    			        UpdateCompassTask(Player p, Player t) {
     			        	watcher = p;
     			        	target = t;
     			        }
@@ -205,8 +213,8 @@ public class CompassEx extends JavaPlugin {
         					.getScheduler()
         					.scheduleSyncRepeatingTask(
         							this, 
-        							new CompassTask(p, target),
-        							60L,
+        							new UpdateCompassTask(p, target),
+        							40L,
         							updateRate
         					);
         			
@@ -265,7 +273,7 @@ public class CompassEx extends JavaPlugin {
 	 * Stops the LiveCompassTask of a player if it is running.
 	 * @param p Player to stop the task of
 	 */
-	private void stopLiveTask(Player p) {
+	public void stopLiveTask(Player p) {
 		String playername = p.getName();
 		
 		// find task, cancel and delete its id if set

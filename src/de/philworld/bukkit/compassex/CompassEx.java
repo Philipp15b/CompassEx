@@ -194,13 +194,12 @@ public class CompassEx extends JavaPlugin {
     			        }
     			        @Override
 						public void run() {
-    			            log.info("Update compass of " + watcher.getName() + " to " + target.getName());
     			        	watcher.setCompassTarget(target.getLocation());
     			        }
     			    }
         			
         			long updateRate = (long) getConfig().getInt("live-update-rate");
-        			log.info("Update-rate: " + updateRate);
+                    
         			// set up the task and save it
         			int taskId = getServer()
         					.getScheduler()

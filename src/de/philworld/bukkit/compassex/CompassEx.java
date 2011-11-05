@@ -198,14 +198,16 @@ public class CompassEx extends JavaPlugin {
     			        }
     			    }
         			
+        			long updateRate = getConfig().getLong("get-update-rate");
+        			
         			// set up the task and save it
         			int taskId = getServer()
         					.getScheduler()
         					.scheduleSyncRepeatingTask(
         							this, 
         							new CompassTask(p, target),
-        							60L, // @TODO: make configurable
-        							200L
+        							60L,
+        							updateRate
         					);
         			
         			watchTasks.put(p.getName(), taskId);

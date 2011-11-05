@@ -198,7 +198,7 @@ public class CompassEx extends JavaPlugin {
     			        }
     			    }
         			
-        			long updateRate = getConfig().getLong("get-update-rate");
+        			long updateRate = getConfig().getLong("live-update-rate");
         			
         			// set up the task and save it
         			int taskId = getServer()

@@ -99,6 +99,7 @@ public class CompassEx extends JavaPlugin {
         		
         		stopLiveTask(p);
         		p.setCompassTarget(p.getWorld().getSpawnLocation());
+        		p.saveData();
         		
         		p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been reset to spawn.");
         		return true;
@@ -128,6 +129,7 @@ public class CompassEx extends JavaPlugin {
         			
         			stopLiveTask(p);
         			p.setCompassTarget(point);
+        			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to position(X: " + arg1 + " Y: " + arg2 + " Z: " + arg3 + ").");
         			return true;
@@ -157,6 +159,7 @@ public class CompassEx extends JavaPlugin {
         			
         			stopLiveTask(p);
         			p.setCompassTarget(target.getLocation());
+        			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing to " + target.getDisplayName() + ".");
         			return true;
@@ -203,6 +206,7 @@ public class CompassEx extends JavaPlugin {
     			        @Override
 						public void run() {
     			        	watcher.setCompassTarget(target.getLocation());
+    			        	watcher.saveData();
     			        }
     			    }
         			
@@ -221,6 +225,7 @@ public class CompassEx extends JavaPlugin {
         			watchTasks.put(p.getName(), taskId);
         					
         			p.setCompassTarget(target.getLocation());
+        			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing live to " + target.getDisplayName() + ".");
         			return true;
@@ -272,7 +277,7 @@ public class CompassEx extends JavaPlugin {
 	/**
 	 * Stops the LiveCompassTask of a player if it is running.
 	 * @param p Player to stop the task of
-	 * @return boolean, if the live task was found
+	 * @return boolean if the live task was found
 	 */
 	public boolean stopLiveTask(Player p) {
 		String playername = p.getName();

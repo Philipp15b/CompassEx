@@ -19,12 +19,16 @@ permissions:
         description: Gives access to all the CompassEx commands.
         default: op
         children:
+            compassex.here: true
             compassex.live: true
             compassex.reset: true
             compassex.pos: true
             compassex.player: true
             compass.hide: true
             compass.admin: true
+    compassex.here:
+        description: Sets the compass to the players current position.
+        default: true
     compassex.live:
         description: Tracks the given player live.
         default: true

@@ -18,9 +18,10 @@ public class CompassExPlayerListener extends PlayerListener  {
 	}
 	
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		plugin.stopLiveTask(event.getPlayer());
-		Logger log = Logger.getLogger("Minecraft");
-		log.info("[CompassEx] Stopped live task of player " + event.getPlayer().getDisplayName());
+		if(plugin.stopLiveTask(event.getPlayer())) {
+			Logger log = Logger.getLogger("Minecraft");
+			log.info("[CompassEx] Stopped live task of player " + event.getPlayer().getDisplayName());
+		}
 	}
 	
 }

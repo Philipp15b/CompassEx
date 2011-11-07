@@ -272,15 +272,18 @@ public class CompassEx extends JavaPlugin {
 	/**
 	 * Stops the LiveCompassTask of a player if it is running.
 	 * @param p Player to stop the task of
+	 * @return boolean, if the live task was found
 	 */
-	public void stopLiveTask(Player p) {
+	public boolean stopLiveTask(Player p) {
 		String playername = p.getName();
 		
 		// find task, cancel and delete its id if set
 		if(watchTasks.containsKey(playername)) {
 			getServer().getScheduler().cancelTask(watchTasks.get(playername));
 			watchTasks.remove(playername);
+			return true;
 		}
+		return false;
 	}
 	
 	/**

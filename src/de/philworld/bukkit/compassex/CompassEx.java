@@ -107,6 +107,23 @@ public class CompassEx extends JavaPlugin {
         }
         
         // ------------------
+        // HERE COMMAND
+        // ------------------
+        if(base.equalsIgnoreCase("here")) {
+        	
+        	if(p.hasPermission("compassex.here")) {
+        			
+    			stopLiveTask(p);
+    			p.setCompassTarget(p.getLocation());
+    			p.saveData();
+    			
+    			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to here.");
+    			return true;
+        	}
+        	
+        }
+        
+        // ------------------
         // POS COMMAND
         // ------------------
         if(base.equalsIgnoreCase("pos")) {
@@ -172,6 +189,7 @@ public class CompassEx extends JavaPlugin {
         		}
         	}
         }
+       
         
         // ------------------
         // LIVE COMMAND

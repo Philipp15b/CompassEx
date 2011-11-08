@@ -102,6 +102,8 @@ public class CompassEx extends JavaPlugin {
         		p.saveData();
         		
         		p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been reset to spawn.");
+    		} else {
+    			p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
     		}
     		
         	return true;
@@ -119,6 +121,8 @@ public class CompassEx extends JavaPlugin {
     			p.saveData();
     			
     			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to here.");
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
 			
         	return true;
@@ -151,6 +155,8 @@ public class CompassEx extends JavaPlugin {
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to position(X: " + arg1 + " Y: " + arg2 + " Z: " + arg3 + ").");
         		}
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
 			
         	return true;	
@@ -185,6 +191,8 @@ public class CompassEx extends JavaPlugin {
         		{
         			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
         		}
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
         	
         	return true;
@@ -251,6 +259,8 @@ public class CompassEx extends JavaPlugin {
         		{
         			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
         		}
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
         	
         	return true;
@@ -268,6 +278,8 @@ public class CompassEx extends JavaPlugin {
         			unHide(p);
         			p.sendMessage(ChatColor.RED + "[CompassEx] You are now visible again.");
         		}
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
         	
         	return true;
@@ -284,6 +296,8 @@ public class CompassEx extends JavaPlugin {
         		} else {
         			p.sendMessage(ChatColor.RED + "[CompassEx] You are trackable right now.");
         		}
+        	} else {
+        		p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
         	}
         	
         	return true;

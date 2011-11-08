@@ -74,12 +74,12 @@ public class CompassEx extends JavaPlugin {
         
         // no usage from the console cuz we use the player all the time.
         if(sender instanceof ConsoleCommandSender) {
-        	return false;
+        	sender.sendMessage("Please only use in game!");
+        	return true;
         }
         
         
         if (args.length == 0) {
-        	sender.sendMessage("You must specify an action! Use /compass <action>.");
         	return false;
         }
         
@@ -102,8 +102,9 @@ public class CompassEx extends JavaPlugin {
         		p.saveData();
         		
         		p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been reset to spawn.");
-        		return true;
     		}
+    		
+        	return true;
         }
         
         // ------------------
@@ -118,9 +119,9 @@ public class CompassEx extends JavaPlugin {
     			p.saveData();
     			
     			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to here.");
-    			return true;
         	}
-        	
+			
+        	return true;
         }
         
         // ------------------
@@ -149,10 +150,10 @@ public class CompassEx extends JavaPlugin {
         			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to position(X: " + arg1 + " Y: " + arg2 + " Z: " + arg3 + ").");
-        			return true;
         		}
         	}
-        	
+			
+        	return true;	
         }
         
         // ------------------
@@ -171,7 +172,6 @@ public class CompassEx extends JavaPlugin {
         			// user has no admin rights.
         			if (isHidden(target) && !(p.hasPermission("compassex.admin"))) {
         				p.sendMessage(ChatColor.RED + "Player cannot be found.");
-        				return false;
         			}
         			
         			stopLiveTask(p);
@@ -179,15 +179,15 @@ public class CompassEx extends JavaPlugin {
         			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing to " + target.getDisplayName() + ".");
-        			return true;
         		
         		}
         		else
         		{
         			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
-        			return false;
         		}
         	}
+        	
+        	return true;
         }
        
         
@@ -207,7 +207,6 @@ public class CompassEx extends JavaPlugin {
         			// user has no admin rights.
         			if (isHidden(target) && !(p.hasPermission("compassex.admin"))) {
         				p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
-        				return false;
         			}
         			
         			stopLiveTask(p);
@@ -246,15 +245,15 @@ public class CompassEx extends JavaPlugin {
         			p.saveData();
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing live to " + target.getDisplayName() + ".");
-        			return true;
         		
         		}
         		else
         		{
         			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
-        			return false;
         		}
         	}
+        	
+        	return true;
         }
         
         // ------------------
@@ -269,8 +268,9 @@ public class CompassEx extends JavaPlugin {
         			unHide(p);
         			p.sendMessage(ChatColor.RED + "[CompassEx] You are now visible again.");
         		}
-        		return true;
         	}
+        	
+        	return true;
         }
         
         
@@ -284,11 +284,12 @@ public class CompassEx extends JavaPlugin {
         		} else {
         			p.sendMessage(ChatColor.RED + "[CompassEx] You are trackable right now.");
         		}
-        		return true;
         	}
+        	
+        	return true;
         }
-
         
+
         return false;
 	}
 	

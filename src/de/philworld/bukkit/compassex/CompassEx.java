@@ -270,8 +270,9 @@ public class CompassEx extends JavaPlugin {
         // HIDE COMMAND
         // ------------------
         if(base.equalsIgnoreCase("hide")) {
+        	
         	if(p.hasPermission("compassex.hide")) {
-        		if(isHidden(p)) {
+        		if(!isHidden(p)) {
         			hide(p);
             		p.sendMessage(ChatColor.RED + "[CompassEx] You are now hidden.");
         		} else {

@@ -1,6 +1,6 @@
 name: CompassEx
 main: de.philworld.bukkit.compassex.CompassEx
-version: 0.0.1
+version: 0.5
 commands:
    compass:
       description: Points your compass towards something.

@@ -1,7 +1,5 @@
 package de.philworld.bukkit.compassex;
 
-import java.util.logging.Logger;
-
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -18,10 +16,7 @@ public class CompassExPlayerListener extends PlayerListener  {
 	}
 	
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if(plugin.stopLiveTask(event.getPlayer())) {
-			Logger log = Logger.getLogger("Minecraft");
-			log.info("[CompassEx] Stopped live task of player " + event.getPlayer().getDisplayName());
-		}
+		CompassTrackerUpdater.removePlayer(event.getPlayer());
 	}
 	
 }

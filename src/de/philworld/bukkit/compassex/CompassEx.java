@@ -1,7 +1,6 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -23,9 +21,6 @@ public class CompassEx extends JavaPlugin {
     Logger log = Logger.getLogger("Minecraft"); 
     FileConfiguration config;
     
-    // hashmap to save the ids of the running watch tasks
-    private HashMap<String, Integer> watchTasks = new HashMap<String, Integer>();
-    
     // save all hidden players in a list
     private List<String> hiddenPlayers = new ArrayList<String>();
     
@@ -38,12 +33,18 @@ public class CompassEx extends JavaPlugin {
         
         pm.registerEvent(Event.Type.PLAYER_QUIT, new CompassExPlayerListener(this), Priority.Normal, this);
        
+        // setup compass tracker
+        CompassTrackerUpdater.setPlugin(this);
+        CompassTrackerUpdater.setUpdateRate((long) getConfig().getInt("live-update-rate"));
+        
         PluginDescriptionFile pff = this.getDescription();
         log.info(pff.getName() +  " " + pff.getVersion() + " is enabled.");
     }
 
     @Override
     public void onDisable() {
+    	CompassTrackerUpdater.stop(); // stop tasks
+    	
         PluginDescriptionFile pff = this.getDescription();
         log.info(pff.getName() +  " " + pff.getVersion() + " is disabled.");
     }
@@ -62,18 +63,13 @@ public class CompassEx extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		
 		// Determine if the sender is a player (and an op), or the console.
-        boolean player  = (sender instanceof Player);
-        
-        // @TODO: remove if not necessary
-        // do the bukkit permissions give all rights to ops automatically?
-        @SuppressWarnings("unused")
-		boolean op      = player && ((Player) sender).isOp();
+        boolean isPlayer  = (sender instanceof Player);
         
         // Cast the sender to Player if possible.
-        Player p = (player) ? (Player)sender : null;
+        Player p = (isPlayer) ? (Player) sender : null;
         
         // no usage from the console cuz we use the player all the time.
-        if(sender instanceof ConsoleCommandSender) {
+        if(!isPlayer) {
         	sender.sendMessage("Please only use in game!");
         	return true;
         }
@@ -97,7 +93,7 @@ public class CompassEx extends JavaPlugin {
         if(base.equalsIgnoreCase("reset")) {
         	if(p.hasPermission("compassex.reset")) {
         		
-        		stopLiveTask(p);
+        		CompassTrackerUpdater.removePlayer(p);
         		p.setCompassTarget(p.getWorld().getSpawnLocation());
         		p.saveData();
         		
@@ -116,7 +112,7 @@ public class CompassEx extends JavaPlugin {
         	
         	if(p.hasPermission("compassex.here")) {
         			
-    			stopLiveTask(p);
+    			CompassTrackerUpdater.removePlayer(p);
     			p.setCompassTarget(p.getLocation());
     			p.saveData();
     			
@@ -149,7 +145,7 @@ public class CompassEx extends JavaPlugin {
     					Integer.parseInt(arg3)
         			);
         			
-        			stopLiveTask(p);
+        			CompassTrackerUpdater.removePlayer(p);
         			p.setCompassTarget(point);
         			p.saveData();
         			
@@ -180,7 +176,7 @@ public class CompassEx extends JavaPlugin {
         				p.sendMessage(ChatColor.RED + "Player cannot be found.");
         			}
         			
-        			stopLiveTask(p);
+        			CompassTrackerUpdater.removePlayer(p);
         			p.setCompassTarget(target.getLocation());
         			p.saveData();
         			
@@ -215,42 +211,10 @@ public class CompassEx extends JavaPlugin {
         			// user has no admin rights.
         			if (isHidden(target) && !(p.hasPermission("compassex.admin"))) {
         				p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
+        				return true;
         			}
-        			
-        			stopLiveTask(p);
-        			
-        			// Workaround to give arguments to the task (WTH...)
-        			class UpdateCompassTask implements Runnable {
-    			        Player watcher;
-    			        Player target;
-    			        
-    			        UpdateCompassTask(Player p, Player t) {
-    			        	watcher = p;
-    			        	target = t;
-    			        }
-    			        @Override
-						public void run() {
-    			        	watcher.setCompassTarget(target.getLocation());
-    			        	watcher.saveData();
-    			        }
-    			    }
-        			
-        			long updateRate = (long) getConfig().getInt("live-update-rate");
                     
-        			// set up the task and save it
-        			int taskId = getServer()
-        					.getScheduler()
-        					.scheduleSyncRepeatingTask(
-        							this, 
-        							new UpdateCompassTask(p, target),
-        							40L,
-        							updateRate
-        					);
-        			
-        			watchTasks.put(p.getName(), taskId);
-        					
-        			p.setCompassTarget(target.getLocation());
-        			p.saveData();
+        			CompassTrackerUpdater.setWatcher(p, target);
         			
         			p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing live to " + target.getDisplayName() + ".");
         		
@@ -308,22 +272,6 @@ public class CompassEx extends JavaPlugin {
         return false;
 	}
 	
-	/**
-	 * Stops the LiveCompassTask of a player if it is running.
-	 * @param p Player to stop the task of
-	 * @return boolean if the live task was found
-	 */
-	public boolean stopLiveTask(Player p) {
-		String playername = p.getName();
-		
-		// find task, cancel and delete its id if set
-		if(watchTasks.containsKey(playername)) {
-			getServer().getScheduler().cancelTask(watchTasks.get(playername));
-			watchTasks.remove(playername);
-			return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * Hide the given player if it is not already hidden.

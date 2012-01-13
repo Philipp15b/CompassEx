@@ -173,30 +173,42 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// ------------------
 		// POS COMMAND
 		// ------------------
-		if(base.equalsIgnoreCase("pos")) {
+		// in addition to /compass pos <x> <y> <z>, it also allows /compass <x> <y> <z>
+		if(base.equalsIgnoreCase("pos") || arg2 != "") {
 
 			if(p.hasPermission("compassex.pos")) {
-
-				// Send message if user forgot some arguments
-				if(arg1 == "" || arg2 == "" || arg3 == "") {
-					p.sendMessage(ChatColor.RED + "[CompassEx] Wrong arguments: /compass pos <x> <y> <z>.");
-
-				} else {
-
-					// create a new location object from the parameters
-					Location point = new Location(
-							p.getWorld(),
-							Integer.parseInt(arg1),
-							Integer.parseInt(arg2),
-							Integer.parseInt(arg3)
-							);
-
-					CompassTrackerUpdater.removePlayer(p);
-					p.setCompassTarget(point);
-					p.saveData();
-
-					p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to position(X: " + arg1 + " Y: " + arg2 + " Z: " + arg3 + ").");
+				
+				int x; int y; int z;
+				try {
+					if(base.equalsIgnoreCase("pos")) {
+						
+						if(arg3 == "") {
+							p.sendMessage(ChatColor.RED + "[CompassEx] Wrong arguments: /compass pos <x> <y> <z>.");
+							return true;
+						}
+						
+						x = Integer.parseInt(arg1);
+						y = Integer.parseInt(arg2);
+						z = Integer.parseInt(arg3);
+					} else {
+						x = Integer.parseInt(base);
+						y = Integer.parseInt(arg1);
+						z = Integer.parseInt(arg2);
+					}
+				} catch(NumberFormatException e) {
+					p.sendMessage(ChatColor.RED + "[CompassEx] Wrong argument format: /compass pos <x> <y> <z>.");
+					return true;
 				}
+				
+				// create a new location object from the parameters
+				Location point = new Location(p.getWorld(), x, y, z);
+
+				CompassTrackerUpdater.removePlayer(p);
+				p.setCompassTarget(point);
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to X: " + x + " Y: " + y + " Z: " + z + ".");
+		
 			} else {
 				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
 			}
@@ -207,41 +219,54 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// ------------------
 		// PLAYER COMMAND
 		// ------------------
-		if(base.equalsIgnoreCase("player")) {
-			if(p.hasPermission("compassex.player")) {
-				String name = arg1;
-				List<Player> foundPlayers = plugin.getServer().matchPlayer(name);
-
-				if (foundPlayers.size() == 1)
-				{
-					Player target = foundPlayers.get(0);
-
-					// If the player is hidden dont track it. But only if the
-					// user has no admin rights.
-					if (isHidden(target) && !(p.hasPermission("compassex.admin"))) {
-						p.sendMessage(ChatColor.RED + "Player cannot be found.");
-					}
-
-					CompassTrackerUpdater.removePlayer(p);
-					p.setCompassTarget(target.getLocation());
-					p.saveData();
-
-					p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing to " + target.getDisplayName() + ".");
-
+		// if no special command is used, it must be a player
+		// like in /compass Philipp15b
+		// /compass player Philipp15b is also allowed, in case somebody's
+		// name is one of the commands.
+		if(p.hasPermission("compassex.player")) {
+			String name = base;
+			
+			// fallback for /compass player <playername>
+			if(base.equalsIgnoreCase("player")) {
+				if (arg1 == "") {
+					return false;
 				}
-				else
-				{
-					p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
-				}
-			} else {
-				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
+				name = arg1;
 			}
+			
+			List<Player> foundPlayers = plugin.getServer().matchPlayer(name);
 
-			return true;
+			if (foundPlayers.size() == 1)
+			{
+				Player target = foundPlayers.get(0);
+
+				// If the player is hidden dont track it. But only if the
+				// user has no admin rights.
+				if (isHidden(target) && !(p.hasPermission("compassex.admin"))) {
+					p.sendMessage(ChatColor.RED + "Player cannot be found.");
+					return true;
+				}
+
+				CompassTrackerUpdater.removePlayer(p);
+				p.setCompassTarget(target.getLocation());
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED + "[CompassEx] Your compass is now pointing to " + target.getDisplayName() + ".");
+
+			}
+			else
+			{
+				p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
+			}
+		} else {
+			if(base == "player" && arg1 != "")
+				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
+			else
+				return false;
 		}
 
+		return true;
 
-		return false;
 	}
 
 	/**

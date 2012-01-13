@@ -26,6 +26,7 @@ permissions:
             compassex.player: true
             compass.hide: true
             compass.admin: true
+            compass.height: true
     compassex.here:
         description: Sets the compass to the players current position.
         default: op
@@ -34,6 +35,9 @@ permissions:
         default: op
     compassex.reset:
         description: Resets the compass to spawn.
+        default: op
+    compassex.height:
+        description: Gets the height difference between you and your compass target.
         default: op
     compassex.pos:
         description: Sets the compass to the given position.

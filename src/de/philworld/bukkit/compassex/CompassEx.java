@@ -32,8 +32,10 @@ public class CompassEx extends JavaPlugin {
         CompassTrackerUpdater.setPlugin(this);
         CompassTrackerUpdater.setUpdateRate((long) getConfig().getInt("live-update-rate"));
         
+        // set command executor
         getCommand("compass").setExecutor(new CompassExCommandExecutor(this));
         
+        // done.
         PluginDescriptionFile pff = this.getDescription();
         log.info(pff.getName() +  " " + pff.getVersion() + " is enabled.");
     }

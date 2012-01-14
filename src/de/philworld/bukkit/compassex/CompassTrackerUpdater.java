@@ -84,12 +84,6 @@ public class CompassTrackerUpdater implements Runnable {
 	 */
 	public static void removePlayer(Player player) {
 		String name = player.getName();
-		
-		// remove watcher player
-		if(watchList.containsKey(name)) {
-			watchList.remove(name);
-		}
-		
 		// remove watched players
 		// TODO: send notification to watcher when the watched leaves
 		if(watchList.containsValue(name)) {
@@ -100,6 +94,22 @@ public class CompassTrackerUpdater implements Runnable {
 				}
 			}
 		}
+		
+		removeWatcher(player);
+	}
+	
+	/**
+	 * Removes a watcher from the watchList
+	 * @param player
+	 */
+	public static void removeWatcher(Player player) {
+		String name = player.getName();
+		
+		// remove watcher player
+		if(watchList.containsKey(name)) {
+			watchList.remove(name);
+		}
+
 		
 		if(watchList.isEmpty()) {
 			stop();

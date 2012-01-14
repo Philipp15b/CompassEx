@@ -51,7 +51,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		if(base.equalsIgnoreCase("reset") || base.equalsIgnoreCase("spawn")) {
 			if(p.hasPermission("compassex.reset")) {
 
-				CompassTrackerUpdater.removePlayer(p);
+				CompassTrackerUpdater.removeWatcher(p);
 				p.setCompassTarget(p.getWorld().getSpawnLocation());
 				p.saveData();
 
@@ -70,7 +70,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			if(p.hasPermission("compassex.here")) {
 
-				CompassTrackerUpdater.removePlayer(p);
+				CompassTrackerUpdater.removeWatcher(p);
 				p.setCompassTarget(p.getLocation());
 				p.saveData();
 
@@ -203,7 +203,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				// create a new location object from the parameters
 				Location point = new Location(p.getWorld(), x, y, z);
 
-				CompassTrackerUpdater.removePlayer(p);
+				CompassTrackerUpdater.removeWatcher(p);
 				p.setCompassTarget(point);
 				p.saveData();
 
@@ -247,7 +247,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				CompassTrackerUpdater.removePlayer(p);
+				CompassTrackerUpdater.removeWatcher(p);
 				p.setCompassTarget(target.getLocation());
 				p.saveData();
 

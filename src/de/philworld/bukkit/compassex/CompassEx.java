@@ -1,9 +1,11 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -17,7 +19,9 @@ public class CompassEx extends JavaPlugin {
     FileConfiguration config;
     
     // save all hidden players in a list
-    public List<String> hiddenPlayers = new ArrayList<String>();
+    List<String> hiddenPlayers = new ArrayList<String>();
+    
+    HashMap<String, Location> deathPoints = new HashMap<String, Location>();
     
     
     @Override
@@ -26,7 +30,10 @@ public class CompassEx extends JavaPlugin {
         
         PluginManager pm = getServer().getPluginManager();
         
-        pm.registerEvent(Event.Type.PLAYER_QUIT, new CompassExPlayerListener(this), Priority.Normal, this);
+        // set up listener
+        CompassExPlayerListener listener = new CompassExPlayerListener(this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, listener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_DEATH, listener, Priority.Low, this);
        
         // setup compass tracker
         CompassTrackerUpdater.setPlugin(this);

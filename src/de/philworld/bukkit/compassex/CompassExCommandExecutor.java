@@ -171,6 +171,22 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		}
 		
 		// ------------------
+		// DEATH POINT COMMAND
+		// ------------------
+		if(base.equalsIgnoreCase("deathpoint") || base.equalsIgnoreCase("dp") || base.equalsIgnoreCase("death")) {
+			if(p.hasPermission("compassex.deathpoint")) {
+				CompassTrackerUpdater.removeWatcher(p);
+				Location deathPoint = plugin.deathPoints.get(p.getName());
+				p.setCompassTarget(deathPoint);
+				p.saveData();
+			} else {
+				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+		
+		// ------------------
 		// POS COMMAND
 		// ------------------
 		// in addition to /compass pos <x> <y> <z>, it also allows /compass <x> <y> <z>

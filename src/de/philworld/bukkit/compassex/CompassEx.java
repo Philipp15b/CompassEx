@@ -31,9 +31,8 @@ public class CompassEx extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         
         // set up listener
-        CompassExPlayerListener listener = new CompassExPlayerListener(this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, listener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_DEATH, listener, Priority.Low, this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, new CompassExPlayerListener(this), Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_DEATH, new CompassExEntityListener(this), Priority.Low, this);
        
         // setup compass tracker
         CompassTrackerUpdater.setPlugin(this);

@@ -10,48 +10,48 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<th>Command</th><th>Alias</th><th>Description</th>
 	</tr>
 	<tr>
-		<td>`/compass reset`</td>
-		<td>`/spawn`</td>
+		<td><code>/compass reset</code></td>
+		<td><code>/spawn</code></td>
 		<td>Sets the compass back to spawn.</td>
 	</tr>
 	<tr>
-		<td>`/compass here`</td>
+		<td><code>/compass here</code></td>
 		<td></td>
 		<td>Sets the compass to the player's current position.</td>
 	</tr>
 	<tr>
-		<td>`/compass live *PLAYER*`</td>
+		<td><code>/compass live PLAYER</code></td>
 		<td></td>
-		<td>Sets the compass to the player `player` and updates it.</td>
+		<td>Sets the compass to the player player and updates it.</td>
 	</tr>
 	<tr>
-		<td>`/compass height`</td>
-		<td>`/compass h`</td>
+		<td><code>/compass height</code></td>
+		<td><code>/compass h</code></td>
 		<td>Shows the height difference between you and the compasses target.</td>
 	</tr>
 	<tr>
-		<td>`/compass hide`</td>
+		<td><code>/compass hide</code></td>
 		<td></td>
 		<td>Toggles the player between hidden and not hidden. This prevents the player from being tracked by others.</td>
 	</tr>
 	<tr>
-		<td>`/compass hidden`</td>
+		<td><code>/compass hidden</code></td>
 		<td></td>
 		<td>Shows if the player is hidden right now.</td>
 	</tr>
 	<tr>
-		<td>`/compass deathpoint`</td>
-		<td>`/compass dp`</td>
+		<td><code>/compass deathpoint</code></td>
+		<td><code>/compass dp</code></td>
 		<td>Sets the compass to the player's latest deathpoint.</td>
 	</tr>
 	<tr>
-		<td>`/compass *X* *Y* *Z*`</td>
-		<td>`/compass pos *X* *Y* *Z*`</td>
+		<td><code>/compass X  Z</code></td>
+		<td><code>/compass pos X Y Z</code></td>
 		<td>Sets the compass to the given coordinates.</td>
 	</tr>
 	<tr>
-		<td>`/compass *PLAYER*`</td>
-		<td>`/compass player *PLAYER*`</td>
+		<td><code>/compass PLAYER</code></td>
+		<td><code>/compass player PLAYER</code></td>
 		<td>Sets the compass to the given player.</td>
 	</tr>
 </table>
@@ -62,18 +62,53 @@ Just copy the jar file into your plugins folder, start your server so that the c
 
 ## Permissions:
 
-* `compassex.*` - Access to all CompassEx commands.
-   * `compassex.here` - Access to here command.
-   * `compassex.set` - Access to set command.
-   * `compassex.reset` - Access to reset command.
-   * `compassex.player` - Access to player command
-   * `compassex.live` - Access to live command.
-   * `compassex.hide` - Access to hide and hidden command.
-   * `compassex.admin` - Allows the user to track hidden users.
+<table>
+	<tr>
+		<th>Permission node</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><code>compassex.reset</code></td>
+		<td>Access to <code>/compass spawn</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.here</code></td>
+		<td>Access to <code>/compass here</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.live</code></td>
+		<td>Access to <code>/compass live</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.height</code></td>
+		<td>Access to <code>/compass height</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.hide</code></td>
+		<td>Access to <code>/compass hide</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.deathpoint</code></td>
+		<td>Access to <code>/compass deathpoint</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.pos</code></td>
+		<td>Access to <code>/compass pos</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.player</code></td>
+		<td>Access to <code>/compass player</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.admin</code></td>
+		<td>Allows to track even hidden users.</td>
+	</tr>
+	
+</table>
 
 ## Configuration:
 
-* `live-update-rate`: Sets how fast the position of the live tracked player get refreshed. Setting it to a small number may result in poor server performance. Recommended value: 200
+* `live-update-rate`: Sets how fast the position of the live tracked player get refreshed. Setting it to a small number may result in poor server performance. Recommended value: 200 (2 seconds).
 
 ## More:
 

@@ -3,6 +3,15 @@ _<span style="font-size:150%;">Your compass, but heavily improved.</span>_
 
 <img src="http://dl.dropbox.com/u/8199290/Compass.png" style="float:right;" />
 
+This plugin allows you to easily set your compass to different positions. You can set it to coordinates, players and of course, back to spawn.
+
+## Features
+
+* Set your compass to players, coordinates and your current position.
+* Follow players static and live (updates the position).
+* Set yourself as hidden, so that you cant be tracked by others.
+* Admins can follow even hidden users.
+
 ## Commands
 The original CompassEx command `/compass` has also aliases: `/cp` and `/compassex`.
 <table>
@@ -11,7 +20,7 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 	</tr>
 	<tr>
 		<td><code>/compass reset</code></td>
-		<td><code>/spawn</code></td>
+		<td><code>/compass spawn</code></td>
 		<td>Sets the compass back to spawn.</td>
 	</tr>
 	<tr>
@@ -60,7 +69,7 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 
 Just copy the jar file into your plugins folder, start your server so that the config gets generated and stop it. Then edit the config file at will. Now start your server again.
 
-## Permissions:
+## Permissions
 
 <table>
 	<tr>
@@ -106,11 +115,12 @@ Just copy the jar file into your plugins folder, start your server so that the c
 	
 </table>
 
-## Configuration:
+## Configuration
+The configuration is really simple:
 
 * `live-update-rate`: Sets how fast the position of the live tracked player get refreshed. Setting it to a small number may result in poor server performance. Recommended value: 200 (2 seconds).
 
-## More:
+## More
 
 Do you think you found any bugs? [Submit one here.](https://github.com/Philipp15b/minecraft-bukkit-compassex/issues)
 

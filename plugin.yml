@@ -1,6 +1,6 @@
 name: CompassEx
 main: de.philworld.bukkit.compassex.CompassEx
-version: 0.5.1
+version: 0.7.0
 commands:
    compass:
       description: Points your compass towards something.
@@ -19,34 +19,38 @@ permissions:
         description: Gives access to all the CompassEx commands.
         default: op
         children:
+        	compassex.reset: true
             compassex.here: true
             compassex.live: true
-            compassex.reset: true
+            compassex.height: true
+            compassex.hide: true
+            compassex.deathpoint: true
             compassex.pos: true
             compassex.player: true
-            compass.hide: true
-            compass.admin: true
-            compass.height: true
+            compassex.admin: true
+    compassex.reset:
+    	description: Resets the compass to spawn.
+    	default: op
     compassex.here:
         description: Sets the compass to the players current position.
         default: op
     compassex.live:
         description: Tracks the given player live.
         default: op
-    compassex.reset:
-        description: Resets the compass to spawn.
-        default: op
     compassex.height:
         description: Gets the height difference between you and your compass target.
+        default: op
+    compassex.hide:
+        description: Protect from being tracked from others.
+        default: op
+    compassex.deathpoint:
+        description: Allows to set the compass to the latest death point.
         default: op
     compassex.pos:
         description: Sets the compass to the given position.
         default: op
     compassex.player:
         description: Tracks the given player.
-        default: op
-    compassex.hide:
-        description: Protect from being tracked from others.
         default: op
     compass.admin:
         description: Allows the user to even track hidden users.

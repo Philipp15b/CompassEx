@@ -19,7 +19,7 @@ permissions:
         description: Gives access to all the CompassEx commands.
         default: op
         children:
-        	compassex.reset: true
+          compassex.reset: true
             compassex.here: true
             compassex.live: true
             compassex.height: true
@@ -29,8 +29,8 @@ permissions:
             compassex.player: true
             compassex.admin: true
     compassex.reset:
-    	description: Resets the compass to spawn.
-    	default: op
+      description: Resets the compass to spawn.
+      default: op
     compassex.here:
         description: Sets the compass to the players current position.
         default: op

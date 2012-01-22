@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,8 +29,7 @@ public class CompassEx extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         
         // set up listener
-        pm.registerEvent(Event.Type.PLAYER_QUIT, new CompassExPlayerListener(this), Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_DEATH, new CompassExEntityListener(this), Priority.Low, this);
+        pm.registerEvents(new CompassExListener(this), this);
        
         // setup compass tracker
         CompassTrackerUpdater.setPlugin(this);

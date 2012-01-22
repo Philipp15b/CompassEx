@@ -2,6 +2,7 @@ package de.philworld.bukkit.compassex;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -17,10 +18,12 @@ public class CompassExListener implements Listener  {
 		plugin = p;
 	}
 	
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		CompassTrackerUpdater.removePlayer(event.getPlayer());
 	}
 	
+	@EventHandler
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
 		if(entity instanceof Player) {

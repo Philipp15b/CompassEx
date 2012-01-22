@@ -20,14 +20,14 @@ permissions:
         default: op
         children:
           compassex.reset: true
-	      compassex.here: true
-	      compassex.live: true
-	      compassex.height: true
-	      compassex.hide: true
-	      compassex.deathpoint: true
-	      compassex.pos: true
-	      compassex.player: true
-	      compassex.admin: true
+          compassex.here: true
+          compassex.live: true
+          compassex.height: true
+          compassex.hide: true
+          compassex.deathpoint: true
+          compassex.pos: true
+          compassex.player: true
+          compassex.admin: true
     compassex.reset:
       description: Resets the compass to spawn.
       default: op

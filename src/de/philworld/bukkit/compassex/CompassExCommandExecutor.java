@@ -176,7 +176,12 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		if(base.equalsIgnoreCase("deathpoint") || base.equalsIgnoreCase("dp") || base.equalsIgnoreCase("death")) {
 			if(p.hasPermission("compassex.deathpoint")) {
 				CompassTrackerUpdater.removeWatcher(p);
+				
 				Location deathPoint = plugin.deathPoints.get(p.getName());
+				if(deathPoint == null) {
+					p.sendMessage(ChatColor.RED + "[CompassEx] Could not find your latest death point.");
+					return true;
+				}
 				p.setCompassTarget(deathPoint);
 				p.saveData();
 			} else {

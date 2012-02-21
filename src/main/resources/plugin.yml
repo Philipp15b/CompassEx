@@ -1,6 +1,6 @@
 name: CompassEx
 main: de.philworld.bukkit.compassex.CompassEx
-version: 0.7.1
+version: $MAVEN-VERSION-NUMBER$
 commands:
    compass:
       description: Points your compass towards something.

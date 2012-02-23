@@ -54,7 +54,7 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<td>Sets the compass to the player's latest deathpoint.</td>
 	</tr>
 	<tr>
-		<td><code>/compass X  Z</code></td>
+		<td><code>/compass X Y Z</code></td>
 		<td><code>/compass pos X Y Z</code></td>
 		<td>Sets the compass to the given coordinates.</td>
 	</tr>

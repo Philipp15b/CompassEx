@@ -1,6 +1,7 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,6 +18,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		this.plugin = plugin;
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
 		// Determine if the sender is a player (and an op), or the console.
@@ -32,17 +34,30 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		}
 
 
-		if (args.length == 0) {
-			return false;
-		}
-
-
 		// Grab the command base and any arguments.
-		String base = args[0].toLowerCase();
+		String base = (args.length > 0) ? args[0].toLowerCase() : "";
 		String arg1 = (args.length > 1) ? args[1].toLowerCase() : "";
 		String arg2 = (args.length > 2) ? args[2].toLowerCase() : "";
 		String arg3 = (args.length > 3) ? args[3].toLowerCase() : "";
 
+		// ------------------
+		// HELP COMMAND
+		// ------------------
+		if (base.equals("") || base.equalsIgnoreCase("help")) {
+
+			p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help ------ ");
+
+			for (Map.Entry<String, String> entry : CompassEx.helpMessages
+					.entrySet()) {
+				String permission = entry.getKey();
+				String message = entry.getValue();
+
+				if (p.hasPermission(permission))
+					p.sendMessage(message);
+			}
+
+			return true;
+		}
 
 		// ------------------
 		// RESET COMMAND
@@ -121,9 +136,9 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// HEIGHT COMMAND
 		// ------------------
 		if(base.equalsIgnoreCase("h") || base.equalsIgnoreCase("height")) {
-			if(p.hasPermission("compassex.height")) {				
+			if(p.hasPermission("compassex.height")) {
 				int diff = (int) Math.ceil(p.getCompassTarget().getBlockY() - p.getLocation().getY());
-				
+
 				p.sendMessage(ChatColor.RED + "[CompassEx] Height difference between you and your compass target: " + diff + " blocks.");
 			} else {
 				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
@@ -168,14 +183,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			return true;
 		}
-		
+
 		// ------------------
 		// DEATH POINT COMMAND
 		// ------------------
 		if(base.equalsIgnoreCase("deathpoint") || base.equalsIgnoreCase("dp") || base.equalsIgnoreCase("death")) {
 			if(p.hasPermission("compassex.deathpoint")) {
 				CompassTrackerUpdater.removeWatcher(p);
-				
+
 				Location deathPoint = plugin.deathPoints.get(p.getName());
 				if(deathPoint == null) {
 					p.sendMessage(ChatColor.RED + "[CompassEx] Could not find your latest death point.");
@@ -189,7 +204,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			return true;
 		}
-		
+
 		// ------------------
 		// POS COMMAND
 		// ------------------
@@ -197,16 +212,16 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		if(base.equalsIgnoreCase("pos") || arg2 != "") {
 
 			if(p.hasPermission("compassex.pos")) {
-				
+
 				int x; int y; int z;
 				try {
 					if(base.equalsIgnoreCase("pos")) {
-						
+
 						if(arg3 == "") {
 							p.sendMessage(ChatColor.RED + "[CompassEx] Wrong arguments: /compass pos <x> <y> <z>.");
 							return true;
 						}
-						
+
 						x = Integer.parseInt(arg1);
 						y = Integer.parseInt(arg2);
 						z = Integer.parseInt(arg3);
@@ -219,7 +234,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					p.sendMessage(ChatColor.RED + "[CompassEx] Wrong argument format: /compass pos <x> <y> <z>.");
 					return true;
 				}
-				
+
 				// create a new location object from the parameters
 				Location point = new Location(p.getWorld(), x, y, z);
 
@@ -228,14 +243,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set to X: " + x + " Y: " + y + " Z: " + z + ".");
-		
+
 			} else {
 				p.sendMessage(ChatColor.RED + "You don't have any permission to do that.");
 			}
 
-			return true;	
+			return true;
 		}
-		
+
 		// ------------------
 		// PLAYER COMMAND
 		// ------------------
@@ -245,7 +260,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// name is one of the commands.
 		if(p.hasPermission("compassex.player")) {
 			String name = base;
-			
+
 			// fallback for /compass player <playername>
 			if(base.equalsIgnoreCase("player")) {
 				if (arg1 == "") {
@@ -253,7 +268,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 				name = arg1;
 			}
-			
+
 			List<Player> foundPlayers = plugin.getServer().matchPlayer(name);
 
 			if (foundPlayers.size() == 1)
@@ -315,7 +330,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	 * @return boolean if the player is hidden.
 	 */
 	private boolean isHidden(Player player) {
-		return plugin.hiddenPlayers.contains(player.getName());		
+		return plugin.hiddenPlayers.contains(player.getName());
 	}
 
 }

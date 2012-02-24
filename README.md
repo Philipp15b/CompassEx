@@ -77,6 +77,10 @@ Just copy the jar file into your plugins folder, start your server so that the c
 		<th>Description</th>
 	</tr>
 	<tr>
+		<td><code>compassex.help</code></td>
+		<td>Allow users to display the help.</td>
+	</tr>
+	<tr>
 		<td><code>compassex.reset</code></td>
 		<td>Access to <code>/compass spawn</code>.</td>
 	</tr>

@@ -44,20 +44,24 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// HELP COMMAND
 		// ------------------
 		if (base.equals("") || base.equalsIgnoreCase("help")) {
+			if (p.hasPermission("compassex.help")) {
+				p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help ------ ");
 
-			p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help ------ ");
+				for (Map.Entry<String, String> entry : CompassEx.helpMessages
+						.entrySet()) {
+					String permission = entry.getKey();
+					String message = entry.getValue();
 
-			for (Map.Entry<String, String> entry : CompassEx.helpMessages
-					.entrySet()) {
-				String permission = entry.getKey();
-				String message = entry.getValue();
+					message = message.replace("&blue;", "" + ChatColor.BLUE)
+							.replace("&red;", "" + ChatColor.RED)
+							.replace("&command;", commandLabel);
 
-				message = message.replace("&blue;", "" + ChatColor.BLUE)
-						.replace("&red;", "" + ChatColor.RED)
-						.replace("&command;", commandLabel);
-
-				if (p.hasPermission(permission))
-					p.sendMessage(message);
+					if (p.hasPermission(permission))
+						p.sendMessage(message);
+				}
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
 			}
 
 			return true;

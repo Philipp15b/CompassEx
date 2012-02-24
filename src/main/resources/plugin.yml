@@ -28,6 +28,10 @@ permissions:
           compassex.pos: true
           compassex.player: true
           compassex.admin: true
+          compassex.help: true
+    compassex.help:
+      description: Acces to the help page.
+      default: op
     compassex.reset:
       description: Resets the compass to spawn.
       default: op

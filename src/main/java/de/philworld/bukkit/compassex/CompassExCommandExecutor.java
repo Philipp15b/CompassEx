@@ -52,6 +52,8 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					String permission = entry.getKey();
 					String message = entry.getValue();
 
+					permission = permission.replace("%", "");
+
 					message = message.replace("&blue;", "" + ChatColor.BLUE)
 							.replace("&red;", "" + ChatColor.RED)
 							.replace("&command;", commandLabel);
@@ -100,6 +102,94 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				p.sendMessage(ChatColor.RED
 						+ "[CompassEx] Your compass has been set to here.");
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+
+		// ------------------
+		// DIRECTION COMMANDS
+		// ------------------
+
+		// north
+		if (base.equalsIgnoreCase("north") || base.equalsIgnoreCase("n")) {
+
+			if (p.hasPermission("compassex.direction")) {
+
+				CompassTrackerUpdater.removeWatcher(p);
+
+				p.setCompassTarget(new Location(p.getWorld(),
+						-Double.MAX_VALUE, 0, 0));
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED
+						+ "[CompassEx] Your compass has been set north.");
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+
+		// east
+		if (base.equalsIgnoreCase("east") || base.equalsIgnoreCase("e")) {
+
+			if (p.hasPermission("compassex.direction")) {
+
+				CompassTrackerUpdater.removeWatcher(p);
+
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0,
+						-Double.MAX_VALUE));
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED
+						+ "[CompassEx] Your compass has been set east.");
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+
+		// south
+		if (base.equalsIgnoreCase("south") || base.equalsIgnoreCase("s")) {
+
+			if (p.hasPermission("compassex.direction")) {
+
+				CompassTrackerUpdater.removeWatcher(p);
+
+				p.setCompassTarget(new Location(p.getWorld(), Double.MAX_VALUE,
+						0, 0));
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED
+						+ "[CompassEx] Your compass has been set south.");
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+
+		// west
+		if (base.equalsIgnoreCase("west") || base.equalsIgnoreCase("w")) {
+
+			if (p.hasPermission("compassex.direction")) {
+
+				CompassTrackerUpdater.removeWatcher(p);
+
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0,
+						Double.MAX_VALUE));
+				p.saveData();
+
+				p.sendMessage(ChatColor.RED
+						+ "[CompassEx] Your compass has been set west.");
 			} else {
 				p.sendMessage(ChatColor.RED
 						+ "You don't have any permission to do that.");

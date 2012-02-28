@@ -29,6 +29,11 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<td>Sets the compass to the player's current position.</td>
 	</tr>
 	<tr>
+		<td><code>/compass north/east/south/west</code></td>
+		<td>/compass n/e/s/w</td>
+		<td>Sets the compass to a specific direction.</td>
+	</tr>
+	<tr>
 		<td><code>/compass live PLAYER</code></td>
 		<td></td>
 		<td>Sets the compass to the player player and updates it.</td>

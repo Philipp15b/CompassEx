@@ -26,6 +26,9 @@ public class CompassEx extends JavaPlugin {
 			put("compassex.here",
 					"&red;/&command; here&blue; Set to your current position");
 
+			put("compassex.direction",
+					"&red;/&command; north/east/south/west&blue; Set to a direction.");
+
 			put("compassex.player",
 					"&red;/&command; PLAYERNAME&blue; Set to a player");
 
@@ -44,8 +47,10 @@ public class CompassEx extends JavaPlugin {
 			put("compassex.hide",
 					"&red;/&command; hide&blue; Hide from being tracked");
 
-			put("compassex.hide",
+			put("compassex.hide%",
 					"&red;/&command; hidden&blue; Are you hidden?");
+			// % will be removed. this is so that 2 help entries can exist with
+			// the same permission.
 
 		}
 	};

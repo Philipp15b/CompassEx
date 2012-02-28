@@ -22,6 +22,7 @@ permissions:
           compassex.reset: true
           compassex.here: true
           compassex.live: true
+          compassex.direction: true
           compassex.height: true
           compassex.hide: true
           compassex.deathpoint: true
@@ -37,6 +38,9 @@ permissions:
       default: op
     compassex.here:
         description: Sets the compass to the players current position.
+        default: op
+    compassex.direction: 
+        description: Sets the compass to a direction.
         default: op
     compassex.live:
         description: Tracks the given player live.

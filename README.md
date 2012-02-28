@@ -30,7 +30,7 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 	</tr>
 	<tr>
 		<td><code>/compass north/east/south/west</code></td>
-		<td>/compass n/e/s/w</td>
+		<td><code>/compass n/e/s/w</code></td>
 		<td>Sets the compass to a specific direction.</td>
 	</tr>
 	<tr>
@@ -92,6 +92,10 @@ Just copy the jar file into your plugins folder, start your server so that the c
 	<tr>
 		<td><code>compassex.here</code></td>
 		<td>Access to <code>/compass here</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.direction</code></td>
+		<td>Access to <code>/compass north/east/south/west</code>.</td>
 	</tr>
 	<tr>
 		<td><code>compassex.live</code></td>

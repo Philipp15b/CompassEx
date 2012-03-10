@@ -16,6 +16,7 @@ public class CompassEx extends JavaPlugin {
 
 	Logger log = Logger.getLogger("Minecraft");
 	FileConfiguration config;
+	LocationsYaml locations;
 
 	@SuppressWarnings("serial")
 	static final Map<String, String> helpMessages = new HashMap<String, String>() {
@@ -73,6 +74,9 @@ public class CompassEx extends JavaPlugin {
 		CompassTrackerUpdater.setPlugin(this);
 		CompassTrackerUpdater.setUpdateRate(getConfig().getInt(
 				"live-update-rate"));
+		
+		locations = new LocationsYaml(this);
+		locations.reload();
 
 		// set command executor
 		getCommand("compass").setExecutor(new CompassExCommandExecutor(this));
@@ -99,4 +103,7 @@ public class CompassEx extends JavaPlugin {
 		saveConfig();
 	}
 
+	public LocationsYaml getSavedLocations() {
+		return locations;
+	}
 }

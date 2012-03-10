@@ -389,7 +389,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				if(locations.hasLocation(p.getName(), id) || locations.hasPublicLocation(id)) {
+				if(locations.hasPrivateLocation(p.getName(), id) || locations.hasPublicLocation(id)) {
 					// already exists
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + id + "\" already exists.");
 					return true;
@@ -414,7 +414,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					p.sendMessage(ChatColor.RED + "To set your compass to that location again later, ");
 					p.sendMessage(ChatColor.RED + "type: " + ChatColor.WHITE + "/" + commandLabel + " load " + id);
 				}
-				locations.saveLocation(p.getName(), loc, id);
+				locations.savePrivateLocation(p.getName(), loc, id);
 
 
 			} else {
@@ -439,7 +439,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 
 				// get private location from file
-				Location loc = locations.getLocation(p.getName(), arg1);
+				Location loc = locations.getPrivateLocation(p.getName(), arg1);
 
 				if(loc == null) {
 					// private not exist,
@@ -509,7 +509,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 			}
 			// is it a private location?
-			else if(locations.hasLocation(p.getName(), arg1)) {
+			else if(locations.hasPrivateLocation(p.getName(), arg1)) {
 				if(hasPrivatePerm) {
 					// remove private location
 					locations.removePrivate(p.getName(), arg1);
@@ -567,7 +567,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				if(locations.hasLocation(p.getName(), arg1)) {
+				if(locations.hasPrivateLocation(p.getName(), arg1)) {
 					locations.makePublic(p.getName(), arg1);
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" is now public!");
 				}
@@ -597,7 +597,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 				else {
 					// get private location from file
-					loc = locations.getLocation(p.getName(), arg1);
+					loc = locations.getPrivateLocation(p.getName(), arg1);
 
 					if(loc == null) {
 						// private not exist,

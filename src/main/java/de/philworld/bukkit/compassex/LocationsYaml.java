@@ -127,11 +127,11 @@ public class LocationsYaml {
 		}
 	}
 	
-	public boolean hasLocation(String playerName, String id) {
+	public boolean hasPrivateLocation(String playerName, String id) {
 		return privates().contains(playerName + "." + id.toLowerCase());
 	}
 	
-	public void saveLocation(String playerName, Location location, String id) {
+	public void savePrivateLocation(String playerName, Location location, String id) {
 		
 		String path = playerName + "." + id.toLowerCase();
 		privates().set(path + ".world", location.getWorld().getName());
@@ -139,7 +139,7 @@ public class LocationsYaml {
 		save();
 	}
 	
-	public Location getLocation(String playerName, String id) {
+	public Location getPrivateLocation(String playerName, String id) {
 		String path = playerName + "." + id.toLowerCase();
 		Vector vec = privates().getVector(path + ".vector", null);
 		if(vec == null) {

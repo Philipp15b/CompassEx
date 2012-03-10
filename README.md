@@ -186,11 +186,11 @@ Just copy the jar file into your plugins folder, start your server so that the c
 		<td>Allows access to the load command</td>
 	</tr>
 	<tr>
-		<td><code>compassex.remove.privatize</code></td>
+		<td><code>compassex.remove.private</code></td>
 		<td>Allows you to remove private compass targets</td>
 	</tr>
 	<tr>
-		<td><code>compassex.remove.publicize</code></td>
+		<td><code>compassex.remove.public</code></td>
 		<td>Allows you to remove public compass targets</td>
 	</tr>
 	<tr>

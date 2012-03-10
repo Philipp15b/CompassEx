@@ -29,6 +29,11 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<td>Sets the compass to the player's current position.</td>
 	</tr>
 	<tr>
+		<td><code>/compass bed</code></td>
+		<td><code>/compass</code></td>
+		<td>Sets the compass to your bed.</td>
+	</tr>
+	<tr>
 		<td><code>/compass north/east/south/west</code></td>
 		<td><code>/compass n/e/s/w</code></td>
 		<td>Sets the compass to a specific direction.</td>
@@ -96,6 +101,10 @@ Just copy the jar file into your plugins folder, start your server so that the c
 	<tr>
 		<td><code>compassex.direction</code></td>
 		<td>Access to <code>/compass north/east/south/west</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.bed</code></td>
+		<td>Access to <code>/compass bed</code>.</td>
 	</tr>
 	<tr>
 		<td><code>compassex.live</code></td>

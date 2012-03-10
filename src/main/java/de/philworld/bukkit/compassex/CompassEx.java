@@ -35,6 +35,9 @@ public class CompassEx extends JavaPlugin {
 			put("compassex.live",
 					"&red;/&command; live PLAYERNAME&blue; Set to a player's pos & update");
 
+			put("compassex.bed",
+					"&red;/&command; bed&blue; Set to your bed");
+
 			put("compassex.pos",
 					"&red;/&command; X Y Z&blue; Set to coordinates");
 

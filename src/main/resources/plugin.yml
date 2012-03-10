@@ -24,6 +24,7 @@ permissions:
           compassex.live: true
           compassex.direction: true
           compassex.height: true
+          compassex.bed: true
           compassex.hide: true
           compassex.deathpoint: true
           compassex.pos: true
@@ -38,6 +39,9 @@ permissions:
       default: op
     compassex.here:
         description: Sets the compass to the players current position.
+        default: op
+    compassex.bed:
+        description: Sets the compass to your bed.
         default: op
     compassex.direction: 
         description: Sets the compass to a direction.

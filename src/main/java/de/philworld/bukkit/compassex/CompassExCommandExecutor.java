@@ -111,6 +111,36 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		}
 
 		// ------------------
+		// BED COMMAND
+		// ------------------
+		if (base.equalsIgnoreCase("bed")) {
+
+			if (p.hasPermission("compassex.bed")) {
+
+
+				if (p.getBedSpawnLocation() != null) {
+					CompassTrackerUpdater.removeWatcher(p);
+
+					p.setCompassTarget(p.getBedSpawnLocation());
+
+					p.saveData();
+
+					p.sendMessage(ChatColor.RED
+							+ "[CompassEx] Your compass has been set to your bed.");
+				} else {
+					p.sendMessage(ChatColor.RED
+							+ "You haven't slept in a bed before, didnt you?");
+				}
+
+			} else {
+				p.sendMessage(ChatColor.RED
+						+ "You don't have any permission to do that.");
+			}
+
+			return true;
+		}
+
+		// ------------------
 		// DIRECTION COMMANDS
 		// ------------------
 
@@ -432,7 +462,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	/**
 	 * Hide the given player if it is not already hidden.
-	 * 
+	 *
 	 * @param player
 	 */
 	private void hide(Player player) {
@@ -443,7 +473,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	/**
 	 * Unhide the given player if it is not already visible.
-	 * 
+	 *
 	 * @param player
 	 */
 	private void unHide(Player player) {
@@ -454,7 +484,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	/**
 	 * Returns if the player is hidden.
-	 * 
+	 *
 	 * @param player
 	 * @return boolean if the player is hidden.
 	 */

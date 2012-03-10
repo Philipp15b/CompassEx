@@ -11,6 +11,8 @@ This plugin allows you to easily set your compass to different positions. You ca
 * Follow players static and live (updates the position).
 * Set yourself as hidden, so that you cant be tracked by others.
 * Admins can follow even hidden users.
+* Save your location, or compass target for later use.
+* Make saved locations private or public.
 
 ## Commands
 The original CompassEx command `/compass` has also aliases: `/cp` and `/compassex`.
@@ -68,6 +70,56 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<td><code>/compass player PLAYER</code></td>
 		<td>Sets the compass to the given player.</td>
 	</tr>
+	<tr>
+		<td><code>/compass save ID</code></td>
+		<td></td>
+		<td>Save your current compass target, so you can use it later.</td>
+	</tr>
+	<tr>
+		<td><code>/compass load ID</code></td>
+		<td></td>
+		<td>Set your compass to a previously saved location.</td>
+	</tr>
+	<tr>
+		<td><code>/compass save here ID</code></td>
+		<td></td>
+		<td>Save your current location, so you can use it as compass target later.</td>
+	</tr>
+	<tr>
+		<td><code>/compass remove ID</code></td>
+		<td></td>
+		<td>Remove a saved compass target</td>
+	</tr>
+	<tr>
+		<td><code>/compass list private PAGE-NUMBER</code></td>
+		<td></td>
+		<td>List all saved private compass targets</td>
+	</tr>
+	<tr>
+		<td><code>/compass list public PAGE-NUMBER</code></td>
+		<td></td>
+		<td>List all saved public compass targets</td>
+	</tr>
+	<tr>
+		<td><code>/compass info</code></td>
+		<td></td>
+		<td>Show the coordinates of your current compass target</td>
+	</tr>
+	<tr>
+		<td><code>/compass info ID</code></td>
+		<td></td>
+		<td>Show the coordinates of a saved compass target</td>
+	</tr>
+	<tr>
+		<td><code>/compass publicize ID</code></td>
+		<td><code>/compass public ID</code></td>
+		<td>Convert a private compass target, to a public compass target.</td>
+	</tr>
+	<tr>
+		<td><code>/compass privatize ID</code></td>
+		<td><code>/compass private ID</code></td>
+		<td>Convert a public compass target, back to a private compass target.</td>
+	</tr>
 </table>
 
 ## Installation:
@@ -124,6 +176,38 @@ Just copy the jar file into your plugins folder, start your server so that the c
 	<tr>
 		<td><code>compassex.admin</code></td>
 		<td>Allows to track even hidden users.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.save</code></td>
+		<td>Allows access to the save command</td>
+	</tr>
+	<tr>
+		<td><code>compassex.load</code></td>
+		<td>Allows access to the load command</td>
+	</tr>
+	<tr>
+		<td><code>compassex.remove.privatize</code></td>
+		<td>Allows you to remove private compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.remove.publicize</code></td>
+		<td>Allows you to remove public compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.list</code></td>
+		<td>Allows access to the list command</td>
+	</tr>
+	<tr>
+		<td><code>compassex.info</code></td>
+		<td>Allows access to the info command</td>
+	</tr>
+	<tr>
+		<td><code>compassex.privatize</code></td>
+		<td>Allows access to the privatize command</td>
+	</tr>
+	<tr>
+		<td><code>compassex.publicize</code></td>
+		<td>Allows access to the publicize command</td>
 	</tr>
 	
 </table>

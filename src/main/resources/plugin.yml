@@ -64,6 +64,31 @@ permissions:
     compassex.player:
         description: Tracks the given player.
         default: op
-    compass.admin:
+    compassex.admin:
         description: Allows the user to even track hidden users.
+        default: op
+
+    compassex.save:
+        description: Allows you to save your current position or compass target
+        default: op
+    compassex.load:
+        description: Allows you to set your compass to saved locations
+        default: op
+    compassex.remove.public:
+        description: Allows you to remove public compass targets
+        default: op
+    compassex.remove.private:
+        description: Allows you to remove private compass targets
+        default: op
+    compassex.list:
+        description: Allows you to list all saved compass targets
+        default: op
+    compassex.info:
+        description: Allows you to see your current, or saved compass target's coordinates
+        default: op
+    compassex.privatize:
+        description: Allows you to convert public compass targets to private compass targets
+        default: op
+    compassex.publicize:
+        description: Allows you to convert private compass targets to public compass targets
         default: op

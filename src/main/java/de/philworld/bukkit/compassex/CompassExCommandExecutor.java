@@ -1,7 +1,7 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -48,12 +48,36 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// ------------------
 		if (base.equals("") || base.equalsIgnoreCase("help")) {
 			if (p.hasPermission("compassex.help")) {
-				p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help ------ ");
+				
+				int page;
+				try {
+					page = Integer.parseInt(arg1);
+				} catch(NumberFormatException e) {
+					page = 1;
+				}
 
-				for (Map.Entry<String, String> entry : CompassEx.helpMessages
-						.entrySet()) {
-					String permission = entry.getKey();
-					String message = entry.getValue();
+				Set<Entry<String, String>> entries = CompassEx.helpMessages.entrySet();
+				Object[] entryArray = entries.toArray();
+				
+
+				int total = entries.size();
+				int totalPerPage = 10;
+				int totalPages = total / totalPerPage + 1;
+
+				if(page > totalPages) {
+					p.sendMessage(ChatColor.RED + "[CompassEx] Help page " + page + " does not exist.");
+					return true;
+				}
+
+				int startIndex = (page - 1) * totalPerPage;
+				int endIndex = startIndex + totalPerPage;
+				
+				p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help (" + page + "/" + totalPages + ") ------ ");
+				
+				for (int i = startIndex; i < endIndex && i < entryArray.length; i++) {
+					Entry<?, ?> entry = (Entry<?, ?>) entryArray[i];
+					String permission = entry.getKey().toString();
+					String message = entry.getValue().toString();
 
 					permission = permission.replace("%", "");
 
@@ -64,6 +88,11 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					if (p.hasPermission(permission))
 						p.sendMessage(message);
 				}
+				
+				if(page < totalPages) {
+					p.sendMessage(ChatColor.RED + "To see the next page, type: " + ChatColor.WHITE + "/" + commandLabel + " help " + (page + 1));
+				}
+				
 			} else {
 				p.sendMessage(ChatColor.RED
 						+ "You don't have any permission to do that.");
@@ -389,7 +418,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				if(locations.hasPrivateLocation(p.getName(), id) || locations.hasPublicLocation(id)) {
+				if(locations.hasPrivateLocation(id) || locations.hasPublicLocation(id)) {
 					// already exists
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + id + "\" already exists.");
 					return true;
@@ -414,7 +443,9 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					p.sendMessage(ChatColor.RED + "To set your compass to that location again later, ");
 					p.sendMessage(ChatColor.RED + "type: " + ChatColor.WHITE + "/" + commandLabel + " load " + id);
 				}
-				locations.savePrivateLocation(p.getName(), loc, id);
+				OwnedLocation result = new OwnedLocation(id, p.getName(), loc);
+				locations.setPrivateLocation(result);
+				locations.save();
 
 
 			} else {
@@ -439,15 +470,21 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 
 				// get private location from file
-				Location loc = locations.getPrivateLocation(p.getName(), arg1);
-
-				if(loc == null) {
+				OwnedLocation location = locations.getPrivateLocation(arg1);
+				
+				if(location == null) {
 					// private not exist,
 					// get public location from file
-					loc = locations.getPublicLocation(arg1);
+					location = locations.getPublicLocation(arg1);
+				}
+				else if(!location.getPlayerName().equals(p.getName())) {
+					// private does exist
+					// but is not owner
+					p.sendMessage(ChatColor.RED + "Compass target \"" + location.getId() + "\" is private.");
+					return true;
 				}
 
-				if(loc == null) {
+				if(location == null) {
 					// specified target id does not exist
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" does not exist.");
 					return true;
@@ -458,6 +495,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				// remove watcher because compass-target is about to change
 				CompassTrackerUpdater.removeWatcher(p);
 				// change compass target
+				Location loc = location.getLocation();
 				p.setCompassTarget(loc);
 				p.saveData();
 
@@ -495,35 +533,51 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				return true;
 			}
 
+			OwnedLocation location = locations.getPublicLocation(arg1);
 			// is it a public location?
-			if(locations.hasPublicLocation(arg1)) {
-				if(hasPublicPerm) {
-					// remove public location
-					locations.removePublic(arg1);
-					p.sendMessage(ChatColor.RED + "[CompassEx] Public compass target \"" + arg1 + "\" removed.");
+			if(location != null) {
+				if(location.getPlayerName().equals(p.getName())) {
+					if(!hasPublicPerm) {
+						p.sendMessage(ChatColor.RED
+								+ "You don't have permission to remove public compass targets.");
+						return true;
+					}
 				}
 				else {
-					// no permission
-					p.sendMessage(ChatColor.RED
-							+ "You don't have permission to remove public compass targets.");
+					if(!p.hasPermission("compassex.remove.public.any")) {
+						p.sendMessage(ChatColor.RED + "You don't have permission to remove other players' public compass targets.");
+						return true;
+					}
 				}
+				locations.clearPublicLocation(arg1);
+				locations.save();
+				p.sendMessage(ChatColor.RED + "[CompassEx] Public compass target \"" + arg1 + "\" removed.");
 			}
-			// is it a private location?
-			else if(locations.hasPrivateLocation(p.getName(), arg1)) {
-				if(hasPrivatePerm) {
-					// remove private location
-					locations.removePrivate(p.getName(), arg1);
+			else {
+				location = locations.getPrivateLocation(arg1);
+
+				// is it a private location?
+				if(location != null) {
+					if(location.getPlayerName().equals(p.getName())) {
+						if(!hasPrivatePerm) {
+							p.sendMessage(ChatColor.RED + "You don't have permission to remove private compass targets.");
+							return true;
+						}
+					}
+					else {
+						if(!p.hasPermission("compassex.remove.private.any")) {
+							p.sendMessage(ChatColor.RED + "You don't have permission to remove other players' private compass targets.");
+							return true;
+						}
+					}
+					locations.clearPrivateLocation(arg1);
+					locations.save();
 					p.sendMessage(ChatColor.RED + "[CompassEx] Private compass target \"" + arg1 + "\" removed.");
 				}
 				else {
-					// no permission
-					p.sendMessage(ChatColor.RED
-							+ "You don't have permission to remove private compass targets.");
+					// does not exist
+					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" does not exist.");
 				}
-			}
-			else {
-				// does not exist
-				p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" does not exist.");
 			}
 
 			return true;
@@ -540,8 +594,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				if(locations.hasPublicLocation(arg1)) {
-					locations.makePrivate(p.getName(), arg1);
+				OwnedLocation location = locations.getPublicLocation(arg1);
+				if(location != null) {
+					if(!location.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.privatize.any")) {
+						p.sendMessage(ChatColor.RED + "You don't have permission to privatize other players' compass targets.");
+						return true;
+					}
+					locations.makePrivate(arg1);
+					locations.save();
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" is now private!");
 				}
 				else {
@@ -567,8 +627,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					return true;
 				}
 
-				if(locations.hasPrivateLocation(p.getName(), arg1)) {
-					locations.makePublic(p.getName(), arg1);
+				OwnedLocation location = locations.getPrivateLocation(arg1);
+				if(location != null) {
+					if(!location.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.publicize.any")) {
+						p.sendMessage(ChatColor.RED + "You don't have permission to publicize other players' compass targets.");
+						return true;
+					}
+					locations.makePublic(arg1);
+					locations.save();
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" is now public!");
 				}
 				else {
@@ -589,7 +655,9 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			if (p.hasPermission("compassex.info")) {
 
+				OwnedLocation location;
 				Location loc;
+				boolean isPublic = false;
 				if(arg1.isEmpty()) {
 
 					loc = p.getCompassTarget();
@@ -597,29 +665,38 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 				else {
 					// get private location from file
-					loc = locations.getPrivateLocation(p.getName(), arg1);
-
-					if(loc == null) {
+					location = locations.getPrivateLocation(arg1);
+					
+					if(location == null) {
 						// private not exist,
 						// get public location from file
-						loc = locations.getPublicLocation(arg1);
-						if(loc != null) {
-							p.sendMessage(ChatColor.RED + "[CompassEx] Public compass target \"" + arg1 + "\" info:");
+						location = locations.getPublicLocation(arg1);
+						if(location != null) {
+							isPublic = true;
+							p.sendMessage(ChatColor.RED + "[CompassEx] Public compass target \"" + location.getId() + "\" info:");
 						}
 					}
 					else {
-						p.sendMessage(ChatColor.RED + "[CompassEx] Private compass target \"" + arg1 + "\" info:");
+						p.sendMessage(ChatColor.RED + "[CompassEx] Private compass target \"" + location.getId() + "\" info:");
 					}
 
-					if(loc == null) {
+					if(location == null) {
 						// specified target id does not exist
 						p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" does not exist.");
 						return true;
 					}
-
+					
+					loc = location.getLocation();
+					
+					p.sendMessage(ChatColor.RED + "Owned by: " + ChatColor.WHITE + location.getPlayerName());
+					if(!isPublic && !location.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
+						return false;
+					}
 				}
 
+				
 
+				
 				// private/public/compass-target location found
 				// show info
 				p.sendMessage(ChatColor.RED + loc.getWorld().getName() + " (X: " + ChatColor.WHITE + loc.getBlockX() + ChatColor.RED
@@ -669,10 +746,16 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				Set<String> locSet;
 				if(showPublic) {
-					locSet = locations.getPublicLocations();
+					locSet = locations.getPublicLocationIds();
 				}
 				else {
-					locSet = locations.getPrivateLocations(p.getName());
+					if(p.hasPermission("compassex.list.any")) {
+						locSet = locations.getPrivateLocationIds();
+					}
+					else {
+						locSet = locations.getPrivateOwnedLocationIds(p.getName());
+					}
+					
 				}
 
 				int total = locSet.size();

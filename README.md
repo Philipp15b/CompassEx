@@ -81,14 +81,14 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<td>Save your current compass target, so you can use it later.</td>
 	</tr>
 	<tr>
-		<td><code>/compass load ID</code></td>
-		<td></td>
-		<td>Set your compass to a previously saved location.</td>
-	</tr>
-	<tr>
 		<td><code>/compass save here ID</code></td>
 		<td></td>
 		<td>Save your current location, so you can use it as compass target later.</td>
+	</tr>
+	<tr>
+		<td><code>/compass load ID</code></td>
+		<td></td>
+		<td>Set your compass to a previously saved location.</td>
 	</tr>
 	<tr>
 		<td><code>/compass remove ID</code></td>
@@ -98,12 +98,12 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 	<tr>
 		<td><code>/compass list private PAGE-NUMBER</code></td>
 		<td></td>
-		<td>List all saved private compass targets</td>
+		<td>List of private compass targets</td>
 	</tr>
 	<tr>
 		<td><code>/compass list public PAGE-NUMBER</code></td>
-		<td></td>
-		<td>List all saved public compass targets</td>
+		<td><code>/compass list PAGE-NUMBER</code></td>
+		<td>List of public compass targets</td>
 	</tr>
 	<tr>
 		<td><code>/compass info</code></td>
@@ -196,27 +196,51 @@ Just copy the jar file into your plugins folder, start your server so that the c
 	</tr>
 	<tr>
 		<td><code>compassex.remove.private</code></td>
-		<td>Allows you to remove private compass targets</td>
+		<td>Allows you to remove owned private compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.remove.private.any</code></td>
+		<td>Allows you to remove any private compass target, owned and unowned</td>
 	</tr>
 	<tr>
 		<td><code>compassex.remove.public</code></td>
-		<td>Allows you to remove public compass targets</td>
+		<td>Allows you to remove owned public compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.remove.public.any</code></td>
+		<td>Allows you to remove any public compass target, owned and unowned</td>
 	</tr>
 	<tr>
 		<td><code>compassex.list</code></td>
-		<td>Allows access to the list command</td>
+		<td>Allows you to list all public, and owned private compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.list.any</code></td>
+		<td>Allows you to list all public, and private compass targets, owned and unowned</td>
 	</tr>
 	<tr>
 		<td><code>compassex.info</code></td>
-		<td>Allows access to the info command</td>
+		<td>Allows access to get info about public, and owned private compass targets</td>
+	</tr>
+	<tr>
+		<td><code>compassex.info.any</code></td>
+		<td>Allows you to get info about all public and private compass target</td>
 	</tr>
 	<tr>
 		<td><code>compassex.privatize</code></td>
-		<td>Allows access to the privatize command</td>
+		<td>Allows you to convert owned compass targets to private</td>
+	</tr>
+	<tr>
+		<td><code>compassex.privatize.any</code></td>
+		<td>Allows you to convert any compass target to private</td>
 	</tr>
 	<tr>
 		<td><code>compassex.publicize</code></td>
-		<td>Allows access to the publicize command</td>
+		<td>Allows you to convert owned compass targets to public</td>
+	</tr>
+	<tr>
+		<td><code>compassex.publicize.any</code></td>
+		<td>Allows you to convert any compass target to public</td>
 	</tr>
 	
 </table>

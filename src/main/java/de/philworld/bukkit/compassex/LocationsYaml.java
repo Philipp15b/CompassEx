@@ -4,14 +4,13 @@ package de.philworld.bukkit.compassex;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 public class LocationsYaml {
 
@@ -94,15 +93,85 @@ public class LocationsYaml {
 	}
 	
 	
-	
-	
-	
-	protected ConfigurationSection privates() {
-		if(!config.contains("privates")) {
-			return config.createSection("privates");
-		}
-		return config.getConfigurationSection("privates");
+	public OwnedLocation getPublicLocation(String id) {
+		return getLocation(publics(), id);
 	}
+	
+	public OwnedLocation getPrivateLocation(String id) {
+		return getLocation(privates(), id);
+	}
+	
+	public boolean hasPublicLocation(String id) {
+		return hasLocation(publics(), id);
+	}
+	
+	public boolean hasPrivateLocation(String id) {
+		return hasLocation(privates(), id);
+	}
+	
+	public void setPublicLocation(OwnedLocation value) {
+		setLocation(publics(), value);
+	}
+	
+	public void setPrivateLocation(OwnedLocation value) {
+		setLocation(privates(), value);
+	}
+	
+	public void clearPublicLocation(String id) {
+		clearLocation(publics(), id);
+	}
+	
+	public void clearPrivateLocation(String id) {
+		clearLocation(privates(), id);
+	}
+	
+	public Set<String> getPublicLocationIds() {
+		return getLocationIds(publics());
+	}
+	
+	public Set<String> getPrivateLocationIds() {
+		return getLocationIds(privates());
+	}
+	
+	public Set<String> getAllLocationIds() {
+		HashSet<String> result = new HashSet<String>();
+		result.addAll(getPrivateLocationIds());
+		result.addAll(getPublicLocationIds());
+		return result;
+	}
+	
+	public Set<String> getPrivateOwnedLocationIds(String playerName) {
+		return getOwnedLocationIds(privates(), playerName);
+	}
+	
+	public Set<String> getPublicOwnedLocationIds(String playerName) {
+		return getOwnedLocationIds(publics(), playerName);
+	}
+	
+	public Set<String> getAllOwnedLocationIds(String playerName) {
+		HashSet<String> result = new HashSet<String>();
+		result.addAll(getPrivateOwnedLocationIds(playerName));
+		result.addAll(getPublicOwnedLocationIds(playerName));
+		return result;
+	}
+	
+	public void makePrivate(String id) {
+		OwnedLocation loc = getPublicLocation(id);
+		if(loc != null) {
+			setPrivateLocation(loc);
+			clearPublicLocation(loc.getId());
+		}
+	}
+	
+	public void makePublic(String id) {
+		OwnedLocation loc = getPrivateLocation(id);
+		if(loc != null) {
+			setPublicLocation(loc);
+			clearPrivateLocation(loc.getId());
+		}
+	}
+	
+	
 	
 	protected ConfigurationSection publics() {
 		if(!config.contains("publics")) {
@@ -111,85 +180,42 @@ public class LocationsYaml {
 		return config.getConfigurationSection("publics");
 	}
 	
-	public Set<String> getPrivateLocations(String playerName) {
-		try {
-			return privates().getConfigurationSection(playerName).getKeys(false);
-		} catch(NullPointerException e) {
-			return null;
+	protected ConfigurationSection privates() {
+		if(!config.contains("privates")) {
+			return config.createSection("privates");
 		}
+		return config.getConfigurationSection("privates");
 	}
 	
-	public Set<String> getPublicLocations() {
-		try {
-			return publics().getKeys(false);
-		} catch(NullPointerException e) {
-			return null;
+	protected Set<String> getLocationIds(ConfigurationSection section) {
+		return section.getKeys(false);
+	}
+	
+	protected Set<String> getOwnedLocationIds(ConfigurationSection section, String playerName) {
+		Set<String> keys = getLocationIds(section);
+		HashSet<String> result = new HashSet<String>();
+		for (String id : keys) {
+			OwnedLocation loc = getLocation(section, id);
+			if(loc.getPlayerName().equals(playerName)) {
+				result.add(loc.getId());
+			}
 		}
+		return result;
 	}
 	
-	public boolean hasPrivateLocation(String playerName, String id) {
-		return privates().contains(playerName + "." + id.toLowerCase());
+	protected OwnedLocation getLocation(ConfigurationSection section, String id) {
+		return (OwnedLocation) section.get(id.toLowerCase().replace(" ", "_"));
 	}
 	
-	public void savePrivateLocation(String playerName, Location location, String id) {
-		
-		String path = playerName + "." + id.toLowerCase();
-		privates().set(path + ".world", location.getWorld().getName());
-		privates().set(path + ".vector", location.toVector());
-		save();
+	protected void setLocation(ConfigurationSection section, OwnedLocation value) {
+		section.set(value.getId().toLowerCase().replace(" ", "_"), value);
 	}
 	
-	public Location getPrivateLocation(String playerName, String id) {
-		String path = playerName + "." + id.toLowerCase();
-		Vector vec = privates().getVector(path + ".vector", null);
-		if(vec == null) {
-			return null;
-		}
-		String worldName = privates().getString(path + ".world");
-		return new Location(plugin.getServer().getWorld(worldName), vec.getX(), vec.getY(), vec.getZ());
+	protected boolean hasLocation(ConfigurationSection section, String id) {
+		return section.contains(id.toLowerCase());
 	}
 	
-	public boolean hasPublicLocation(String id) {
-		return publics().contains(id.toLowerCase());
-	}
-	
-	public Location getPublicLocation(String id) {
-		String path = id.toLowerCase();
-		Vector vec = publics().getVector(path + ".vector", null);
-		if(vec == null) {
-			return null;
-		}
-		String worldName = publics().getString(path + ".world");
-		return new Location(plugin.getServer().getWorld(worldName), vec.getX(), vec.getY(), vec.getZ());
-	}
-	
-	public void makePublic(String playerName, String id) {
-		String lowerId = id.toLowerCase();
-		if(!privates().contains(playerName + "." + lowerId)) {
-			throw new NullPointerException("Player \"" + playerName + "\" doesn't have a private location called \"" + id + "\".");
-		}
-		publics().set(lowerId, privates().get(playerName + "." + lowerId));
-		privates().set(playerName + "." + lowerId, null);
-		save();
-	}
-	
-	public void makePrivate(String playerName, String id) {
-		String lowerId = id.toLowerCase();
-		if(!publics().contains(lowerId)) {
-			throw new NullPointerException("Public location \"" + id + "\" does not exist.");
-		}
-		privates().set(playerName + "." + lowerId, publics().get(lowerId));
-		publics().set(lowerId, null);
-		save();
-	}
-	
-	public void removePrivate(String playerName, String id) {
-		privates().set(playerName + "." + id.toLowerCase(), null);
-		save();
-	}
-	
-	public void removePublic(String id) {
-		publics().set(id.toLowerCase(), null);
-		save();
+	protected void clearLocation(ConfigurationSection section, String id) {
+		section.set(id.toLowerCase(), null);
 	}
 }

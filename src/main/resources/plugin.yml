@@ -31,6 +31,14 @@ permissions:
           compassex.player: true
           compassex.admin: true
           compassex.help: true
+          compassex.save: true
+          compassex.load: true
+          compassex.remove.public.any: true
+          compassex.remove.private.any: true
+          compassex.list.any: true
+          compassex.info.any: true
+          compassex.privatize.any: true
+          compassex.publicize.any: true
     compassex.help:
       description: Acces to the help page.
       default: op
@@ -67,28 +75,73 @@ permissions:
     compassex.admin:
         description: Allows the user to even track hidden users.
         default: op
-
+    
+    
     compassex.save:
         description: Allows you to save your current position or compass target
         default: op
     compassex.load:
-        description: Allows you to set your compass to saved locations
+        description: Allows you to set your compass to public and owned private locations
         default: op
+    
+    
     compassex.remove.public:
-        description: Allows you to remove public compass targets
+        description: Allows you to remove owned public compass targets
+        default: op
+    compassex.remove.public.any:
+        children:
+            compassex.remove.public: true
+        description: Allows you to remove any public compass target, owned and unowned
         default: op
     compassex.remove.private:
-        description: Allows you to remove private compass targets
+        description: Allows you to remove owned private compass targets
         default: op
+    compassex.remove.private.any:
+        children:
+            compassex.remove.private: true
+        description: Allows you to remove any private compass target, owned and unowned
+        default: op
+    compassex.remove:
+        children:
+            compassex.remove.private: true
+        description: Alias for compassex.remove.private. Never used in code.
+        default: op
+    
+    
     compassex.list:
-        description: Allows you to list all saved compass targets
+        description: Allows you to list all public and all owned private compass targets
         default: op
+    compassex.list.any:
+        children:
+            compassex.list: true
+        description: Allows you to list all public and all private compass targets, owned and unowned.
+        default: op
+    
+    
     compassex.info:
-        description: Allows you to see your current, or saved compass target's coordinates
+        description: Allows you to see your current, or public and owned private compass target's coordinates
         default: op
+    compassex.info.any:
+        children:
+            compassex.info: true
+        description: Allows you to see your current, or public and any private compass target's coordinates
+        default: op
+    
+    
     compassex.privatize:
-        description: Allows you to convert public compass targets to private compass targets
+        description: Allows you to convert owed public compass targets to private compass targets
         default: op
+    compassex.privatize.any:
+        children:
+            compassex.privatize: true
+        description: Allows you to convert any public compass target to private compass target
+        default: op
+    
+    
     compassex.publicize:
-        description: Allows you to convert private compass targets to public compass targets
+        description: Allows you to convert owned private compass targets to public compass targets
         default: op
+    compassex.publicize.any:
+        children:
+            compassex.publicize: true
+        description: Allows you to convert private compass targets to public compass targets

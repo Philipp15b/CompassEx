@@ -17,7 +17,7 @@ public class CompassEx extends JavaPlugin {
 
 	FileConfiguration config;
 	LocationsYaml locations;
-	
+
 	static {
 		ConfigurationSerialization.registerClass(OwnedLocation.class);
 	}
@@ -57,7 +57,7 @@ public class CompassEx extends JavaPlugin {
 
 			put("compassex.hide%",
 					"&red;/&command; hidden&blue; Are you hidden?");
-			
+
 			put("compassex.save", "&red;/&command; save ID&blue; Save your current compass target");
 			put("compassex.save%", "&red;/&command; save here ID&blue; Save your current location");
 			put("compassex.remove", "&red;/&command; remove ID&blue; Remove an existing location");
@@ -66,7 +66,7 @@ public class CompassEx extends JavaPlugin {
 			put("compassex.info", "&red;/&command; info [ID]&blue; See the coordinates of your current compass target, or a saved location.");
 			put("compassex.privatize", "&red;/&command; private ID&blue; Convert a location to private location.");
 			put("compassex.publicize", "&red;/&command; public ID&blue; Convert a location to public location.");
-			
+
 			// % will be removed. this is so that 2 help entries can exist with
 			// the same permission.
 
@@ -91,7 +91,7 @@ public class CompassEx extends JavaPlugin {
 		CompassTrackerUpdater.setPlugin(this);
 		CompassTrackerUpdater.setUpdateRate(getConfig().getInt(
 				"live-update-rate"));
-		
+
 		locations = new LocationsYaml(this);
 		locations.reload();
 

@@ -48,7 +48,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		// ------------------
 		if (base.equals("") || base.equalsIgnoreCase("help")) {
 			if (p.hasPermission("compassex.help")) {
-				
+
 				int page;
 				try {
 					page = Integer.parseInt(arg1);
@@ -58,7 +58,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				Set<Entry<String, String>> entries = CompassEx.helpMessages.entrySet();
 				Object[] entryArray = entries.toArray();
-				
+
 
 				int total = entries.size();
 				int totalPerPage = 10;
@@ -71,9 +71,9 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				int startIndex = (page - 1) * totalPerPage;
 				int endIndex = startIndex + totalPerPage;
-				
+
 				p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help (" + page + "/" + totalPages + ") ------ ");
-				
+
 				for (int i = startIndex; i < endIndex && i < entryArray.length; i++) {
 					Entry<?, ?> entry = (Entry<?, ?>) entryArray[i];
 					String permission = entry.getKey().toString();
@@ -88,11 +88,11 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					if (p.hasPermission(permission))
 						p.sendMessage(message);
 				}
-				
+
 				if(page < totalPages) {
 					p.sendMessage(ChatColor.RED + "To see the next page, type: " + ChatColor.WHITE + "/" + commandLabel + " help " + (page + 1));
 				}
-				
+
 			} else {
 				p.sendMessage(ChatColor.RED
 						+ "You don't have any permission to do that.");
@@ -183,8 +183,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(),
-						-Double.MAX_VALUE, 0, 0));
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0, -Double.MAX_VALUE));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -204,8 +203,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), 0, 0,
-						-Double.MAX_VALUE));
+				p.setCompassTarget(new Location(p.getWorld(), Double.MAX_VALUE, 0, 0));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -225,8 +223,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), Double.MAX_VALUE,
-						0, 0));
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0, Double.MAX_VALUE));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -246,8 +243,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), 0, 0,
-						Double.MAX_VALUE));
+				p.setCompassTarget(new Location(p.getWorld(), -Double.MAX_VALUE, 0, 0));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -471,7 +467,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				// get private location from file
 				OwnedLocation location = locations.getPrivateLocation(arg1);
-				
+
 				if(location == null) {
 					// private not exist,
 					// get public location from file
@@ -666,7 +662,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				else {
 					// get private location from file
 					location = locations.getPrivateLocation(arg1);
-					
+
 					if(location == null) {
 						// private not exist,
 						// get public location from file
@@ -685,18 +681,18 @@ public class CompassExCommandExecutor implements CommandExecutor {
 						p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" does not exist.");
 						return true;
 					}
-					
+
 					loc = location.getLocation();
-					
+
 					p.sendMessage(ChatColor.RED + "Owned by: " + ChatColor.WHITE + location.getPlayerName());
 					if(!isPublic && !location.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
 						return false;
 					}
 				}
 
-				
 
-				
+
+
 				// private/public/compass-target location found
 				// show info
 				p.sendMessage(ChatColor.RED + loc.getWorld().getName() + " (X: " + ChatColor.WHITE + loc.getBlockX() + ChatColor.RED
@@ -755,7 +751,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					else {
 						locSet = locations.getPrivateOwnedLocationIds(p.getName());
 					}
-					
+
 				}
 
 				int total = locSet.size();

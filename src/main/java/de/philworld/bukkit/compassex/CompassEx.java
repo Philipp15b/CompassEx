@@ -1,10 +1,12 @@
 package de.philworld.bukkit.compassex;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -98,9 +100,12 @@ public class CompassEx extends JavaPlugin {
 		// set command executor
 		getCommand("compass").setExecutor(new CompassExCommandExecutor(this));
 
-		// done.
-		PluginDescriptionFile pff = this.getDescription();
-		getLogger().info(pff.getName() + " " + pff.getVersion() + " is enabled.");
+		// load metrics
+		try {
+			new Metrics(this).start();
+		} catch (IOException e) {
+			getLogger().log(Level.WARNING, "Error enabling Metrics:", e);
+		}
 	}
 
 	@Override

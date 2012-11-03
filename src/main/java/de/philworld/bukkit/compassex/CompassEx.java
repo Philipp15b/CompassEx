@@ -8,22 +8,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 public class CompassEx extends JavaPlugin {
-
-	FileConfiguration config;
-	LocationsYaml locations;
-
+	
 	static {
 		ConfigurationSerialization.registerClass(OwnedLocation.class);
 	}
+	
+	static Economy economy = null;
+
+	FileConfiguration config;
+	LocationsYaml locations;
+	
+	double saveCost = 0;
+	double publicizeCost = 0;
+	double privatizeCost = 0;
+	
 
 	@SuppressWarnings("serial")
 	static final Map<String, String> helpMessages = new LinkedHashMap<String, String>() {
@@ -97,6 +107,17 @@ public class CompassEx extends JavaPlugin {
 
 		locations = new LocationsYaml(this);
 		locations.reload();
+		
+		saveCost = getConfig().getDouble("save-cost");
+		privatizeCost = getConfig().getDouble("privatize-cost");
+		publicizeCost = getConfig().getDouble("publicize-cost");
+		
+		if (setupEconomy()) {
+			getLogger().log(Level.INFO, "Using Vault for payment.");
+		} else {
+			getLogger().log(Level.INFO,
+					"Vault was not found, all actions will be free!");
+		}
 
 		// set command executor
 		getCommand("compass").setExecutor(new CompassExCommandExecutor(this));
@@ -128,5 +149,22 @@ public class CompassEx extends JavaPlugin {
 
 	public LocationsYaml getSavedLocations() {
 		return locations;
+	}
+	
+	private boolean setupEconomy() {
+		try {
+			RegisteredServiceProvider<Economy> economyProvider = getServer()
+					.getServicesManager().getRegistration(
+							net.milkbowl.vault.economy.Economy.class);
+
+			if (economyProvider == null)
+				return false;
+
+			economy = economyProvider.getProvider();
+
+			return true;
+		} catch (NoClassDefFoundError e) {
+			return false;
+		}
 	}
 }

@@ -419,6 +419,13 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + id + "\" already exists.");
 					return true;
 				}
+				
+				if (CompassEx.economy != null && !p.hasPermission("compassex.save.free")) {
+					if (!CompassEx.economy.bankWithdraw(p.getName(), plugin.saveCost).transactionSuccess()) {
+						p.sendMessage(ChatColor.RED + "You don't have " + CompassEx.economy.format(plugin.saveCost) + " to pay this action!");
+						return true;
+					}
+				}
 
 				Location loc;
 				if(here) {
@@ -596,6 +603,12 @@ public class CompassExCommandExecutor implements CommandExecutor {
 						p.sendMessage(ChatColor.RED + "You don't have permission to privatize other players' compass targets.");
 						return true;
 					}
+					if (CompassEx.economy != null && !p.hasPermission("compassex.privatize.free")) {
+						if (!CompassEx.economy.bankWithdraw(p.getName(), plugin.privatizeCost).transactionSuccess()) {
+							p.sendMessage(ChatColor.RED + "You don't have " + CompassEx.economy.format(plugin.privatizeCost) + " to pay this action!");
+							return true;
+						}
+					}
 					locations.makePrivate(arg1);
 					locations.save();
 					p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + arg1 + "\" is now private!");
@@ -628,6 +641,12 @@ public class CompassExCommandExecutor implements CommandExecutor {
 					if(!location.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.publicize.any")) {
 						p.sendMessage(ChatColor.RED + "You don't have permission to publicize other players' compass targets.");
 						return true;
+					}
+					if (CompassEx.economy != null && !p.hasPermission("compassex.publicize.free")) {
+						if (!CompassEx.economy.bankWithdraw(p.getName(), plugin.publicizeCost).transactionSuccess()) {
+							p.sendMessage(ChatColor.RED + "You don't have " + CompassEx.economy.format(plugin.publicizeCost) + " to pay this action!");
+							return true;
+						}
 					}
 					locations.makePublic(arg1);
 					locations.save();

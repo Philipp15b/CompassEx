@@ -1,3 +1,10 @@
 # sets how often the live command updates the position (in server ticks (20 ticks/second)).
 # default: 200 ticks = 2 seconds
 live-update-rate: 200
+
+# see compassex.save.free permission
+save-cost: 456 
+# see compassex.publicize.free permission
+publicize-cost: 456
+# see compassex.privatize.free permission
+privatize-cost: 456

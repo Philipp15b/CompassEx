@@ -13,6 +13,7 @@ This plugin allows you to easily set your compass to different positions. You ca
 * Admins can follow even hidden users.
 * Save your location, or compass target for later use.
 * Make saved locations private or public.
+* Vault support for `save`, `private`, and `public` commands.
 
 ## Commands
 The original CompassEx command `/compass` has also aliases: `/cp` and `/compassex`.
@@ -191,6 +192,10 @@ Just copy the jar file into your plugins folder, start your server so that the c
 		<td>Allows access to the save command</td>
 	</tr>
 	<tr>
+		<td><code>compassex.save.free</code></td>
+		<td>Users with this permission won't have to pay for saving a target</td>
+	</tr>
+	<tr>
 		<td><code>compassex.load</code></td>
 		<td>Allows access to the load command</td>
 	</tr>
@@ -235,12 +240,20 @@ Just copy the jar file into your plugins folder, start your server so that the c
 		<td>Allows you to convert any compass target to private</td>
 	</tr>
 	<tr>
+		<td><code>compassex.privatize.free</code></td>
+		<td>Users with this permission won't have to pay for making a target private</td>
+	</tr>
+	<tr>
 		<td><code>compassex.publicize</code></td>
 		<td>Allows you to convert owned compass targets to public</td>
 	</tr>
 	<tr>
 		<td><code>compassex.publicize.any</code></td>
 		<td>Allows you to convert any compass target to public</td>
+	</tr>
+	<tr>
+		<td><code>compassex.publicize.free</code></td>
+		<td>Users with this permission won't have to pay for making a target public</td>
 	</tr>
 	
 </table>
@@ -249,6 +262,9 @@ Just copy the jar file into your plugins folder, start your server so that the c
 The configuration is really simple:
 
 * `live-update-rate`: Sets how fast the position of the live tracked player get refreshed. Setting it to a small number may result in poor server performance. Recommended value: 200 (2 seconds).
+* `save-cost`: How much a user without <code>compassex.save.free</code> permission has to pay to save a target.
+* `privatize-cost`: How much a user without <code>compassex.privatize.free</code> permission has to pay to privatize a target.
+* `publicize-cost`: How much a user without <code>compassex.publicize.free</code> permission has to pay to publicize a target.
 
 ## More
 

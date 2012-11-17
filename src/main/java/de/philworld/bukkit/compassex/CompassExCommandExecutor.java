@@ -183,7 +183,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), 0, 0, Long.MIN_VALUE));
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0, -12550820));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -203,7 +203,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), Long.MAX_VALUE, 0, 0));
+				p.setCompassTarget(new Location(p.getWorld(), 12550820, 0, 0));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -223,7 +223,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), 0, 0, Long.MAX_VALUE));
+				p.setCompassTarget(new Location(p.getWorld(), 0, 0, 12550820));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED
@@ -243,7 +243,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 				CompassTrackerUpdater.removeWatcher(p);
 
-				p.setCompassTarget(new Location(p.getWorld(), Long.MIN_VALUE, 0, 0));
+				p.setCompassTarget(new Location(p.getWorld(), -12550820, 0, 0));
 				p.saveData();
 
 				p.sendMessage(ChatColor.RED

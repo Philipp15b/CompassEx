@@ -1,5 +1,5 @@
 # CompassEx Bukkit Plugin
-_<span style="font-size:150%;">Your compass, but heavily improved.</span>_
+### _Your compass, but heavily improved._
 
 <img src="http://dl.dropbox.com/u/8199290/Compass.png" style="float:right;" />
 
@@ -16,7 +16,9 @@ This plugin allows you to easily set your compass to different positions. You ca
 * Vault support for `save`, `private`, and `public` commands.
 
 ## Commands
+
 The original CompassEx command `/compass` has also aliases: `/cp` and `/compassex`.
+
 <table>
 	<tr>
 		<th>Command</th><th>Alias</th><th>Description</th>

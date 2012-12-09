@@ -2,7 +2,6 @@ package de.philworld.bukkit.compassex;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -15,66 +14,26 @@ public class LocationsYaml {
 
 	private JavaPlugin plugin;
 	private YamlConfiguration config = null;
-	private String name = "locations";
 	private File file;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param plugin
-	 *            The plugin
-	 */
-	public LocationsYaml(JavaPlugin plugin) {
+	public LocationsYaml(JavaPlugin plugin, String filename) {
 		this.plugin = plugin;
-		file = new File(plugin.getDataFolder(), name + ".yml");
+		file = new File(plugin.getDataFolder(), filename);
 	}
 
-	/**
-	 * Returns the name of the file
-	 * 
-	 * @return The name of the file
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Returns the currently loaded configuration
-	 * 
-	 * @return currently loaded config
-	 */
 	public YamlConfiguration getConfig() {
 		return config;
 	}
 
-	/**
-	 * Loads the yml file
-	 */
 	public void reload() {
 		try {
 			config = YamlConfiguration.loadConfiguration(file);
-			setDefaults(this.name);
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.WARNING,
 					"Could not load file: " + file + " ", e);
 		}
 	}
 
-	public void setDefaults(String fileName) {
-
-		InputStream defConfigStream = plugin.getResource(fileName + ".yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration
-					.loadConfiguration(defConfigStream);
-			config.options().copyDefaults(true);
-			config.setDefaults(defConfig);
-			save();
-		}
-	}
-
-	/**
-	 * Saves the yml file
-	 */
 	public void save() {
 		try {
 			config.save(file);
@@ -82,13 +41,6 @@ public class LocationsYaml {
 			plugin.getLogger().log(Level.SEVERE,
 					"Could not save to file: " + file + " ", e);
 		}
-	}
-
-	/**
-	 * @return the plugin
-	 */
-	public JavaPlugin getPlugin() {
-		return plugin;
 	}
 
 	public OwnedLocation getPublicLocation(String id) {

@@ -96,7 +96,7 @@ public class CompassEx extends JavaPlugin {
 		trackerUpdater = new CompassTrackerUpdater(this);
 		trackerUpdater.setUpdateRate(getConfig().getInt("live-update-rate"));
 
-		locations = new LocationsYaml(this);
+		locations = new LocationsYaml(this, "locations.yml");
 		locations.reload();
 
 		saveCost = getConfig().getDouble("save-cost");

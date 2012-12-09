@@ -7,21 +7,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * Listens for PlayerQuitEvent and stops the live task of the player and listens
- * to EntityDeathEvent to save death locations.
- */
 public class CompassExListener implements Listener {
 
-	CompassEx plugin;
+	private CompassEx plugin;
 
-	public CompassExListener(CompassEx p) {
-		plugin = p;
+	public CompassExListener(CompassEx plugin) {
+		this.plugin = plugin;
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		CompassTrackerUpdater.removePlayer(event.getPlayer());
+		plugin.trackerUpdater.removePlayer(event.getPlayer());
 	}
 
 	@EventHandler

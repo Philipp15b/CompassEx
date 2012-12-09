@@ -13,87 +13,70 @@ public class CompassTrackerUpdater implements Runnable {
 	/**
 	 * Hashmap watcher => watched
 	 */
-	private static HashMap<String, String> watchList = new HashMap<String, String>();
+	private HashMap<String, String> watchList = new HashMap<String, String>();
+	private int taskId = -2;
+	private JavaPlugin plugin;
+	private long updateRate = 2000;
 
-	private static int taskId = -2;
-
-	private static JavaPlugin plugin;
-
-	private static long updateRate = 2000;
-
-	public static void setPlugin(JavaPlugin newPlugin) {
-		plugin = newPlugin;
+	public CompassTrackerUpdater(JavaPlugin plugin) {
+		this.plugin = plugin;
 	}
 
 	/**
 	 * Sets how often the compass is updated.
-	 *
-	 * @param newUpdateRate
 	 */
-	public static void setUpdateRate(long newUpdateRate) {
-		updateRate = newUpdateRate;
-		// restart the scheduled task with the new update rate.
-		stop();
-		start();
+	public void setUpdateRate(long updateRate) {
+		this.updateRate = updateRate;
+		if (isRunning()) { // restart if necessary
+			stop();
+			start();
+		}
 	}
 
 	/**
 	 * Start the scheduled task to update the compasses
-	 *
-	 * @return if the task is now running
+	 * 
+	 * @return false if scheduling failed or true if it was already scheduled or
+	 *         scheduling succeeded.
 	 */
-	public static boolean start() {
-		if (!isRunning()) {
-			taskId = plugin
-					.getServer()
-					.getScheduler()
-					.scheduleSyncRepeatingTask(plugin,
-							new CompassTrackerUpdater(), 40L, updateRate);
-			if (isRunning()) {
-				return true;
-			}
-		}
-		return false;
+	public boolean start() {
+		if (isRunning())
+			return true;
+		taskId = plugin.getServer().getScheduler()
+				.scheduleSyncRepeatingTask(plugin, this, 40L, updateRate);
+		return isRunning();
 	}
 
-	/**
-	 * Checks if a task is running.
-	 *
-	 * @return if its running
-	 */
-	public static boolean isRunning() {
-		return (taskId > 0);
+	public boolean isRunning() {
+		return taskId > 0;
 	}
 
-	/**
-	 * Stops a task if one is active
-	 */
-	public static void stop() {
-		if (isRunning()) {
-			plugin.getServer().getScheduler().cancelTask(taskId);
-		}
+	public void stop() {
+		if (!isRunning())
+			return;
+		plugin.getServer().getScheduler().cancelTask(taskId);
 		taskId = -2;
 	}
 
 	/**
 	 * Sets a watcher and the watched player, starts the task if not running.
-	 *
-	 * @param watcher
-	 *            The watcher player
-	 * @param watched
-	 *            The watched player
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If both players are the same entity.
 	 */
-	public static void setWatcher(Player watcher, Player watched) {
+	public void setWatcher(Player watcher, Player watched) {
+		if (watcher.getEntityId() == watched.getEntityId())
+			throw new IllegalArgumentException(
+					"Watcher and watched player may not be the same!");
+
 		watchList.put(watcher.getName(), watched.getName());
 		start();
 	}
 
 	/**
 	 * Removes a player from the watchList, watchers as well as watched
-	 *
-	 * @param player
 	 */
-	public static void removePlayer(Player player) {
+	public void removePlayer(Player player) {
 		String name = player.getName();
 		// remove watched players
 		// TODO: send notification to watcher when the watched leaves
@@ -109,19 +92,9 @@ public class CompassTrackerUpdater implements Runnable {
 		removeWatcher(player);
 	}
 
-	/**
-	 * Removes a watcher from the watchList
-	 *
-	 * @param player
-	 */
-	public static void removeWatcher(Player player) {
+	public void removeWatcher(Player player) {
 		String name = player.getName();
-
-		// remove watcher player
-		if (watchList.containsKey(name)) {
-			watchList.remove(name);
-		}
-
+		watchList.remove(name);
 		if (watchList.isEmpty()) {
 			stop();
 		}

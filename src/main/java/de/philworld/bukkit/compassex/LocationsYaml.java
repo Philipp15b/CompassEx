@@ -1,6 +1,5 @@
 package de.philworld.bukkit.compassex;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,31 +15,32 @@ public class LocationsYaml {
 
 	private JavaPlugin plugin;
 	private YamlConfiguration config = null;
-	private String name;
+	private String name = "locations";
 	private File file;
 
 	/**
 	 * Constructor
-	 * @param plugin The plugin
+	 * 
+	 * @param plugin
+	 *            The plugin
 	 */
 	public LocationsYaml(JavaPlugin plugin) {
-		if (plugin == null) {
-			throw new NullPointerException("Parameter plugin must be non-null.");
-		}
 		this.plugin = plugin;
-		this.name = "locations";
-
-		file = new File(plugin.getDataFolder(), this.name + ".yml");
+		file = new File(plugin.getDataFolder(), name + ".yml");
 	}
 
 	/**
 	 * Returns the name of the file
+	 * 
 	 * @return The name of the file
 	 */
-	public String getName() { return name; }
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * Returns the currently loaded configuration
+	 * 
 	 * @return currently loaded config
 	 */
 	public YamlConfiguration getConfig() {
@@ -54,9 +54,9 @@ public class LocationsYaml {
 		try {
 			config = YamlConfiguration.loadConfiguration(file);
 			setDefaults(this.name);
-		}
-		catch(Exception e) {
-			plugin.getLogger().log(Level.WARNING, plugin.getDescription().getFullName() + " could not load file: " + file + " ", e);
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.WARNING,
+					"Could not load file: " + file + " ", e);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class LocationsYaml {
 		InputStream defConfigStream = plugin.getResource(fileName + ".yml");
 		if (defConfigStream != null) {
 			YamlConfiguration defConfig = YamlConfiguration
-				.loadConfiguration(defConfigStream);
+					.loadConfiguration(defConfigStream);
 			config.options().copyDefaults(true);
 			config.setDefaults(defConfig);
 			save();
@@ -80,7 +80,7 @@ public class LocationsYaml {
 			config.save(file);
 		} catch (IOException e) {
 			plugin.getLogger().log(Level.SEVERE,
-					plugin.getDescription().getFullName() + " could not save to file: " + file + " ", e);
+					"Could not save to file: " + file + " ", e);
 		}
 	}
 
@@ -90,7 +90,6 @@ public class LocationsYaml {
 	public JavaPlugin getPlugin() {
 		return plugin;
 	}
-
 
 	public OwnedLocation getPublicLocation(String id) {
 		return getLocation(publics(), id);
@@ -156,7 +155,7 @@ public class LocationsYaml {
 
 	public void makePrivate(String id) {
 		OwnedLocation loc = getPublicLocation(id);
-		if(loc != null) {
+		if (loc != null) {
 			setPrivateLocation(loc);
 			clearPublicLocation(loc.getId());
 		}
@@ -164,23 +163,21 @@ public class LocationsYaml {
 
 	public void makePublic(String id) {
 		OwnedLocation loc = getPrivateLocation(id);
-		if(loc != null) {
+		if (loc != null) {
 			setPublicLocation(loc);
 			clearPrivateLocation(loc.getId());
 		}
 	}
 
-
-
 	protected ConfigurationSection publics() {
-		if(!config.contains("publics")) {
+		if (!config.contains("publics")) {
 			return config.createSection("publics");
 		}
 		return config.getConfigurationSection("publics");
 	}
 
 	protected ConfigurationSection privates() {
-		if(!config.contains("privates")) {
+		if (!config.contains("privates")) {
 			return config.createSection("privates");
 		}
 		return config.getConfigurationSection("privates");
@@ -190,12 +187,13 @@ public class LocationsYaml {
 		return section.getKeys(false);
 	}
 
-	protected Set<String> getOwnedLocationIds(ConfigurationSection section, String playerName) {
+	protected Set<String> getOwnedLocationIds(ConfigurationSection section,
+			String playerName) {
 		Set<String> keys = getLocationIds(section);
 		HashSet<String> result = new HashSet<String>();
 		for (String id : keys) {
 			OwnedLocation loc = getLocation(section, id);
-			if(loc.getPlayerName().equals(playerName)) {
+			if (loc.getPlayerName().equals(playerName)) {
 				result.add(loc.getId());
 			}
 		}

@@ -268,8 +268,8 @@ The configuration is really simple:
 
 ## More
 
-Do you think you found any bugs? [Submit one here.](https://github.com/Philipp15b/minecraft-bukkit-compassex/issues)
+Do you think you found any bugs? [Submit one here.](https://github.com/Philipp15b/CompassEx/issues)
 
-You think you can help by adding a feature or fixing a bug? Go to the [GitHub repository](https://github.com/Philipp15b/minecraft-bukkit-compassex).
+You think you can help by adding a feature or fixing a bug? Go to the [GitHub repository](https://github.com/Philipp15b/CompassEx).
 
 <small>Compass image from [MinecraftWiki](http://www.minecraftwiki.net/wiki/File:Compass.png)</small>

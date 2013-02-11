@@ -10,13 +10,16 @@ import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapCommonAPI;
 import org.mcstats.Metrics;
 
 public class CompassEx extends JavaPlugin {
@@ -75,10 +78,13 @@ public class CompassEx extends JavaPlugin {
 	FileConfiguration config;
 	LocationsYaml locations;
 	CompassTrackerUpdater trackerUpdater;
+	DynmapHelper dynmapHelper;
 
-	double saveCost = 0;
-	double publicizeCost = 0;
-	double privatizeCost = 0;
+	double saveCost;
+	double publicizeCost;
+	double privatizeCost;
+	boolean enableDynmap;
+	String markerIcon;
 
 	// save all hidden players in a list
 	List<String> hiddenPlayers = new ArrayList<String>();
@@ -94,20 +100,31 @@ public class CompassEx extends JavaPlugin {
 		pm.registerEvents(new CompassExListener(this), this);
 
 		trackerUpdater = new CompassTrackerUpdater(this);
-		trackerUpdater.setUpdateRate(getConfig().getInt("live-update-rate"));
+		trackerUpdater.setUpdateRate(getConfig().getInt("live-update-rate", 200));
 
 		locations = new LocationsYaml(this, "locations.yml");
 		locations.reload();
 
-		saveCost = getConfig().getDouble("save-cost");
-		privatizeCost = getConfig().getDouble("privatize-cost");
-		publicizeCost = getConfig().getDouble("publicize-cost");
+		saveCost = getConfig().getDouble("save-cost", 0);
+		privatizeCost = getConfig().getDouble("privatize-cost", 0);
+		publicizeCost = getConfig().getDouble("publicize-cost", 0);
+		
+		enableDynmap = getConfig().getBoolean("enable-dynmap", true);
+		markerIcon = getConfig().getString("dynmap-icon", "compass");
 
 		if (setupEconomy()) {
 			getLogger().log(Level.INFO, "Using Vault for payment.");
 		} else {
 			getLogger().log(Level.INFO,
 					"Vault was not found, all actions will be free!");
+		}
+
+		if (enableDynmap) {
+			if(setupDynmap()) {
+				getLogger().log(Level.INFO, "Dynmap Support is enabled!");
+			} else {
+				getLogger().log(Level.WARNING, "Dynmap Support could not be enabled: Dynmap not found!");
+			}
 		}
 
 		getCommand("compass").setExecutor(new CompassExCommandExecutor(this));
@@ -173,6 +190,20 @@ public class CompassEx extends JavaPlugin {
 
 			economy = economyProvider.getProvider();
 
+			return true;
+		} catch (NoClassDefFoundError e) {
+			return false;
+		}
+	}
+
+	private boolean setupDynmap() {
+		try {
+			Plugin p = Bukkit.getPluginManager().getPlugin("dynmap");
+			if (p == null)
+				return false;
+			DynmapCommonAPI dynmap = (DynmapCommonAPI) p;
+			dynmapHelper = new DynmapHelper(this, dynmap);
+			dynmapHelper.setup();
 			return true;
 		} catch (NoClassDefFoundError e) {
 			return false;

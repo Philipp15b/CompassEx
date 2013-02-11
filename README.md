@@ -14,6 +14,7 @@ This plugin allows you to easily set your compass to different positions. You ca
 * Save your location, or compass target for later use.
 * Make saved locations private or public.
 * Vault support for `save`, `private`, and `public` commands.
+* Dynmap Support
 
 ## Commands
 
@@ -267,6 +268,8 @@ The configuration is really simple:
 * `save-cost`: How much a user without <code>compassex.save.free</code> permission has to pay to save a target.
 * `privatize-cost`: How much a user without <code>compassex.privatize.free</code> permission has to pay to privatize a target.
 * `publicize-cost`: How much a user without <code>compassex.publicize.free</code> permission has to pay to publicize a target.
+* `enable-dynmap`: Whether to show public locations in dynmap.
+* `dynmap-icon`: Set a dynmap icon for CompassEx markers.
 
 ## More
 

@@ -686,7 +686,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	}
 
 	private boolean withdraw(Player p, double amount) {
-		if (CompassEx.economy != null
+		if (amount != 0 && CompassEx.economy != null
 				&& !p.hasPermission("compassex.save.free")) {
 			if (!CompassEx.economy.bankWithdraw(p.getName(), plugin.saveCost)
 					.transactionSuccess()) {

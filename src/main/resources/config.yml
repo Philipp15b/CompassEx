@@ -8,3 +8,8 @@ save-cost: 456
 publicize-cost: 456
 # see compassex.privatize.free permission
 privatize-cost: 456
+
+# whether to enable dynmap support
+enable-dynmap: true
+# dynmap marker icon
+dynmap-icon: compass

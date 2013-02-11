@@ -8,15 +8,14 @@ import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class LocationsYaml {
 
-	private JavaPlugin plugin;
+	private final CompassEx plugin;
+	private final File file;
 	private YamlConfiguration config = null;
-	private File file;
 
-	public LocationsYaml(JavaPlugin plugin, String filename) {
+	public LocationsYaml(CompassEx plugin, String filename) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), filename);
 	}
@@ -60,6 +59,9 @@ public class LocationsYaml {
 	}
 
 	public void setPublicLocation(OwnedLocation value) {
+		if (plugin.dynmapHelper != null) {
+			plugin.dynmapHelper.set(value);
+		}
 		setLocation(publics(), value);
 	}
 
@@ -68,6 +70,9 @@ public class LocationsYaml {
 	}
 
 	public void clearPublicLocation(String id) {
+		if (plugin.dynmapHelper != null) {
+			plugin.dynmapHelper.remove(id);
+		}
 		clearLocation(publics(), id);
 	}
 

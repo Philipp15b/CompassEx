@@ -25,6 +25,11 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 		<th>Command</th><th>Alias</th><th>Description</th>
 	</tr>
 	<tr>
+		<td><code>/compass help</code></td>
+		<td></td>
+		<td>Shows the help page with all commands.</td>
+	</tr>	
+	<tr>
 		<td><code>/compass reset</code></td>
 		<td><code>/compass spawn</code></td>
 		<td>Sets the compass back to spawn.</td>

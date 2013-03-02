@@ -115,8 +115,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				.entrySet().toArray();
 
 		int total = entryArray.length;
-		int totalPerPage = 10;
-		int totalPages = total / totalPerPage + 1;
+		int totalPages = total / plugin.helpPageNumCommands + 1;
 
 		if (page > totalPages) {
 			p.sendMessage(ChatColor.RED + "[CompassEx] Help page " + page
@@ -124,8 +123,8 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			return;
 		}
 
-		int startIndex = (page - 1) * totalPerPage;
-		int endIndex = startIndex + totalPerPage;
+		int startIndex = (page - 1) * plugin.helpPageNumCommands;
+		int endIndex = startIndex + plugin.helpPageNumCommands;
 
 		p.sendMessage(ChatColor.GOLD + " ------ CompassEx Help (" + page + "/"
 				+ totalPages + ") ------ ");

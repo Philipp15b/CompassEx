@@ -265,6 +265,7 @@ Just copy the jar file into your plugins folder, start your server so that the c
 The configuration is really simple:
 
 * `live-update-rate`: Sets how fast the position of the live tracked player get refreshed. Setting it to a small number may result in poor server performance. Recommended value: 200 (2 seconds).
+* `help-page-num-commands`: Number of commmands per page of /compassex help
 * `save-cost`: How much a user without <code>compassex.save.free</code> permission has to pay to save a target.
 * `privatize-cost`: How much a user without <code>compassex.privatize.free</code> permission has to pay to privatize a target.
 * `publicize-cost`: How much a user without <code>compassex.publicize.free</code> permission has to pay to publicize a target.

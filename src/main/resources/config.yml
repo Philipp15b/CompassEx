@@ -2,6 +2,9 @@
 # default: 200 ticks = 2 seconds
 live-update-rate: 200
 
+# number of commmands per page of /compassex help
+help-page-num-commands: 10
+
 # see compassex.save.free permission
 save-cost: 456 
 # see compassex.publicize.free permission

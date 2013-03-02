@@ -80,6 +80,7 @@ public class CompassEx extends JavaPlugin {
 	CompassTrackerUpdater trackerUpdater;
 	DynmapHelper dynmapHelper;
 
+	int helpPageNumCommands;
 	double saveCost;
 	double publicizeCost;
 	double privatizeCost;
@@ -105,6 +106,7 @@ public class CompassEx extends JavaPlugin {
 		locations = new LocationsYaml(this, "locations.yml");
 		locations.reload();
 
+		helpPageNumCommands = getConfig().getInt("help-page-num-commands", 10);
 		saveCost = getConfig().getDouble("save-cost", 0);
 		privatizeCost = getConfig().getDouble("privatize-cost", 0);
 		publicizeCost = getConfig().getDouble("publicize-cost", 0);

@@ -52,7 +52,7 @@ The original CompassEx command `/compass` has also aliases: `/cp` and `/compasse
 	<tr>
 		<td><code>/compass live PLAYER</code></td>
 		<td></td>
-		<td>Sets the compass to the player player and updates it.</td>
+		<td>Sets the compass to the player and updates it.</td>
 	</tr>
 	<tr>
 		<td><code>/compass height</code></td>

@@ -13,15 +13,14 @@ import org.bukkit.entity.Player;
 
 public class CompassExCommandExecutor implements CommandExecutor {
 
-	private CompassEx plugin;
-	private LocationsYaml locations;
+	private final CompassEx plugin;
+	private final LocationsYaml locations;
 
 	public CompassExCommandExecutor(CompassEx plugin) {
 		this.plugin = plugin;
 		this.locations = plugin.getSavedLocations();
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
 		boolean isPlayer = (sender instanceof Player);
@@ -375,11 +374,10 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			if (location.getPlayerName().equals(p.getName()) && !hasPublicPerm) {
 				throw new PermissionException(
 						"You don't have permission to remove public compass targets.");
-			} else {
-				if (!p.hasPermission("compassex.remove.public.any")) {
-					throw new PermissionException(
-							"You don't have permission to remove other players' public compass targets.");
-				}
+			}
+			if (!p.hasPermission("compassex.remove.public.any")) {
+				throw new PermissionException(
+						"You don't have permission to remove other players' public compass targets.");
 			}
 			locations.clearPublicLocation(arg1);
 			locations.save();
@@ -393,11 +391,10 @@ public class CompassExCommandExecutor implements CommandExecutor {
 						&& !hasPrivatePerm) {
 					throw new PermissionException(
 							"You don't have permission to remove private compass targets.");
-				} else {
-					if (!p.hasPermission("compassex.remove.private.any")) {
-						throw new PermissionException(
-								"You don't have permission to remove other players' private compass targets.");
-					}
+				}
+				if (!p.hasPermission("compassex.remove.private.any")) {
+					throw new PermissionException(
+							"You don't have permission to remove other players' private compass targets.");
 				}
 				locations.clearPrivateLocation(arg1);
 				locations.save();
@@ -653,8 +650,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			// throwing a PermissionException.
 			if (base.equals("player") && !arg1.isEmpty())
 				throw new PermissionException();
-			else
-				return false;
+			return false;
 		}
 
 		// fallback for /compass player <playername>

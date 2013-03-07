@@ -36,7 +36,6 @@ public class OwnedLocation implements ConfigurationSerializable {
 		return new OwnedLocation(map);
 	}
 
-	@Override
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 

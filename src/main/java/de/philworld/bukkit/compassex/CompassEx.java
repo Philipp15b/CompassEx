@@ -1,11 +1,9 @@
 package de.philworld.bukkit.compassex;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
@@ -24,48 +22,41 @@ import org.mcstats.Metrics;
 
 public class CompassEx extends JavaPlugin {
 
-	@SuppressWarnings("serial")
-	static final Map<String, String> helpMessages = new LinkedHashMap<String, String>() {
+	static final CommandHelpProvider helpMessages = new CommandHelpProvider() {
 		{
-			// % will be removed. this is so that 2 help entries can exist with
-			// the same permission.
-			put("compassex.reset",
-					"&red;/&command; reset&blue; Reset back to spawn");
-			put("compassex.here",
-					"&red;/&command; here&blue; Set to your current position");
-			put("compassex.direction",
-					"&red;/&command; north/east/south/west&blue; Set to a direction.");
-			put("compassex.player",
-					"&red;/&command; PLAYERNAME&blue; Set to a player");
-			put("compassex.live",
-					"&red;/&command; live PLAYERNAME&blue; Set to a player's pos & update");
-			put("compassex.bed", "&red;/&command; bed&blue; Set to your bed");
-			put("compassex.pos",
-					"&red;/&command; X Y Z&blue; Set to coordinates");
-			put("compassex.height",
-					"&red;/&command; height&blue; Height diff between you and the target");
-			put("compassex.deathpoint",
-					"&red;/&command; dp&blue; Set to your latest death point");
-			put("compassex.hide",
-					"&red;/&command; hide&blue; Hide from being tracked");
-			put("compassex.hide%",
-					"&red;/&command; hidden&blue; Are you hidden?");
-			put("compassex.save",
-					"&red;/&command; save ID&blue; Save your current compass target");
-			put("compassex.save%",
-					"&red;/&command; save here ID&blue; Save your current location");
-			put("compassex.remove",
-					"&red;/&command; remove ID&blue; Remove an existing location");
-			put("compassex.load",
-					"&red;/&command; load&blue; Set a saved location to your compass");
-			put("compassex.list",
-					"&red;/&command; list private|public&blue; List saved locations.");
-			put("compassex.info",
-					"&red;/&command; info [ID]&blue; See the coordinates of your current compass target, or a saved location.");
-			put("compassex.privatize",
-					"&red;/&command; private ID&blue; Convert a location to private location.");
-			put("compassex.publicize",
-					"&red;/&command; public ID&blue; Convert a location to public location.");
+			// Basic Setters
+			add("reset", "Reset back to spawn", "compassex.reset");
+			add("here", "Set to your current position", "compassex.here");
+			add("north/east/south/west", "Set to a direction.",
+					"compassex.direction");
+			add("PLAYERNAME", "Set to a player", "compassex.player");
+			add("live", "Set to a player's pos & update", "compassex.live");
+			add("bed", "Set to your bed", "compassex.bed");
+			add("X Y Z", "Set to coordinates", "compassex.pos");
+			add("height", "Height diff between you and the target",
+					"compassex.height");
+			add("deathpoint", "Set to your latest death point",
+					"compassex.deathpoint");
+			add("info ID",
+					"See the coordinates of your current compass target, or a saved location.",
+					"compassex.info");
+
+			// Hiding
+			add("hide", "Hide from being tracked", "compassex.hide");
+			add("hidden", "Are you hidden?", "compassex.hide");
+
+			// Saving
+			add("save ID", "Save your current compass target", "compassex.save");
+			add("save here ID", "Save your current location", "compassex.save");
+			add("remove ID", "Remove an existing location", "compassex.remove");
+			add("load ID", "Set a saved location to your compass",
+					"compassex.load");
+			add("list private|public", "List saved locations.",
+					"compassex.list");
+			add("privatize ID", "Make a location private.",
+					"compassex.privatize");
+			add("publicize ID", "Make a location public.",
+					"compassex.publicize");
 		}
 	};
 
@@ -87,8 +78,7 @@ public class CompassEx extends JavaPlugin {
 	boolean enableDynmap;
 	String markerIcon;
 
-	// save all hidden players in a list
-	List<String> hiddenPlayers = new ArrayList<String>();
+	Set<String> hiddenPlayers = new HashSet<String>(2);
 
 	HashMap<String, Location> deathPoints = new HashMap<String, Location>();
 
@@ -101,7 +91,8 @@ public class CompassEx extends JavaPlugin {
 		pm.registerEvents(new CompassExListener(this), this);
 
 		trackerUpdater = new CompassTrackerUpdater(this);
-		trackerUpdater.setUpdateRate(getConfig().getInt("live-update-rate", 200));
+		trackerUpdater.setUpdateRate(getConfig()
+				.getInt("live-update-rate", 200));
 
 		locations = new LocationsYaml(this, "locations.yml");
 		locations.reload();
@@ -110,7 +101,7 @@ public class CompassEx extends JavaPlugin {
 		saveCost = getConfig().getDouble("save-cost", 0);
 		privatizeCost = getConfig().getDouble("privatize-cost", 0);
 		publicizeCost = getConfig().getDouble("publicize-cost", 0);
-		
+
 		enableDynmap = getConfig().getBoolean("enable-dynmap", true);
 		markerIcon = getConfig().getString("dynmap-icon", "compass");
 
@@ -122,10 +113,12 @@ public class CompassEx extends JavaPlugin {
 		}
 
 		if (enableDynmap) {
-			if(setupDynmap()) {
+			if (setupDynmap()) {
 				getLogger().log(Level.INFO, "Dynmap Support is enabled!");
 			} else {
-				getLogger().log(Level.WARNING, "Dynmap Support could not be enabled: Dynmap not found!");
+				getLogger()
+						.log(Level.WARNING,
+								"Dynmap Support could not be enabled: Dynmap not found!");
 			}
 		}
 
@@ -148,27 +141,18 @@ public class CompassEx extends JavaPlugin {
 		return locations;
 	}
 
-	/**
-	 * Hide the given player if it is not already hidden.
-	 */
 	void hide(Player player) {
 		if (!isHidden(player)) {
 			hiddenPlayers.add(player.getName());
 		}
 	}
 
-	/**
-	 * Unhide the given player if it is not already visible.
-	 */
-	void unHide(Player player) {
+	void unhide(Player player) {
 		if (isHidden(player)) {
 			hiddenPlayers.remove(player.getName());
 		}
 	}
 
-	/**
-	 * Returns if the player is hidden.
-	 */
 	boolean isHidden(Player player) {
 		return hiddenPlayers.contains(player.getName());
 	}

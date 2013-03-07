@@ -13,7 +13,8 @@ public class CompassTrackerUpdater implements Runnable {
 	/**
 	 * Hashmap watcher => watched
 	 */
-	private final HashMap<String, String> watchList = new HashMap<String, String>();
+	private final HashMap<String, String> watchList = new HashMap<String, String>(
+			2);
 	private int taskId = -2;
 	private final JavaPlugin plugin;
 	private long updateRate = 2000;
@@ -27,7 +28,7 @@ public class CompassTrackerUpdater implements Runnable {
 	 */
 	public void setUpdateRate(long updateRate) {
 		this.updateRate = updateRate;
-		if (isRunning()) { // restart if necessary
+		if (isRunning()) {
 			stop();
 			start();
 		}

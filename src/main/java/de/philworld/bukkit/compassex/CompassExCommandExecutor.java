@@ -1,7 +1,6 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -109,11 +108,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			page = 1;
 		}
 
-		@SuppressWarnings("unchecked")
-		Entry<String, String>[] entryArray = (Entry<String, String>[]) CompassEx.helpMessages
-				.entrySet().toArray();
-
-		int total = entryArray.length;
+		int total = CompassEx.helpMessages.size();
 		int totalPages = total / plugin.helpPageNumCommands + 1;
 
 		if (page > totalPages) {
@@ -129,13 +124,10 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				+ totalPages + ") ------ ");
 
 		for (int i = startIndex; i < endIndex && i < total; i++) {
-			String permission = entryArray[i].getKey().replace("%", "");
-			String message = entryArray[i].getValue()
-					.replace("&blue;", "" + ChatColor.BLUE)
-					.replace("&red;", "" + ChatColor.RED)
-					.replace("&command;", commandLabel);
+			CommandHelpProvider.Entry entry = CompassEx.helpMessages.get(i);
+			String message = entry.formatMessage(commandLabel);
 
-			if (p.hasPermission(permission))
+			if (p.hasPermission(entry.permission))
 				p.sendMessage(message);
 		}
 
@@ -232,7 +224,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			plugin.hide(p);
 			p.sendMessage(ChatColor.RED + "[CompassEx] You are now hidden.");
 		} else {
-			plugin.unHide(p);
+			plugin.unhide(p);
 			p.sendMessage(ChatColor.RED
 					+ "[CompassEx] You are now visible again.");
 		}

@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CompassExListener implements Listener {
 
-	private CompassEx plugin;
+	private final CompassEx plugin;
 
 	public CompassExListener(CompassEx plugin) {
 		this.plugin = plugin;

@@ -22,18 +22,16 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
-		boolean isPlayer = (sender instanceof Player);
-		Player p = (isPlayer) ? (Player) sender : null;
-
-		if (!isPlayer) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage("Please only use in game!");
 			return true;
 		}
+		Player p = (Player) sender;
 
-		String base = (args.length > 0) ? args[0].toLowerCase() : "";
-		String arg1 = (args.length > 1) ? args[1].toLowerCase() : "";
-		String arg2 = (args.length > 2) ? args[2].toLowerCase() : "";
-		String arg3 = (args.length > 3) ? args[3].toLowerCase() : "";
+		String base = args.length > 0 ? args[0].toLowerCase() : "";
+		String arg1 = args.length > 1 ? args[1].toLowerCase() : "";
+		String arg2 = args.length > 2 ? args[2].toLowerCase() : "";
+		String arg3 = args.length > 3 ? args[3].toLowerCase() : "";
 
 		try {
 			if (base.equals("") || base.equals("help")) {
@@ -98,8 +96,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	private void help(Player p, String commandLabel, String arg1)
 			throws PermissionException {
-		if (!p.hasPermission("compassex.help"))
-			throw new PermissionException();
+		requirePermission(p, "help");
 
 		int page;
 		try {
@@ -112,8 +109,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		int totalPages = total / plugin.helpPageNumCommands + 1;
 
 		if (page > totalPages) {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Help page " + page
-					+ " does not exist.");
+			sendMessage(p, "Help page " + page + " does not exist.");
 			return;
 		}
 
@@ -125,10 +121,8 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 		for (int i = startIndex; i < endIndex && i < total; i++) {
 			CommandHelpProvider.Entry entry = CompassEx.helpMessages.get(i);
-			String message = entry.formatMessage(commandLabel);
-
 			if (p.hasPermission(entry.permission))
-				p.sendMessage(message);
+				p.sendMessage(entry.formatMessage(commandLabel));
 		}
 
 		if (page < totalPages) {
@@ -139,116 +133,97 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	}
 
 	private void reset(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.reset"))
-			throw new PermissionException();
+		requirePermission(p, "reset");
 		setTarget(p, p.getWorld().getSpawnLocation());
-		p.sendMessage(ChatColor.RED
-				+ "[CompassEx] Your compass has been reset to spawn.");
+		sendMessage(p, "Your compass has been reset to spawn.");
 	}
 
 	private void here(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.here"))
-			throw new PermissionException();
+		requirePermission(p, "compassex.here");
 		setTarget(p, p.getLocation());
-		p.sendMessage(ChatColor.RED
-				+ "[CompassEx] Your compass has been set to your current location.");
+		sendMessage(p, "Your compass has been set to your current location.");
 	}
 
 	private void bed(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.bed"))
-			throw new PermissionException();
-
+		requirePermission(p, "bed");
 		if (p.getBedSpawnLocation() != null) {
 			setTarget(p, p.getBedSpawnLocation());
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your compass has been set to your bed.");
+			sendMessage(p, "Your compass has been set to your bed.");
 		} else {
-			p.sendMessage(ChatColor.RED
-					+ "You haven't slept in a bed before, have you?");
+			sendMessage(p, "You haven't slept in a bed before, have you?");
 		}
 	}
 
 	private void direction(Player p, Direction dir) throws PermissionException {
-		if (!p.hasPermission("compassex.direction"))
-			throw new PermissionException();
+		requirePermission(p, "direction");
 		setTarget(p, dir.getVector().toLocation(p.getWorld()));
-		p.sendMessage(ChatColor.RED + "[CompassEx] Your compass has been set "
-				+ dir.getName() + ".");
+		sendMessage(p, "Your compass has been set " + dir.getName() + ".");
 	}
 
 	private void live(Player p, String arg1) throws PermissionException {
-		if (!p.hasPermission("compassex.live"))
-			throw new PermissionException();
+		requirePermission(p, "live");
 		List<Player> foundPlayers = plugin.getServer().matchPlayer(arg1);
 
-		if (foundPlayers.size() == 1) {
-			Player target = foundPlayers.get(0);
-
-			if (plugin.isHidden(target)
-					&& !(p.hasPermission("compassex.admin"))) {
-				p.sendMessage(ChatColor.RED
-						+ "[CompassEx] Player cannot be found.");
-				return;
-			}
-
-			try {
-				plugin.trackerUpdater.setWatcher(p, target);
-			} catch (IllegalArgumentException e) {
-				p.sendMessage(ChatColor.RED + "[CompassEx] " + e.getMessage());
-				return;
-			}
-
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your compass is now pointing live to "
-					+ target.getDisplayName() + ".");
-		} else {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
+		if (foundPlayers.size() != 1) {
+			sendMessage(p, "Player cannot be found.");
+			return;
 		}
+
+		Player target = foundPlayers.get(0);
+
+		if (plugin.isHidden(target) && !(p.hasPermission("compassex.admin"))) {
+			sendMessage(p, "Player cannot be found.");
+			return;
+		}
+
+		try {
+			plugin.trackerUpdater.setWatcher(p, target);
+		} catch (IllegalArgumentException e) {
+			sendMessage(p, e.getMessage());
+			return;
+		}
+
+		sendMessage(
+				p,
+				"Your compass is now pointing live to "
+						+ target.getDisplayName() + ".");
 	}
 
 	private void height(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.height"))
-			throw new PermissionException();
+		requirePermission(p, "height");
 		int diff = (int) Math.ceil(p.getCompassTarget().getBlockY()
 				- p.getLocation().getY());
 
-		p.sendMessage(ChatColor.RED
-				+ "[CompassEx] Height difference between you and your compass target: "
-				+ diff + " blocks.");
+		sendMessage(p,
+				"Height difference between you and your compass target: "
+						+ diff + " blocks.");
 	}
 
 	private void hide(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.hide"))
-			throw new PermissionException();
+		requirePermission(p, "hide");
 		if (!plugin.isHidden(p)) {
 			plugin.hide(p);
-			p.sendMessage(ChatColor.RED + "[CompassEx] You are now hidden.");
+			sendMessage(p, "You are now hidden.");
 		} else {
 			plugin.unhide(p);
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] You are now visible again.");
+			sendMessage(p, "You are now visible again.");
 		}
 	}
 
 	private void hidden(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.hide"))
-			throw new PermissionException();
+		requirePermission(p, "hide");
 		if (plugin.isHidden(p)) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] You are hidden right now.");
+			sendMessage(p, "You are hidden right now.");
 		} else {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] You are trackable right now.");
+			sendMessage(p, "You are trackable right now.");
 		}
 	}
 
 	private void deathpoint(Player p) throws PermissionException {
-		if (!p.hasPermission("compassex.deathpoint"))
-			throw new PermissionException();
+		requirePermission(p, "deathpoint");
 		Location deathPoint = plugin.deathPoints.get(p.getName());
 		if (deathPoint == null) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Could not find your latest death point.");
+			sendMessage(p, "Could not find your latest death point.");
 			return;
 		}
 		setTarget(p, deathPoint);
@@ -256,8 +231,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	private void save(Player p, String commandLabel, String arg1, String arg2)
 			throws PermissionException {
-		if (!p.hasPermission("compassex.save"))
-			throw new PermissionException();
+		requirePermission(p, "save");
 		boolean here = false;
 		String id;
 		if (arg1.equals("here")) {
@@ -270,15 +244,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		}
 
 		if (id.isEmpty()) {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Expected an ID: ");
+			sendMessage(p, "Expected an ID: ");
 			p.sendMessage("/compass save <id>");
 			p.sendMessage("/compass save here <id>");
 			return;
 		}
 
 		if (locations.hasPrivateLocation(id) || locations.hasPublicLocation(id)) {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \"" + id
-					+ "\" already exists.");
+			sendMessage(p, "Compass target \"" + id + "\" already exists.");
 			return;
 		}
 
@@ -290,9 +263,8 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			// save current location
 			loc = p.getLocation();
 
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your current location saved as "
-					+ ChatColor.WHITE + "\"" + id + "\"" + ChatColor.RED + ".");
+			sendMessage(p, "Your current location saved as " + ChatColor.WHITE
+					+ "\"" + id + "\"" + ChatColor.RED + ".");
 			p.sendMessage(ChatColor.RED
 					+ "To set your compass to this location, ");
 			p.sendMessage(ChatColor.RED + "type: " + ChatColor.WHITE + "/"
@@ -301,8 +273,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			// save current compass target
 			loc = p.getCompassTarget();
 
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your current compass target has been saved as "
+			sendMessage(p, "Your current compass target has been saved as "
 					+ ChatColor.WHITE + "\"" + id + "\"" + ChatColor.RED + ".");
 			p.sendMessage(ChatColor.RED
 					+ "To set your compass to that location again later, ");
@@ -314,12 +285,10 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	}
 
 	private void load(Player p, String arg1) throws PermissionException {
-		if (!p.hasPermission("compassex.load"))
-			throw new PermissionException();
+		requirePermission(p, "load");
 
 		if (arg1.isEmpty()) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Expected an ID: /compass load <id>");
+			sendMessage(p, "Expected an ID: /compass load <id>");
 			return;
 		}
 
@@ -332,16 +301,14 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			return;
 		}
 		if (location == null) {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \""
-					+ arg1 + "\" does not exist.");
+			sendMessage(p, "Compass target \"" + arg1 + "\" does not exist.");
 			return;
 		}
 
 		Location loc = location.getLocation();
 		setTarget(p, loc);
-		p.sendMessage(ChatColor.RED
-				+ "[CompassEx] Your compass has been set to " + ChatColor.WHITE
-				+ "\"" + arg1 + "\"" + ChatColor.RED + ".");
+		sendMessage(p, "Your compass has been set to " + ChatColor.WHITE + "\""
+				+ arg1 + "\"" + ChatColor.RED + ".");
 		p.sendMessage(ChatColor.RED + "(X: " + ChatColor.WHITE
 				+ loc.getBlockX() + ChatColor.RED + " Y: " + ChatColor.WHITE
 				+ loc.getBlockY() + ChatColor.RED + " Z: " + ChatColor.WHITE
@@ -351,13 +318,11 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	private void remove(Player p, String arg1) throws PermissionException {
 		boolean hasPublicPerm = p.hasPermission("compassex.remove.public");
 		boolean hasPrivatePerm = p.hasPermission("compassex.remove.private");
-
 		if (!hasPublicPerm && !hasPrivatePerm)
 			throw new PermissionException();
 
 		if (arg1.isEmpty()) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Expected an ID: /compass remove <id>");
+			sendMessage(p, "Expected an ID: /compass remove <id>");
 			return;
 		}
 
@@ -373,9 +338,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			}
 			locations.clearPublicLocation(arg1);
 			locations.save();
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Public compass target \"" + arg1
-					+ "\" removed.");
+			sendMessage(p, "Public compass target \"" + arg1 + "\" removed.");
 		} else {
 			location = locations.getPrivateLocation(arg1);
 			if (location != null) {
@@ -390,23 +353,20 @@ public class CompassExCommandExecutor implements CommandExecutor {
 				}
 				locations.clearPrivateLocation(arg1);
 				locations.save();
-				p.sendMessage(ChatColor.RED
-						+ "[CompassEx] Private compass target \"" + arg1
+				sendMessage(p, "Private compass target \"" + arg1
 						+ "\" removed.");
 			} else {
-				p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \""
-						+ arg1 + "\" does not exist.");
+				sendMessage(p, "Compass target \"" + arg1
+						+ "\" does not exist.");
 			}
 		}
 	}
 
 	private void privatize(Player p, String arg1) throws PermissionException {
-		if (!p.hasPermission("compassex.privatize"))
-			throw new PermissionException();
+		requirePermission(p, "privatize");
 
 		if (arg1.isEmpty()) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Expected an ID: /compass privatize <id>");
+			sendMessage(p, "Expected an ID: /compass privatize <id>");
 			return;
 		}
 
@@ -423,22 +383,18 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			locations.makePrivate(arg1);
 			locations.save();
-			p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \""
-					+ arg1 + "\" is now private!");
+			sendMessage(p, "Compass target \"" + arg1 + "\" is now private!");
 		} else {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Public compass target \"" + arg1
+			sendMessage(p, "Public compass target \"" + arg1
 					+ "\" does not exist.");
 		}
 	}
 
 	private void publicize(Player p, String arg1) throws PermissionException {
-		if (!p.hasPermission("compassex.publicize"))
-			throw new PermissionException();
+		requirePermission(p, "publicize");
 
 		if (arg1.isEmpty()) {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Expected an ID: /compass publicize <id>");
+			sendMessage(p, "Expected an ID: /compass publicize <id>");
 			return;
 		}
 
@@ -455,46 +411,41 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			locations.makePublic(arg1);
 			locations.save();
-			p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \""
-					+ arg1 + "\" is now public!");
+			sendMessage(p, "Compass target \"" + arg1 + "\" is now public!");
 		} else {
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Private compass target \"" + arg1
+			sendMessage(p, "Private compass target \"" + arg1
 					+ "\" does not exist.");
 		}
 	}
 
 	private void info(Player p, String arg1) throws PermissionException {
-		if (!p.hasPermission("compassex.info"))
-			throw new PermissionException();
+		requirePermission(p, "info");
 
 		OwnedLocation location;
 		Location loc;
 		boolean isPublic = false;
 		if (arg1.isEmpty()) {
 			loc = p.getCompassTarget();
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Current compass target info:");
+			sendMessage(p, "Current compass target info:");
 		} else {
 			location = locations.getPrivateLocation(arg1);
 			if (location == null) {
 				location = locations.getPublicLocation(arg1);
 				if (location != null) {
 					isPublic = true;
-					p.sendMessage(ChatColor.RED
-							+ "[CompassEx] Public compass target \""
-							+ location.getId() + "\" info:");
+					sendMessage(p,
+							"Public compass target \"" + location.getId()
+									+ "\" info:");
 				}
 			} else {
-				p.sendMessage(ChatColor.RED
-						+ "[CompassEx] Private compass target \""
-						+ location.getId() + "\" info:");
+				sendMessage(p, "Private compass target \"" + location.getId()
+						+ "\" info:");
 			}
 
 			if (location == null) {
 				// specified target id does not exist
-				p.sendMessage(ChatColor.RED + "[CompassEx] Compass target \""
-						+ arg1 + "\" does not exist.");
+				sendMessage(p, "Compass target \"" + arg1
+						+ "\" does not exist.");
 				return;
 			}
 
@@ -518,8 +469,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 	private void list(Player p, String commandLabel, String arg1, String arg2)
 			throws PermissionException {
-		if (!p.hasPermission("compassex.list"))
-			throw new PermissionException();
+		requirePermission(p, "list");
 
 		boolean showPublic;
 		String pageArg;
@@ -560,8 +510,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		int totalPages = total / totalPerPage + 1;
 
 		if (page > totalPages) {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Page " + page
-					+ " doesn't exist in list of "
+			sendMessage(p, "Page " + page + " doesn't exist in list of "
 					+ (showPublic ? "public" : "private") + " locations.");
 			return;
 		}
@@ -570,8 +519,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		int endIndex = startIndex + totalPerPage;
 
 		String[] locArray = locSet.toArray(new String[locSet.size()]);
-		p.sendMessage(ChatColor.RED + "[CompassEx] "
-				+ (showPublic ? "Public" : "Private")
+		sendMessage(p, (showPublic ? "Public" : "Private")
 				+ " compass target list (page " + page + "/" + totalPages + ")");
 
 		if (total == 0) {
@@ -594,43 +542,33 @@ public class CompassExCommandExecutor implements CommandExecutor {
 	}
 
 	private void position(Player p, String base, String arg1, String arg2,
-			String arg3) {
-		if (p.hasPermission("compassex.pos")) {
-
-			int x, y, z;
-			try {
-				if (base.equalsIgnoreCase("pos")) {
-
-					if (arg3.isEmpty()) {
-						p.sendMessage(ChatColor.RED
-								+ "[CompassEx] Wrong arguments: /compass pos <x> <y> <z>.");
-						return;
-					}
-
-					x = Integer.parseInt(arg1);
-					y = Integer.parseInt(arg2);
-					z = Integer.parseInt(arg3);
-				} else {
-					x = Integer.parseInt(base);
-					y = Integer.parseInt(arg1);
-					z = Integer.parseInt(arg2);
+			String arg3) throws PermissionException {
+		requirePermission(p, "pos");
+		int x, y, z;
+		try {
+			if (base.equalsIgnoreCase("pos")) {
+				if (arg3.isEmpty()) {
+					sendMessage(p, "Wrong arguments: /compass pos <x> <y> <z>.");
+					return;
 				}
-			} catch (NumberFormatException e) {
-				p.sendMessage(ChatColor.RED
-						+ "[CompassEx] Wrong argument format: /compass pos <x> <y> <z>.");
-				return;
+
+				x = Integer.parseInt(arg1);
+				y = Integer.parseInt(arg2);
+				z = Integer.parseInt(arg3);
+			} else {
+				x = Integer.parseInt(base);
+				y = Integer.parseInt(arg1);
+				z = Integer.parseInt(arg2);
 			}
-
-			setTarget(p, new Location(p.getWorld(), x, y, z));
-
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your compass has been set to X: " + x
-					+ " Y: " + y + " Z: " + z + ".");
-
-		} else {
-			p.sendMessage(ChatColor.RED
-					+ "You don't have any permission to do that.");
+		} catch (NumberFormatException e) {
+			sendMessage(p, "Wrong argument format: /compass pos <x> <y> <z>.");
+			return;
 		}
+
+		setTarget(p, new Location(p.getWorld(), x, y, z));
+
+		sendMessage(p, "Your compass has been set to X: " + x + " Y: " + y
+				+ " Z: " + z + ".");
 	}
 
 	private boolean player(Player p, String base, String arg1)
@@ -656,12 +594,13 @@ public class CompassExCommandExecutor implements CommandExecutor {
 
 			setTarget(p, target.getLocation());
 
-			p.sendMessage(ChatColor.RED
-					+ "[CompassEx] Your compass is now pointing to "
-					+ target.getDisplayName() + ".");
+			sendMessage(
+					p,
+					"Your compass is now pointing to "
+							+ target.getDisplayName() + ".");
 
 		} else {
-			p.sendMessage(ChatColor.RED + "[CompassEx] Player cannot be found.");
+			sendMessage(p, "Player cannot be found.");
 		}
 		return true;
 	}
@@ -684,5 +623,15 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	private static void requirePermission(Player p, String permission)
+			throws PermissionException {
+		if (!p.hasPermission("compassex." + permission))
+			throw new PermissionException();
+	}
+
+	private static void sendMessage(Player p, String message) {
+		p.sendMessage(ChatColor.RED + "[CompassEx] " + message);
 	}
 }

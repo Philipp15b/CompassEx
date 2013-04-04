@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class OwnedLocation implements ConfigurationSerializable {
@@ -21,13 +22,10 @@ public class OwnedLocation implements ConfigurationSerializable {
 	}
 
 	public OwnedLocation(Map<String, Object> map) {
-		this.id = map.get("id").toString();
-		this.playerName = map.get("playerName").toString();
-
-		Map<?, ?> locationSection = (Map<?, ?>) map.get("location");
-		Vector vec = (Vector) locationSection.get("vector");
-		String world = locationSection.get("world").toString();
-
+		this.id = (String) map.get("id");
+		this.playerName = (String) map.get("playerName");
+		Vector vec = (Vector) map.get("vector");
+		String world = (String) map.get("world");
 		this.location = new Location(Bukkit.getServer().getWorld(world),
 				vec.getX(), vec.getY(), vec.getZ());
 	}
@@ -37,18 +35,12 @@ public class OwnedLocation implements ConfigurationSerializable {
 	}
 
 	public Map<String, Object> serialize() {
-		HashMap<String, Object> result = new HashMap<String, Object>();
-
-		result.put("id", id);
-		result.put("playerName", playerName);
-
-		HashMap<String, Object> locationSection = new HashMap<String, Object>();
-		locationSection.put("vector", location.toVector());
-		locationSection.put("world", location.getWorld().getName());
-
-		result.put("location", locationSection);
-
-		return result;
+		Map<String, Object> map = new HashMap<String, Object>(4);
+		map.put("id", id);
+		map.put("playerName", playerName);
+		map.put("vector", location.toVector());
+		map.put("world", location.getWorld().getName());
+		return map;
 	}
 
 	public String getId() {
@@ -61,6 +53,10 @@ public class OwnedLocation implements ConfigurationSerializable {
 
 	public Location getLocation() {
 		return location;
+	}
+
+	public boolean ownedBy(Player p) {
+		return playerName.equals(p.getName());
 	}
 
 }

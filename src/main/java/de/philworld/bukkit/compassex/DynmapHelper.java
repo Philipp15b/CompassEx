@@ -1,11 +1,27 @@
 package de.philworld.bukkit.compassex;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
 class DynmapHelper {
+
+	public static DynmapHelper init(CompassEx plugin) {
+		try {
+			Plugin dynmap = Bukkit.getPluginManager().getPlugin("dynmap");
+			if (dynmap == null)
+				return null;
+			DynmapCommonAPI dynmapAPI = (DynmapCommonAPI) dynmap;
+			DynmapHelper dynmapHelper = new DynmapHelper(plugin, dynmapAPI);
+			dynmapHelper.setup();
+			return dynmapHelper;
+		} catch (NoClassDefFoundError e) {
+			return null;
+		}
+	}
 
 	private final CompassEx plugin;
 	private final MarkerAPI marker;
@@ -24,8 +40,8 @@ class DynmapHelper {
 			set.setLabelShow(true);
 		}
 
-		for (String id : plugin.locations.getPublicLocationIds()) {
-			set(plugin.locations.getPublicLocation(id));
+		for (OwnedLocation loc : plugin.saving.publicLocations.values()) {
+			set(loc);
 		}
 	}
 
@@ -40,7 +56,8 @@ class DynmapHelper {
 		remove(loc.getId());
 		set.createMarker(loc.getId(), loc.getId(), loc.getLocation().getWorld()
 				.getName(), loc.getLocation().getX(), loc.getLocation().getY(),
-				loc.getLocation().getZ(), marker.getMarkerIcon(plugin.markerIcon), false);
+				loc.getLocation().getZ(),
+				marker.getMarkerIcon(plugin.markerIcon), false);
 	}
 
 	public void remove(String id) {

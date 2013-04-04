@@ -1,11 +1,11 @@
-package de.philworld.bukkit.compassex;
+package de.philworld.bukkit.compassex.command;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 
-public class CommandHelpProvider {
+public class HelpManager {
 
 	public static class Entry {
 		public final String message;
@@ -23,7 +23,7 @@ public class CommandHelpProvider {
 
 	private final List<Entry> messages = new ArrayList<Entry>();
 
-	protected void add(String name, String value, String permission) {
+	public void add(String name, String value, String permission) {
 		String message = ChatColor.RED + "/COMMAND " + name + ChatColor.BLUE
 				+ " " + value;
 		messages.add(new Entry(message, permission));

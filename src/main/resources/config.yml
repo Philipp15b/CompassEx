@@ -3,7 +3,7 @@
 live-update-rate: 200
 
 # number of commmands per page of /compassex help
-help-page-num-commands: 10
+help-page-num-commands: 9
 
 # see compassex.save.free permission
 save-cost: 456 

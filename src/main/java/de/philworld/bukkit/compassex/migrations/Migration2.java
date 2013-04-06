@@ -85,6 +85,7 @@ public class Migration2 {
 			loc = new OwnedLocation(id, playerName, location);
 		}
 
+		@Override
 		public Map<String, Object> serialize() {
 			throw new UnsupportedOperationException();
 		}

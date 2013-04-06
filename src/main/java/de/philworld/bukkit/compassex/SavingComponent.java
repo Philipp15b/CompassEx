@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class SavingComponent extends Component {
 	private final double publicizeCost;
 	private final double privatizeCost;
 
-	private PrivateLocationManager privateLocations;
+	PrivateLocationManager privateLocations;
 	Map<String, OwnedLocation> publicLocations;
 
 	public SavingComponent(CompassEx plugin) {
@@ -68,7 +69,12 @@ public class SavingComponent extends Component {
 		if (f.exists()) {
 			YamlConfiguration config = YamlConfiguration.loadConfiguration(f);
 			privateLocations = (PrivateLocationManager) config.get("private");
-			publicLocations = (Map<String, OwnedLocation>) config.get("public");
+			publicLocations = new HashMap<String, OwnedLocation>();
+			ConfigurationSection spublic = config
+					.getConfigurationSection("public");
+			for (String key : spublic.getKeys(false)) {
+				publicLocations.put(key, (OwnedLocation) spublic.get(key));
+			}
 		} else {
 			privateLocations = new PrivateLocationManager();
 			publicLocations = new HashMap<String, OwnedLocation>();

@@ -18,6 +18,8 @@ public class CompassEx extends JavaPlugin {
 
 	HelpManager helpManager = new HelpManager();
 
+	CompassExCommandExecutor executor;
+
 	FileConfiguration config;
 	DynmapHelper dynmapHelper;
 	String markerIcon;
@@ -37,6 +39,8 @@ public class CompassEx extends JavaPlugin {
 		saving = new SavingComponent(this);
 		tracking = new TrackingComponent(this);
 		hiding = new HidingComponent(this);
+
+		executor = new CompassExCommandExecutor(this);
 
 		boolean enableDynmap = getConfig().getBoolean("enable-dynmap", true);
 		markerIcon = getConfig().getString("dynmap-icon", "compass");

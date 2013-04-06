@@ -26,6 +26,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		plugin.getCommand("compass").setExecutor(this);
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 		if (manager.onCommand(sender, command, label, args))

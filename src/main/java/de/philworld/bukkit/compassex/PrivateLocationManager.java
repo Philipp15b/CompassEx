@@ -65,6 +65,7 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 		}
 	}
 
+	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> serialized = new HashMap<String, Object>(
 				locations.size());

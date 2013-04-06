@@ -49,6 +49,7 @@ public class CommandManager implements CommandExecutor {
 		}
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender,
 			org.bukkit.command.Command command, String label, String[] args) {
 		if (!(sender instanceof Player)) {

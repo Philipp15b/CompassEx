@@ -5,10 +5,13 @@ import static org.bukkit.ChatColor.WHITE;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,7 +51,6 @@ public class SavingComponent extends Component {
 		help("publicize ID", "Make a location public.", "compassex.publicize");
 	}
 
-	@SuppressWarnings("unchecked")
 	private void load() {
 		if (Migration2.should(plugin)) {
 			plugin.getLogger()
@@ -66,10 +68,14 @@ public class SavingComponent extends Component {
 		ConfigurationSerialization.registerClass(PrivateLocationManager.class);
 
 		File f = new File(plugin.getDataFolder(), "locations.db.yml");
+		publicLocations = new HashMap<String, OwnedLocation>();
 		if (f.exists()) {
 			YamlConfiguration config = YamlConfiguration.loadConfiguration(f);
+
 			privateLocations = (PrivateLocationManager) config.get("private");
-			publicLocations = new HashMap<String, OwnedLocation>();
+			if (privateLocations == null)
+				privateLocations = new PrivateLocationManager();
+
 			ConfigurationSection spublic = config
 					.getConfigurationSection("public");
 			for (String key : spublic.getKeys(false)) {
@@ -77,7 +83,6 @@ public class SavingComponent extends Component {
 			}
 		} else {
 			privateLocations = new PrivateLocationManager();
-			publicLocations = new HashMap<String, OwnedLocation>();
 		}
 	}
 
@@ -245,6 +250,80 @@ public class SavingComponent extends Component {
 			}
 		}
 
+	}
+
+	@Command(aliases = { "list", "l" }, permission = "compassex.list")
+	public void list(CommandContext context, Player p)
+			throws PermissionException {
+
+		boolean showPublic;
+		String pageArg;
+		if (context.arg1.equalsIgnoreCase("public")) {
+			// show public locations
+			showPublic = true;
+			pageArg = context.arg2;
+		} else if (context.arg1.equalsIgnoreCase("private")) {
+			// show private locations
+			showPublic = false;
+			pageArg = context.arg2;
+		} else {
+			// default, show public locations
+			showPublic = true;
+			pageArg = context.arg1;
+		}
+
+		int page;
+		try {
+			page = Integer.parseInt(pageArg);
+		} catch (NumberFormatException e) {
+			page = 1;
+		}
+
+		List<String> locations = new ArrayList<String>();
+		if (showPublic) {
+			for (OwnedLocation loc : publicLocations.values()) {
+				locations.add(loc.getId());
+			}
+		} else {
+			boolean any = p.hasPermission("compassex.list.any");
+			for (OwnedLocation loc : privateLocations.getLocations(p)) {
+				if (any || loc.ownedBy(p))
+					locations.add(loc.getId());
+			}
+		}
+
+		int totalPerPage = 10;
+		int totalPages = locations.size() / totalPerPage + 1;
+
+		if (page > totalPages) {
+			sendMessage(p, "Page " + page + " doesn't exist in list of "
+					+ (showPublic ? "public" : "private") + " locations.");
+			return;
+		}
+
+		int startIndex = (page - 1) * totalPerPage;
+		int endIndex = startIndex + totalPerPage;
+
+		sendMessage(p, (showPublic ? "Public" : "Private")
+				+ " compass target list (page " + page + "/" + totalPages + ")");
+
+		if (locations.size() == 0) {
+			p.sendMessage(ChatColor.RED + "(none)");
+		}
+		for (int i = startIndex; i < endIndex && i < locations.size(); i++) {
+			p.sendMessage(ChatColor.RED + " " + (i + 1) + ": "
+					+ ChatColor.WHITE + locations.get(i));
+		}
+		p.sendMessage(ChatColor.RED + "See "
+				+ (showPublic ? "private" : "public")
+				+ " compass target list: " + ChatColor.WHITE + "/"
+				+ context.label + " list "
+				+ (showPublic ? "private" : "public"));
+		if (page < totalPages) {
+			p.sendMessage(ChatColor.RED + "See the next page: "
+					+ ChatColor.WHITE + "/" + context.label + " list "
+					+ (showPublic ? "public" : "private") + " " + (page + 1));
+		}
 	}
 
 	@Command(

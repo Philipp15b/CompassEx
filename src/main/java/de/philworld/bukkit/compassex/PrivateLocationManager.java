@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
 public class PrivateLocationManager implements ConfigurationSerializable {
@@ -60,8 +61,11 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 	@SuppressWarnings("unchecked")
 	public PrivateLocationManager(Map<String, Object> map) {
 		for (Entry<String, Object> entry : map.entrySet()) {
-			locations.put(entry.getKey(),
-					(List<OwnedLocation>) entry.getValue());
+			// this is just stupid
+			if (!entry.getKey().equals(
+					ConfigurationSerialization.SERIALIZED_TYPE_KEY))
+				locations.put(entry.getKey(),
+						(List<OwnedLocation>) entry.getValue());
 		}
 	}
 

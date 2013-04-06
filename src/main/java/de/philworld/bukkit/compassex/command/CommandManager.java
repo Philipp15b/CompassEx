@@ -83,7 +83,7 @@ public class CommandManager implements CommandExecutor {
 				((PermissionException) e.getCause()).send(p);
 				return true;
 			}
-			logger.log(Level.SEVERE, "Failed to execute command", e);
+			logger.log(Level.SEVERE, "Failed to execute command", e.getCause());
 		}
 		p.sendMessage(RED + "An error occured while performing this command.");
 		return true;

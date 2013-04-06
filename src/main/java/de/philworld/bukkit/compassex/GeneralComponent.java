@@ -33,11 +33,6 @@ public class GeneralComponent extends Component {
 		help("live", "Set to a player's pos & update", "compassex.live");
 		help("bed", "Set to your bed", "compassex.bed");
 		help("X Y Z", "Set to coordinates", "compassex.pos");
-		help("height", "Height diff between you and the target",
-				"compassex.height");
-		help("info ID",
-				"See the coordinates of your current compass target, or a saved location.",
-				"compassex.info");
 	}
 
 	@Command(aliases = { "help", "" }, permission = "compassex.help")
@@ -137,18 +132,6 @@ public class GeneralComponent extends Component {
 	private void direction(Player p, Direction dir) throws PermissionException {
 		setTarget(p, dir.getVector().toLocation(p.getWorld()));
 		sendMessage(p, "Your compass has been set " + dir.getName() + ".");
-	}
-
-	@SuppressWarnings("unused")
-	@Command(aliases = { "height", "h" }, permission = "compassex.height")
-	public void height(CommandContext context, Player p)
-			throws PermissionException {
-		int diff = (int) Math.ceil(p.getCompassTarget().getBlockY()
-				- p.getLocation().getY());
-
-		sendMessage(p,
-				"Height difference between you and your compass target: "
-						+ diff + " blocks.");
 	}
 
 	@Command(aliases = { "position", "pos" }, permission = "compassex.pos")

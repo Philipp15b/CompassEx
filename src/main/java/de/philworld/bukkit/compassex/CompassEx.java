@@ -29,12 +29,15 @@ public class CompassEx extends JavaPlugin {
 	HidingComponent hiding;
 	DeathpointComponent death;
 	GeneralComponent general;
+	InfoComponent info;
 
 	@Override
 	public void onEnable() {
 		loadConfiguration();
 
+		// the order is also the order for help entries
 		general = new GeneralComponent(this);
+		info = new InfoComponent(this);
 		death = new DeathpointComponent(this);
 		saving = new SavingComponent(this);
 		tracking = new TrackingComponent(this);

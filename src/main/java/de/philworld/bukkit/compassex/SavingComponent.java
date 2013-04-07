@@ -289,7 +289,7 @@ public class SavingComponent extends Component {
 			}
 		}
 
-		int totalPerPage = 10;
+		int totalPerPage = 7;
 		int totalPages = locations.size() / totalPerPage + 1;
 
 		if (page > totalPages) {

@@ -23,7 +23,7 @@ public class GeneralComponent extends Component {
 		super(plugin);
 
 		helpPageNumCommands = plugin.getConfig().getInt(
-				"help-page-num-commands", 9);
+				"help-page-num-commands", 7);
 
 		help("reset", "Reset back to spawn", "compassex.reset");
 		help("here", "Set to your current position", "compassex.here");

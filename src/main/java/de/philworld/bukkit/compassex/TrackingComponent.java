@@ -45,8 +45,7 @@ public class TrackingComponent extends Component implements Listener {
 
 		Player target = foundPlayers.get(0);
 
-		if (plugin.hiding.hiddenPlayers.contains(target.getName())
-				&& !p.hasPermission("compassex.admin")) {
+		if (plugin.hiding.isHidden(p) && !p.hasPermission("compassex.admin")) {
 			sendMessage(p, "Player cannot be found.");
 			return;
 		}

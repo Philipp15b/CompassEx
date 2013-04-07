@@ -11,13 +11,21 @@ import de.philworld.bukkit.compassex.util.PermissionException;
 
 public class HidingComponent extends Component {
 
-	public final Set<String> hiddenPlayers = new HashSet<String>(2);
+	private final Set<String> hiddenPlayers = new HashSet<String>(2);
 
 	public HidingComponent(CompassEx plugin) {
 		super(plugin);
 
 		help("hide", "Hide from being tracked", "compassex.hide");
 		help("hidden", "Are you hidden?", "compassex.hide");
+	}
+
+	public void hide(Player p) {
+		hiddenPlayers.add(p.getName());
+	}
+
+	public boolean isHidden(Player p) {
+		return hiddenPlayers.contains(p.getName());
 	}
 
 	@SuppressWarnings("unused")

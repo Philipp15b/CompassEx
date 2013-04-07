@@ -175,7 +175,7 @@ public class GeneralComponent extends Component {
 		List<Player> foundPlayers = plugin.getServer().matchPlayer(name);
 
 		if (foundPlayers.size() == 1
-				&& (!plugin.hiding.hiddenPlayers.contains(foundPlayers.get(0)) || p
+				&& (!plugin.hiding.isHidden(foundPlayers.get(0)) || p
 						.hasPermission("compassex.admin"))) {
 			Player target = foundPlayers.get(0);
 

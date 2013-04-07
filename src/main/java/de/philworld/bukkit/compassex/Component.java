@@ -1,8 +1,9 @@
 package de.philworld.bukkit.compassex;
 
+import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.WHITE;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -31,7 +32,7 @@ abstract class Component {
 	}
 
 	protected static void sendMessage(Player p, String message) {
-		p.sendMessage(ChatColor.RED + "[CompassEx] " + message);
+		p.sendMessage(GREEN + "[CompassEx]" + WHITE + " " + message);
 	}
 
 	protected void setTarget(Player p, Location loc) {

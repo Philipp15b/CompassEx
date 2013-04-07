@@ -1,7 +1,8 @@
 package de.philworld.bukkit.compassex;
 
+import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.GOLD;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.WHITE;
 
 import java.util.List;
@@ -48,15 +49,16 @@ public class GeneralComponent extends Component {
 		int totalPages = total / helpPageNumCommands + 1;
 
 		if (page > totalPages) {
-			sendMessage(p, "Help page " + page + " does not exist.");
+			sendMessage(p, "Help page " + BLUE + page + WHITE
+					+ " does not exist.");
 			return;
 		}
 
 		int startIndex = (page - 1) * helpPageNumCommands;
 		int endIndex = startIndex + helpPageNumCommands;
 
-		p.sendMessage(GOLD + " ------ CompassEx Help (" + page + "/"
-				+ totalPages + ") ------ ");
+		p.sendMessage(GOLD + " ------ CompassEx Help (" + BLUE + page + GOLD
+				+ "/" + totalPages + ") ------ ");
 
 		for (int i = startIndex; i < endIndex && i < total; i++) {
 			Entry entry = plugin.helpManager.get(i);
@@ -65,7 +67,7 @@ public class GeneralComponent extends Component {
 		}
 
 		if (page < totalPages) {
-			p.sendMessage(RED + "To see the next page, type: " + WHITE + "/"
+			p.sendMessage("To see the next page, type: " + GRAY + "/"
 					+ context.label + " help " + (page + 1));
 		}
 	}
@@ -96,7 +98,7 @@ public class GeneralComponent extends Component {
 			setTarget(p, p.getBedSpawnLocation());
 			sendMessage(p, "Your compass has been set to your bed.");
 		} else {
-			sendMessage(p, "You haven't slept in a bed before, have you?");
+			sendMessage(p, "Could not find your bed!");
 		}
 	}
 
@@ -130,7 +132,8 @@ public class GeneralComponent extends Component {
 
 	private void direction(Player p, Direction dir) {
 		setTarget(p, dir.getVector().toLocation(p.getWorld()));
-		sendMessage(p, "Your compass has been set " + dir.getName() + ".");
+		sendMessage(p, "Your compass has been set " + BLUE + dir.getName()
+				+ WHITE + ".");
 	}
 
 	@Command(aliases = { "position", "pos" }, permission = "compassex.pos")
@@ -141,8 +144,8 @@ public class GeneralComponent extends Component {
 		try {
 			if (context.base.equals("pos")) {
 				if (context.arg3.isEmpty()) {
-					sendMessage(p, "Wrong arguments: /" + context.label
-							+ " pos <x> <y> <z>.");
+					sendMessage(p, "Wrong arguments:" + GRAY + "/"
+							+ context.label + " pos <x> <y> <z>" + WHITE + ".");
 					return;
 				}
 
@@ -155,15 +158,15 @@ public class GeneralComponent extends Component {
 				z = Integer.parseInt(context.arg2);
 			}
 		} catch (NumberFormatException e) {
-			sendMessage(p, "Wrong argument format: /" + context.label
-					+ " pos <x> <y> <z>.");
+			sendMessage(p, "Wrong argument format: " + GRAY + "/"
+					+ context.label + " pos <x> <y> <z>" + WHITE + ".");
 			return;
 		}
 
 		setTarget(p, new Location(p.getWorld(), x, y, z));
 
-		sendMessage(p, "Your compass has been set to X: " + x + " Y: " + y
-				+ " Z: " + z + ".");
+		sendMessage(p, "Your compass has been set to X: " + BLUE + x + WHITE
+				+ " Y: " + BLUE + y + WHITE + " Z: " + BLUE + z + WHITE + ".");
 	}
 
 	@Command(aliases = { "player" }, permission = "compassex.player")
@@ -182,8 +185,8 @@ public class GeneralComponent extends Component {
 
 			sendMessage(
 					p,
-					"Your compass is now pointing to "
-							+ target.getDisplayName() + ".");
+					"Your compass is now pointing to " + BLUE
+							+ target.getDisplayName() + WHITE + ".");
 
 		} else {
 			sendMessage(p, "Player cannot be found.");

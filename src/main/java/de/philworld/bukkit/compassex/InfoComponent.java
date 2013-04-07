@@ -1,6 +1,6 @@
 package de.philworld.bukkit.compassex;
 
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.WHITE;
 
 import org.bukkit.Location;
@@ -38,12 +38,13 @@ public class InfoComponent extends Component {
 				owned = plugin.saving.publicLocations.get(context.arg1);
 				if (owned != null) {
 					isPublic = true;
-					sendMessage(p, "Public compass target \"" + owned.getId()
-							+ "\" info:");
+					sendMessage(p,
+							"Public compass target " + BLUE + owned.getId()
+									+ WHITE + " info:");
 				}
 			} else {
-				sendMessage(p, "Private compass target \"" + owned.getId()
-						+ "\" info:");
+				sendMessage(p, "Private compass target " + BLUE + owned.getId()
+						+ WHITE + " info:");
 			}
 
 			if (owned == null) {
@@ -55,7 +56,7 @@ public class InfoComponent extends Component {
 
 			loc = owned.getLocation();
 
-			p.sendMessage(RED + "Owned by: " + WHITE + owned.getPlayerName());
+			sendMessage(p, "Owned by: " + BLUE + owned.getPlayerName());
 			if (!isPublic && !owned.getPlayerName().equals(p.getName())
 					&& !p.hasPermission("compassex.info.any")) {
 				return;
@@ -64,9 +65,9 @@ public class InfoComponent extends Component {
 
 		// private/public/compass-target location found
 		// show info
-		p.sendMessage(RED + loc.getWorld().getName() + " (X: " + WHITE
-				+ loc.getBlockX() + RED + " Y: " + WHITE + loc.getBlockY()
-				+ RED + " Z: " + WHITE + loc.getBlockZ() + RED + ")");
+		sendMessage(p, BLUE + loc.getWorld().getName() + WHITE + " (X: " + BLUE
+				+ loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY()
+				+ WHITE + " Z: " + BLUE + loc.getBlockZ() + WHITE + ")");
 	}
 
 	@SuppressWarnings("unused")

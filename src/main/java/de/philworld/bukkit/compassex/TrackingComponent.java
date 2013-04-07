@@ -1,5 +1,8 @@
 package de.philworld.bukkit.compassex;
 
+import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.WHITE;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,8 +60,8 @@ public class TrackingComponent extends Component implements Listener {
 
 		sendMessage(
 				p,
-				"Your compass is now pointing live to "
-						+ target.getDisplayName() + ".");
+				"Your compass is now pointing live to " + BLUE
+						+ target.getDisplayName() + WHITE + ".");
 	}
 
 	/**

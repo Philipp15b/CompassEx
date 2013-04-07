@@ -1,6 +1,7 @@
 package de.philworld.bukkit.compassex.util;
 
-import org.bukkit.ChatColor;
+import static org.bukkit.ChatColor.RED;
+
 import org.bukkit.entity.Player;
 
 @SuppressWarnings("serial")
@@ -17,6 +18,6 @@ public class PermissionException extends Exception {
 	}
 
 	public void send(Player p) {
-		p.sendMessage(ChatColor.RED + getMessage());
+		p.sendMessage(RED + getMessage());
 	}
 }

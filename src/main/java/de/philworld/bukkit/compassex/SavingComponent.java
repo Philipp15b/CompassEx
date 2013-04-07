@@ -1,5 +1,9 @@
 package de.philworld.bukkit.compassex;
 
+import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.DARK_AQUA;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.WHITE;
 
@@ -11,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -111,8 +114,8 @@ public class SavingComponent extends Component {
 
 		if (id.isEmpty()) {
 			sendMessage(p, "Expected an ID: ");
-			p.sendMessage("/compass save <id>");
-			p.sendMessage("/compass save here <id>");
+			sendMessage(p, GRAY + "/compass save <id>");
+			sendMessage(p, GRAY + "/compass save here <id>");
 			return;
 		}
 
@@ -127,7 +130,7 @@ public class SavingComponent extends Component {
 
 		Location loc = here ? p.getLocation() : p.getCompassTarget();
 		sendMessage(p, "Your current " + (here ? "location" : "compass target")
-				+ " has been saved as " + WHITE + "\"" + id + "\"" + RED + ".");
+				+ " has been saved as " + BLUE + id + WHITE + ".");
 		sendMessage(p, "To set your compass to " + (here ? "this" : "that")
 				+ " location again later, ");
 		sendMessage(p, "type: " + WHITE + "/" + context.label + " load " + id);
@@ -148,17 +151,18 @@ public class SavingComponent extends Component {
 			location = publicLocations.get(id);
 		}
 		if (location == null) {
-			sendMessage(p, "Compass target \"" + id + "\" does not exist.");
+			sendMessage(p, "Compass target " + BLUE + id + WHITE
+					+ " does not exist.");
 			return;
 		}
 
 		Location loc = location.getLocation();
 		setTarget(p, loc);
-		sendMessage(p, "Your compass has been set to " + WHITE + "\"" + id
-				+ "\"" + RED + ".");
-		p.sendMessage(RED + "(X: " + WHITE + loc.getBlockX() + RED + " Y: "
-				+ WHITE + loc.getBlockY() + RED + " Z: " + WHITE
-				+ loc.getBlockZ() + RED + ")");
+		sendMessage(p, "Your compass has been set to " + BLUE + id + WHITE
+				+ ".");
+		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE
+				+ loc.getBlockY() + WHITE + " Z: " + BLUE + loc.getBlockZ()
+				+ WHITE + ")");
 	}
 
 	@Command(aliases = { "remove" })
@@ -170,9 +174,9 @@ public class SavingComponent extends Component {
 			throw new PermissionException();
 
 		if (context.arg1.isEmpty()) {
-			sendMessage(p, "Expected an ID: /compass remove <id>");
+			sendMessage(p, "Expected an ID: " + GRAY + "/compass remove <id>");
 			if (p.hasPermission("compassex.remove.private.any"))
-				sendMessage(p, "Or: /compass remove <owner> <id>");
+				sendMessage(p, "Or: " + GRAY + "/compass remove <owner> <id>");
 			return;
 		}
 
@@ -187,7 +191,7 @@ public class SavingComponent extends Component {
 						|| p.hasPermission("compassex.public.any"))
 					sendMessage(p,
 							"If you want to remove a public location, type "
-									+ WHITE + "/compass remove public <id>");
+									+ GRAY + "/compass remove public <id>");
 				return;
 			}
 
@@ -232,8 +236,9 @@ public class SavingComponent extends Component {
 				OwnedLocation loc = privateLocations.get(owner, id);
 
 				if (loc == null) {
-					sendMessage(p, "Could not find private location '" + id
-							+ "' owned by '" + owner + "'!");
+					sendMessage(p, "Could not find private location " + BLUE
+							+ id + WHITE + " owned by " + BLUE + owner + WHITE
+							+ "!");
 					return;
 				}
 
@@ -244,7 +249,8 @@ public class SavingComponent extends Component {
 							"You may not remove the location!");
 
 				privateLocations.remove(owner, id);
-				sendMessage(p, "Removed the private location '" + id + "'.");
+				sendMessage(p, "Removed the private location " + BLUE + id
+						+ WHITE + ".");
 			}
 		}
 
@@ -293,7 +299,8 @@ public class SavingComponent extends Component {
 		int totalPages = locations.size() / totalPerPage + 1;
 
 		if (page > totalPages) {
-			sendMessage(p, "Page " + page + " doesn't exist in list of "
+			sendMessage(p, "Page " + BLUE + page + WHITE
+					+ " doesn't exist in list of "
 					+ (showPublic ? "public" : "private") + " locations.");
 			return;
 		}
@@ -301,26 +308,24 @@ public class SavingComponent extends Component {
 		int startIndex = (page - 1) * totalPerPage;
 		int endIndex = startIndex + totalPerPage;
 
-		sendMessage(p, (showPublic ? "Public" : "Private")
-				+ " compass target list (page " + page + "/" + totalPages + ")");
+		p.sendMessage(GOLD + " ------ " + (showPublic ? "Public" : "Private")
+				+ "Compass Targets (" + BLUE + page + GOLD + "/" + totalPages
+				+ ") ------ ");
 
 		if (locations.size() == 0) {
-			p.sendMessage(ChatColor.RED + "(none)");
+			p.sendMessage(RED + "(none)");
 		}
 		for (int i = startIndex; i < endIndex && i < locations.size(); i++) {
-			p.sendMessage(ChatColor.RED + " " + (i + 1) + ": "
-					+ ChatColor.WHITE + locations.get(i));
+			p.sendMessage(" " + (i + 1) + ": " + BLUE + locations.get(i));
 		}
-		p.sendMessage(ChatColor.RED + "See "
-				+ (showPublic ? "private" : "public")
-				+ " compass target list: " + ChatColor.WHITE + "/"
-				+ context.label + " list "
-				+ (showPublic ? "private" : "public"));
 		if (page < totalPages) {
-			p.sendMessage(ChatColor.RED + "See the next page: "
-					+ ChatColor.WHITE + "/" + context.label + " list "
+			p.sendMessage(DARK_AQUA + "See the next page: " + GRAY + "/"
+					+ context.label + " list "
 					+ (showPublic ? "public" : "private") + " " + (page + 1));
 		}
+		p.sendMessage(DARK_AQUA + "See " + (showPublic ? "private" : "public")
+				+ " compass target list: " + GRAY + "/" + context.label
+				+ " list " + (showPublic ? "private" : "public"));
 	}
 
 	@Command(
@@ -330,14 +335,15 @@ public class SavingComponent extends Component {
 			throws PermissionException {
 		String id = context.arg1;
 		if (id.isEmpty()) {
-			sendMessage(p, "Expected an ID: /compass privatize <id>");
+			sendMessage(p, "Expected an ID: " + GRAY
+					+ "/compass privatize <id>");
 			return;
 		}
 
 		OwnedLocation loc = publicLocations.get(id);
 		if (loc == null) {
-			sendMessage(p, "Public compass target \"" + id
-					+ "\" does not exist.");
+			sendMessage(p, "Public compass target " + BLUE + id + WHITE
+					+ " does not exist.");
 			return;
 		}
 
@@ -352,7 +358,8 @@ public class SavingComponent extends Component {
 
 		privateLocations.remove(loc.getPlayerName(), loc.getId());
 		publicLocations.put(loc.getId(), loc);
-		sendMessage(p, "Compass target \"" + id + "\" is now private!");
+		sendMessage(p, "Compass target " + BLUE + id + WHITE
+				+ " is now private!");
 	}
 
 	@Command(
@@ -362,14 +369,15 @@ public class SavingComponent extends Component {
 			throws PermissionException {
 		String id = context.arg1;
 		if (id.isEmpty()) {
-			sendMessage(p, "Expected an ID: /compass publicize <id>");
+			sendMessage(p, "Expected an ID: " + GRAY
+					+ "/compass publicize <id>");
 			return;
 		}
 
 		OwnedLocation loc = privateLocations.get(p.getName(), id);
 		if (loc == null) {
-			sendMessage(p, "Private compass target \"" + id
-					+ "\" does not exist.");
+			sendMessage(p, "Private compass target " + BLUE + id + WHITE
+					+ " does not exist.");
 			return;
 		}
 
@@ -390,7 +398,8 @@ public class SavingComponent extends Component {
 
 		privateLocations.remove(loc.getPlayerName(), loc.getId());
 		publicLocations.put(loc.getId(), loc);
-		sendMessage(p, "Compass target \"" + id + "\" is now public!");
+		sendMessage(p, "Compass target " + BLUE + id + WHITE
+				+ " is now public!");
 	}
 
 }

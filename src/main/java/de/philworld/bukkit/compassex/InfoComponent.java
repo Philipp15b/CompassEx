@@ -25,8 +25,7 @@ public class InfoComponent extends Component {
 	}
 
 	@Command(aliases = { "info" }, permission = "compassex.info")
-	public void info(CommandContext context, Player p)
-			throws PermissionException {
+	public void info(CommandContext context, Player p) {
 		Location loc;
 		if (context.arg1.isEmpty() || plugin.saving == null) {
 			loc = p.getCompassTarget();

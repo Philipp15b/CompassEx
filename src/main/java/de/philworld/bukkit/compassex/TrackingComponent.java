@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
-import de.philworld.bukkit.compassex.util.PermissionException;
 
 public class TrackingComponent extends Component implements Listener {
 
@@ -33,8 +32,7 @@ public class TrackingComponent extends Component implements Listener {
 	}
 
 	@Command(aliases = { "live" }, permission = "compassex.live")
-	public void live(CommandContext context, Player p)
-			throws PermissionException {
+	public void live(CommandContext context, Player p) {
 		List<Player> foundPlayers = plugin.getServer()
 				.matchPlayer(context.arg1);
 

@@ -36,8 +36,7 @@ public class GeneralComponent extends Component {
 	}
 
 	@Command(aliases = { "help", "" }, permission = "compassex.help")
-	public void help(CommandContext context, Player p)
-			throws PermissionException {
+	public void help(CommandContext context, Player p) {
 		int page;
 		try {
 			page = Integer.parseInt(context.arg1);
@@ -129,7 +128,7 @@ public class GeneralComponent extends Component {
 		direction(p, Direction.EAST);
 	}
 
-	private void direction(Player p, Direction dir) throws PermissionException {
+	private void direction(Player p, Direction dir) {
 		setTarget(p, dir.getVector().toLocation(p.getWorld()));
 		sendMessage(p, "Your compass has been set " + dir.getName() + ".");
 	}

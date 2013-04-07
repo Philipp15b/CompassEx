@@ -97,8 +97,7 @@ public class SavingComponent extends Component {
 	}
 
 	@Command(aliases = { "save" }, permission = "compassex.save")
-	public void save(CommandContext context, Player p)
-			throws PermissionException {
+	public void save(CommandContext context, Player p) {
 		boolean here = false;
 		String id;
 		if (context.arg1.equals("here")) {
@@ -136,8 +135,7 @@ public class SavingComponent extends Component {
 	}
 
 	@Command(aliases = { "load" }, permission = "compassex.load")
-	public void load(CommandContext context, Player p)
-			throws PermissionException {
+	public void load(CommandContext context, Player p) {
 		String id = context.arg1;
 
 		if (id.isEmpty()) {
@@ -253,8 +251,7 @@ public class SavingComponent extends Component {
 	}
 
 	@Command(aliases = { "list", "l" }, permission = "compassex.list")
-	public void list(CommandContext context, Player p)
-			throws PermissionException {
+	public void list(CommandContext context, Player p) {
 
 		boolean showPublic;
 		String pageArg;

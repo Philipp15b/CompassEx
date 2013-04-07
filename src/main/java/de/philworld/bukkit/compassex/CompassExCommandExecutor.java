@@ -18,6 +18,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		this.plugin = plugin;
 		manager = new CommandManager(plugin.getLogger());
 		manager.register(plugin.tracking);
+		manager.register(plugin.info);
 		manager.register(plugin.saving);
 		manager.register(plugin.hiding);
 		manager.register(plugin.death);

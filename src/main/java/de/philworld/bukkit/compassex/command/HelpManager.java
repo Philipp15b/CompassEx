@@ -18,14 +18,14 @@ public class HelpManager {
 		}
 
 		public String formatMessage(String commandLabel) {
-			return message.replace("COMMAND", commandLabel);
+			return message.replace("\uE000", commandLabel);
 		}
 	}
 
 	private final List<Entry> messages = new ArrayList<Entry>();
 
 	public void add(String name, String value, String permission) {
-		String message = GRAY + "/COMMAND " + name + WHITE + " " + value;
+		String message = GRAY + "/\uE000 " + name + WHITE + " " + value;
 		messages.add(new Entry(message, permission));
 	}
 

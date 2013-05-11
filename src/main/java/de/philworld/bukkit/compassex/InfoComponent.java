@@ -42,7 +42,7 @@ public class InfoComponent extends Component {
 
 			if (owned == null) {
 				// specified target id does not exist
-				sendMessage(p, "Compass target \"" + context.arg1 + "\" does not exist.");
+				sendMessage(p, "Compass target " + BLUE + context.arg1 + WHITE + " does not exist.");
 				return;
 			}
 

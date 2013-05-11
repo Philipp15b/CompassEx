@@ -31,10 +31,11 @@ public class DeathpointComponent extends Component implements Listener {
 	public void deathpoint(CommandContext context, Player p) throws PermissionException {
 		Location dp = deathPoints.get(p.getName());
 		if (dp == null) {
-			sendMessage(p, "Could not find your latest death point.");
+			sendMessage(p, "Could not find your last death point.");
 			return;
 		}
 		setTarget(p, dp);
+		sendMessage(p, "Set your compass to your last death point.");
 	}
 
 	@EventHandler

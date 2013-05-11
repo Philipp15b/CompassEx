@@ -37,9 +37,14 @@ public class GeneralComponent extends Component {
 	@Command(aliases = { "help", "" }, permission = "compassex.help")
 	public void help(CommandContext context, Player p) {
 		int page;
-		try {
-			page = Integer.parseInt(context.arg1);
-		} catch (NumberFormatException e) {
+		if (!context.arg1.isEmpty()) {
+			try {
+				page = Integer.parseInt(context.arg1);
+			} catch (NumberFormatException e) {
+				sendMessage(p, "Could not parse help page. Please enter a valid number.");
+				return;
+			}
+		} else {
 			page = 1;
 		}
 

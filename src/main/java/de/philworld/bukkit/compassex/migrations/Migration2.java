@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -50,7 +48,7 @@ public class Migration2 {
 		ConfigurationSection section = config.getConfigurationSection("publics");
 		for (String key : section.getKeys(false)) {
 			OwnedLocation loc = ((OwnedLocationV2) section.get(key)).loc;
-			locations.put(loc.getId(), loc);
+			locations.put(loc.id, loc);
 		}
 		return locations;
 	}
@@ -68,15 +66,14 @@ public class Migration2 {
 
 		public OwnedLocationV2(Map<String, Object> map) {
 			String id = (String) map.get("id");
-			String playerName = (String) map.get("playerName");
+			String owner = (String) map.get("playerName");
 
 			@SuppressWarnings("unchecked")
 			Map<String, Object> locationSection = (Map<String, Object>) map.get("location");
 			Vector vec = (Vector) locationSection.get("vector");
 			String world = (String) locationSection.get("world");
 
-			Location location = new Location(Bukkit.getServer().getWorld(world), vec.getX(), vec.getY(), vec.getZ());
-			loc = new OwnedLocation(id, playerName, location);
+			loc = new OwnedLocation(id, owner, world, vec);
 		}
 
 		@Override

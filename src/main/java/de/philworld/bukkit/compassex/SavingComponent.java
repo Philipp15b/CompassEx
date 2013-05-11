@@ -150,7 +150,7 @@ public class SavingComponent extends Component {
 			return;
 		}
 
-		Location loc = location.getLocation();
+		Location loc = location.toLocation();
 		setTarget(p, loc);
 		sendMessage(p, "Your compass has been set to " + BLUE + id + WHITE + ".");
 		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "
@@ -184,7 +184,7 @@ public class SavingComponent extends Component {
 			}
 
 			if (!p.hasPermission("compassex.remove.private.any")
-					&& !(loc.ownedBy(p) && p.hasPermission("compassex.remove.private")))
+					&& !(loc.isOwnedBy(p) && p.hasPermission("compassex.remove.private")))
 				throw new PermissionException("You're not allowed to remove your locations!");
 
 			privateLocations.remove(p.getName(), id);
@@ -200,7 +200,7 @@ public class SavingComponent extends Component {
 			}
 
 			if (!p.hasPermission("compassex.remove.public.any")
-					&& !(loc.ownedBy(p) && p.hasPermission("compassex.public.private")))
+					&& !(loc.isOwnedBy(p) && p.hasPermission("compassex.public.private")))
 				throw new PermissionException("You're not allowed to remove that location!");
 
 			publicLocations.remove(id);
@@ -225,7 +225,7 @@ public class SavingComponent extends Component {
 			}
 
 			if (!p.hasPermission("compassex.remove.private.any")
-					&& !(loc.ownedBy(p) && p.hasPermission("compassex.remove.private")))
+					&& !(loc.isOwnedBy(p) && p.hasPermission("compassex.remove.private")))
 				throw new PermissionException("You may not remove the location!");
 
 			privateLocations.remove(owner, id);
@@ -263,13 +263,13 @@ public class SavingComponent extends Component {
 		List<String> locations = new ArrayList<String>();
 		if (showPublic) {
 			for (OwnedLocation loc : publicLocations.values()) {
-				locations.add(loc.getId());
+				locations.add(loc.id);
 			}
 		} else {
 			boolean any = p.hasPermission("compassex.list.any");
 			for (OwnedLocation loc : privateLocations.getLocations(p)) {
-				if (any || loc.ownedBy(p))
-					locations.add(loc.getId());
+				if (any || loc.isOwnedBy(p))
+					locations.add(loc.id);
 			}
 		}
 
@@ -316,15 +316,15 @@ public class SavingComponent extends Component {
 			return;
 		}
 
-		if (!loc.ownedBy(p) && !p.hasPermission("compassex.privatize.any")) {
+		if (!loc.isOwnedBy(p) && !p.hasPermission("compassex.privatize.any")) {
 			throw new PermissionException("You don't have permission to privatize other players' compass targets.");
 		}
 
 		if (!p.hasPermission("compassex.privatize.free") && !withdraw(p, privatizeCost))
 			return;
 
-		privateLocations.remove(loc.getPlayerName(), loc.getId());
-		publicLocations.put(loc.getId(), loc);
+		privateLocations.remove(loc.owner, loc.id);
+		publicLocations.put(loc.id, loc);
 		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now private!");
 	}
 
@@ -342,7 +342,7 @@ public class SavingComponent extends Component {
 			return;
 		}
 
-		if (!loc.ownedBy(p) && !p.hasPermission("compassex.publicize.any")) {
+		if (!loc.isOwnedBy(p) && !p.hasPermission("compassex.publicize.any")) {
 			throw new PermissionException("You don't have permission to publicize other players' compass targets.");
 		}
 
@@ -354,8 +354,8 @@ public class SavingComponent extends Component {
 		if (!p.hasPermission("compassex.publicize.free") && !withdraw(p, publicizeCost))
 			return;
 
-		privateLocations.remove(loc.getPlayerName(), loc.getId());
-		publicLocations.put(loc.getId(), loc);
+		privateLocations.remove(loc.owner, loc.id);
+		publicLocations.put(loc.id, loc);
 		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now public!");
 	}
 

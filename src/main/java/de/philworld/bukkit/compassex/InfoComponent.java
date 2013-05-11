@@ -34,10 +34,10 @@ public class InfoComponent extends Component {
 				owned = plugin.saving.publicLocations.get(context.arg1);
 				if (owned != null) {
 					isPublic = true;
-					sendMessage(p, "Public compass target " + BLUE + owned.getId() + WHITE + " info:");
+					sendMessage(p, "Public compass target " + BLUE + owned.id + WHITE + " info:");
 				}
 			} else {
-				sendMessage(p, "Private compass target " + BLUE + owned.getId() + WHITE + " info:");
+				sendMessage(p, "Private compass target " + BLUE + owned.id + WHITE + " info:");
 			}
 
 			if (owned == null) {
@@ -46,10 +46,10 @@ public class InfoComponent extends Component {
 				return;
 			}
 
-			loc = owned.getLocation();
+			loc = owned.toLocation();
 
-			sendMessage(p, "Owned by: " + BLUE + owned.getPlayerName());
-			if (!isPublic && !owned.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
+			sendMessage(p, "Owned by: " + BLUE + owned.id);
+			if (!isPublic && !owned.id.equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
 				return;
 			}
 		}

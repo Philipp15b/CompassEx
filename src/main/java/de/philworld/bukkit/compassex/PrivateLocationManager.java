@@ -19,10 +19,10 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 	}
 
 	public void add(OwnedLocation loc) {
-		if (!locations.containsKey(loc.getPlayerName())) {
-			locations.put(loc.getPlayerName(), new ArrayList<OwnedLocation>(2));
+		if (!locations.containsKey(loc.owner)) {
+			locations.put(loc.owner, new ArrayList<OwnedLocation>(2));
 		}
-		locations.get(loc.getPlayerName()).add(loc);
+		locations.get(loc.owner).add(loc);
 	}
 
 	public List<OwnedLocation> getLocations(Player player) {
@@ -34,7 +34,7 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 		if (l == null)
 			return null;
 		for (OwnedLocation loc : l) {
-			if (loc.getId().equals(id))
+			if (loc.id.equals(id))
 				return loc;
 		}
 		return null;
@@ -47,7 +47,7 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 		Iterator<OwnedLocation> iterator = l.iterator();
 		while (iterator.hasNext()) {
 			OwnedLocation loc = iterator.next();
-			if (loc.getId().equals(id)) {
+			if (loc.id.equals(id)) {
 				if (l.size() == 1)
 					locations.remove(player);
 				else

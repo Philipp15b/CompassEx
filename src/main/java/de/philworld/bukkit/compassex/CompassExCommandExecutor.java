@@ -12,37 +12,33 @@ import de.philworld.bukkit.compassex.util.PermissionException;
 public class CompassExCommandExecutor implements CommandExecutor {
 
 	private final CompassEx plugin;
-	private final CommandManager manager;
+	private final CommandManager commands;
 
 	public CompassExCommandExecutor(CompassEx plugin) {
 		this.plugin = plugin;
-		manager = new CommandManager(plugin.getLogger());
-		manager.register(plugin.tracking);
-		manager.register(plugin.info);
-		manager.register(plugin.saving);
-		manager.register(plugin.hiding);
-		manager.register(plugin.death);
-		manager.register(plugin.general);
+		commands = new CommandManager(plugin.getLogger());
+		commands.register(plugin.tracking);
+		commands.register(plugin.info);
+		commands.register(plugin.saving);
+		commands.register(plugin.hiding);
+		commands.register(plugin.death);
+		commands.register(plugin.general);
 
 		plugin.getCommand("compass").setExecutor(this);
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
-		if (manager.onCommand(sender, command, label, args))
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (commands.onCommand(sender, command, label, args))
 			return true;
 		Player p = (Player) sender;
 		try {
 			if (args.length == 3) {
-				plugin.general.position(
-						new CommandContext(command, label, args), p);
+				plugin.general.position(new CommandContext(command, label, args), p);
 			} else if (p.hasPermission("compassex.player") && args.length == 1) {
-				plugin.general.player(new CommandContext(command, label, args),
-						p);
+				plugin.general.player(new CommandContext(command, label, args), p);
 			} else {
-				plugin.general
-						.help(new CommandContext(command, label, args), p);
+				plugin.general.help(new CommandContext(command, label, args), p);
 			}
 		} catch (PermissionException e) {
 			e.send(p);

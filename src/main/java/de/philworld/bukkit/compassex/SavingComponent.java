@@ -47,8 +47,7 @@ public class SavingComponent extends Component {
 		help("save ID", "Save your current compass target", "compassex.save");
 		help("save here ID", "Save your current location", "compassex.save");
 		help("remove ID", "Remove an existing location", "compassex.remove");
-		help("load ID", "Set a saved location to your compass",
-				"compassex.load");
+		help("load ID", "Set a saved location to your compass", "compassex.load");
 		help("list private|public", "List saved locations.", "compassex.list");
 		help("privatize ID", "Make a location private.", "compassex.privatize");
 		help("publicize ID", "Make a location public.", "compassex.publicize");
@@ -56,9 +55,8 @@ public class SavingComponent extends Component {
 
 	private void load() {
 		if (Migration2.should(plugin)) {
-			plugin.getLogger()
-					.log(Level.INFO,
-							"CompassEx v1/v2 config detected. The files will be loaded and then renamed.");
+			plugin.getLogger().log(Level.INFO,
+					"CompassEx v1/v2 config detected. The files will be loaded and then renamed.");
 			Migration2 migration = new Migration2(plugin);
 			privateLocations = migration.loadPrivateLocations();
 			publicLocations = migration.loadPublicLocations();
@@ -79,8 +77,7 @@ public class SavingComponent extends Component {
 			if (privateLocations == null)
 				privateLocations = new PrivateLocationManager();
 
-			ConfigurationSection spublic = config
-					.getConfigurationSection("public");
+			ConfigurationSection spublic = config.getConfigurationSection("public");
 			for (String key : spublic.getKeys(false)) {
 				publicLocations.put(key, (OwnedLocation) spublic.get(key));
 			}
@@ -120,8 +117,7 @@ public class SavingComponent extends Component {
 		}
 
 		if (privateLocations.get(p.getName(), id) != null) {
-			sendMessage(p, "You already have a compass target named \"" + id
-					+ "\".");
+			sendMessage(p, "You already have a compass target named \"" + id + "\".");
 			return;
 		}
 
@@ -129,10 +125,9 @@ public class SavingComponent extends Component {
 			return;
 
 		Location loc = here ? p.getLocation() : p.getCompassTarget();
-		sendMessage(p, "Your current " + (here ? "location" : "compass target")
-				+ " has been saved as " + BLUE + id + WHITE + ".");
-		sendMessage(p, "To set your compass to " + (here ? "this" : "that")
-				+ " location again later, ");
+		sendMessage(p, "Your current " + (here ? "location" : "compass target") + " has been saved as " + BLUE + id
+				+ WHITE + ".");
+		sendMessage(p, "To set your compass to " + (here ? "this" : "that") + " location again later, ");
 		sendMessage(p, "type: " + WHITE + "/" + context.label + " load " + id);
 		privateLocations.add(new OwnedLocation(id, p.getName(), loc));
 	}
@@ -151,23 +146,19 @@ public class SavingComponent extends Component {
 			location = publicLocations.get(id);
 		}
 		if (location == null) {
-			sendMessage(p, "Compass target " + BLUE + id + WHITE
-					+ " does not exist.");
+			sendMessage(p, "Compass target " + BLUE + id + WHITE + " does not exist.");
 			return;
 		}
 
 		Location loc = location.getLocation();
 		setTarget(p, loc);
-		sendMessage(p, "Your compass has been set to " + BLUE + id + WHITE
-				+ ".");
-		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE
-				+ loc.getBlockY() + WHITE + " Z: " + BLUE + loc.getBlockZ()
-				+ WHITE + ")");
+		sendMessage(p, "Your compass has been set to " + BLUE + id + WHITE + ".");
+		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "
+				+ BLUE + loc.getBlockZ() + WHITE + ")");
 	}
 
 	@Command(aliases = { "remove" })
-	public void remove(CommandContext context, Player p)
-			throws PermissionException {
+	public void remove(CommandContext context, Player p) throws PermissionException {
 		boolean hasPublicPerm = p.hasPermission("compassex.remove.public");
 		boolean hasPrivatePerm = p.hasPermission("compassex.remove.private");
 		if (!hasPublicPerm && !hasPrivatePerm)
@@ -185,21 +176,16 @@ public class SavingComponent extends Component {
 			String id = context.arg1;
 			OwnedLocation loc = privateLocations.get(p.getName(), id);
 			if (loc == null) {
-				sendMessage(p, "Could not find a private location named '" + id
-						+ "' owned by you!");
-				if (p.hasPermission("compassex.remove.public")
-						|| p.hasPermission("compassex.public.any"))
-					sendMessage(p,
-							"If you want to remove a public location, type "
-									+ GRAY + "/compass remove public <id>");
+				sendMessage(p, "Could not find a private location named '" + id + "' owned by you!");
+				if (p.hasPermission("compassex.remove.public") || p.hasPermission("compassex.public.any"))
+					sendMessage(p, "If you want to remove a public location, type " + GRAY
+							+ "/compass remove public <id>");
 				return;
 			}
 
 			if (!p.hasPermission("compassex.remove.private.any")
-					&& !(loc.ownedBy(p) && p
-							.hasPermission("compassex.remove.private")))
-				throw new PermissionException(
-						"You're not allowed to remove your locations!");
+					&& !(loc.ownedBy(p) && p.hasPermission("compassex.remove.private")))
+				throw new PermissionException("You're not allowed to remove your locations!");
 
 			privateLocations.remove(p.getName(), id);
 			sendMessage(p, "Removed the private location '" + id + "'.");
@@ -215,10 +201,8 @@ public class SavingComponent extends Component {
 				}
 
 				if (!p.hasPermission("compassex.remove.public.any")
-						&& !(loc.ownedBy(p) && p
-								.hasPermission("compassex.public.private")))
-					throw new PermissionException(
-							"You're not allowed to remove that location!");
+						&& !(loc.ownedBy(p) && p.hasPermission("compassex.public.private")))
+					throw new PermissionException("You're not allowed to remove that location!");
 
 				publicLocations.remove(id);
 				sendMessage(p, "Removed the public location '" + id + "'.");
@@ -236,21 +220,17 @@ public class SavingComponent extends Component {
 				OwnedLocation loc = privateLocations.get(owner, id);
 
 				if (loc == null) {
-					sendMessage(p, "Could not find private location " + BLUE
-							+ id + WHITE + " owned by " + BLUE + owner + WHITE
-							+ "!");
+					sendMessage(p, "Could not find private location " + BLUE + id + WHITE + " owned by " + BLUE + owner
+							+ WHITE + "!");
 					return;
 				}
 
 				if (!p.hasPermission("compassex.remove.private.any")
-						&& !(loc.ownedBy(p) && p
-								.hasPermission("compassex.remove.private")))
-					throw new PermissionException(
-							"You may not remove the location!");
+						&& !(loc.ownedBy(p) && p.hasPermission("compassex.remove.private")))
+					throw new PermissionException("You may not remove the location!");
 
 				privateLocations.remove(owner, id);
-				sendMessage(p, "Removed the private location " + BLUE + id
-						+ WHITE + ".");
+				sendMessage(p, "Removed the private location " + BLUE + id + WHITE + ".");
 			}
 		}
 
@@ -299,8 +279,7 @@ public class SavingComponent extends Component {
 		int totalPages = locations.size() / totalPerPage + 1;
 
 		if (page > totalPages) {
-			sendMessage(p, "Page " + BLUE + page + WHITE
-					+ " doesn't exist in list of "
+			sendMessage(p, "Page " + BLUE + page + WHITE + " doesn't exist in list of "
 					+ (showPublic ? "public" : "private") + " locations.");
 			return;
 		}
@@ -308,9 +287,8 @@ public class SavingComponent extends Component {
 		int startIndex = (page - 1) * totalPerPage;
 		int endIndex = startIndex + totalPerPage;
 
-		p.sendMessage(GOLD + " ------ " + (showPublic ? "Public" : "Private")
-				+ "Compass Targets (" + BLUE + page + GOLD + "/" + totalPages
-				+ ") ------ ");
+		p.sendMessage(GOLD + " ------ " + (showPublic ? "Public" : "Private") + "Compass Targets (" + BLUE + page
+				+ GOLD + "/" + totalPages + ") ------ ");
 
 		if (locations.size() == 0) {
 			p.sendMessage(RED + "(none)");
@@ -319,87 +297,68 @@ public class SavingComponent extends Component {
 			p.sendMessage(" " + (i + 1) + ": " + BLUE + locations.get(i));
 		}
 		if (page < totalPages) {
-			p.sendMessage(DARK_AQUA + "See the next page: " + GRAY + "/"
-					+ context.label + " list "
+			p.sendMessage(DARK_AQUA + "See the next page: " + GRAY + "/" + context.label + " list "
 					+ (showPublic ? "public" : "private") + " " + (page + 1));
 		}
-		p.sendMessage(DARK_AQUA + "See " + (showPublic ? "private" : "public")
-				+ " compass target list: " + GRAY + "/" + context.label
-				+ " list " + (showPublic ? "private" : "public"));
+		p.sendMessage(DARK_AQUA + "See " + (showPublic ? "private" : "public") + " compass target list: " + GRAY + "/"
+				+ context.label + " list " + (showPublic ? "private" : "public"));
 	}
 
-	@Command(
-			aliases = { "privatize", "private" },
-			permission = "compassex.privatize")
-	public void privatize(CommandContext context, Player p)
-			throws PermissionException {
+	@Command(aliases = { "privatize", "private" }, permission = "compassex.privatize")
+	public void privatize(CommandContext context, Player p) throws PermissionException {
 		String id = context.arg1;
 		if (id.isEmpty()) {
-			sendMessage(p, "Expected an ID: " + GRAY
-					+ "/compass privatize <id>");
+			sendMessage(p, "Expected an ID: " + GRAY + "/compass privatize <id>");
 			return;
 		}
 
 		OwnedLocation loc = publicLocations.get(id);
 		if (loc == null) {
-			sendMessage(p, "Public compass target " + BLUE + id + WHITE
-					+ " does not exist.");
+			sendMessage(p, "Public compass target " + BLUE + id + WHITE + " does not exist.");
 			return;
 		}
 
 		if (!loc.ownedBy(p) && !p.hasPermission("compassex.privatize.any")) {
-			throw new PermissionException(
-					"You don't have permission to privatize other players' compass targets.");
+			throw new PermissionException("You don't have permission to privatize other players' compass targets.");
 		}
 
-		if (!p.hasPermission("compassex.privatize.free")
-				&& !withdraw(p, privatizeCost))
+		if (!p.hasPermission("compassex.privatize.free") && !withdraw(p, privatizeCost))
 			return;
 
 		privateLocations.remove(loc.getPlayerName(), loc.getId());
 		publicLocations.put(loc.getId(), loc);
-		sendMessage(p, "Compass target " + BLUE + id + WHITE
-				+ " is now private!");
+		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now private!");
 	}
 
-	@Command(
-			aliases = { "publicize", "public" },
-			permission = "compassex.publicize")
-	public void publicize(CommandContext context, Player p)
-			throws PermissionException {
+	@Command(aliases = { "publicize", "public" }, permission = "compassex.publicize")
+	public void publicize(CommandContext context, Player p) throws PermissionException {
 		String id = context.arg1;
 		if (id.isEmpty()) {
-			sendMessage(p, "Expected an ID: " + GRAY
-					+ "/compass publicize <id>");
+			sendMessage(p, "Expected an ID: " + GRAY + "/compass publicize <id>");
 			return;
 		}
 
 		OwnedLocation loc = privateLocations.get(p.getName(), id);
 		if (loc == null) {
-			sendMessage(p, "Private compass target " + BLUE + id + WHITE
-					+ " does not exist.");
+			sendMessage(p, "Private compass target " + BLUE + id + WHITE + " does not exist.");
 			return;
 		}
 
 		if (!loc.ownedBy(p) && !p.hasPermission("compassex.publicize.any")) {
-			throw new PermissionException(
-					"You don't have permission to publicize other players' compass targets.");
+			throw new PermissionException("You don't have permission to publicize other players' compass targets.");
 		}
 
 		if (publicLocations.containsKey(id)) {
-			sendMessage(p,
-					"A public location with this name already exists. Delete it first!");
+			sendMessage(p, "A public location with this name already exists. Delete it first!");
 			return;
 		}
 
-		if (!p.hasPermission("compassex.publicize.free")
-				&& !withdraw(p, publicizeCost))
+		if (!p.hasPermission("compassex.publicize.free") && !withdraw(p, publicizeCost))
 			return;
 
 		privateLocations.remove(loc.getPlayerName(), loc.getId());
 		publicLocations.put(loc.getId(), loc);
-		sendMessage(p, "Compass target " + BLUE + id + WHITE
-				+ " is now public!");
+		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now public!");
 	}
 
 }

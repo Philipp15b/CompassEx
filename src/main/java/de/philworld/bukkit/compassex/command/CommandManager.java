@@ -27,8 +27,7 @@ public class CommandManager implements CommandExecutor {
 
 	public void registerMethod(Object instance, Method method) {
 		Class<?>[] params = method.getParameterTypes();
-		if (params.length != 2 || !params[0].equals(CommandContext.class)
-				|| !params[1].equals(Player.class))
+		if (params.length != 2 || !params[0].equals(CommandContext.class) || !params[1].equals(Player.class))
 			throw new IllegalArgumentException(
 					"Command methods must have the signature method(CommandContext context, Player p)!");
 
@@ -50,8 +49,7 @@ public class CommandManager implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender,
-			org.bukkit.command.Command command, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Please use only in game!");
 			return true;
@@ -64,15 +62,13 @@ public class CommandManager implements CommandExecutor {
 		Method method = commands.get(base);
 		Command annotation = method.getAnnotation(Command.class);
 
-		if (!annotation.permission().equals("")
-				&& !p.hasPermission(annotation.permission())) {
+		if (!annotation.permission().equals("") && !p.hasPermission(annotation.permission())) {
 			p.sendMessage(RED + PermissionException.DEFAULT_MESSAGE);
 			return true;
 		}
 
 		try {
-			method.invoke(instances.get(method), new CommandContext(command,
-					label, args), p);
+			method.invoke(instances.get(method), new CommandContext(command, label, args), p);
 			return true;
 		} catch (IllegalAccessException e) {
 			logger.log(Level.SEVERE, "Failed to execute command", e);

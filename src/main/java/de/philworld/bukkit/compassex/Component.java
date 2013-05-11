@@ -25,8 +25,7 @@ abstract class Component {
 		plugin.helpManager.add(syntax, description, permission);
 	}
 
-	protected static void requirePermission(Player p, String permission)
-			throws PermissionException {
+	protected static void requirePermission(Player p, String permission) throws PermissionException {
 		if (!p.hasPermission(permission))
 			throw new PermissionException();
 	}
@@ -44,11 +43,8 @@ abstract class Component {
 
 	protected boolean withdraw(Player p, double amount) {
 		if (amount != 0 && CompassEx.economy != null) {
-			if (!CompassEx.economy.bankWithdraw(p.getName(), amount)
-					.transactionSuccess()) {
-				p.sendMessage(RED + "You don't have "
-						+ CompassEx.economy.format(amount)
-						+ " to pay this action!");
+			if (!CompassEx.economy.bankWithdraw(p.getName(), amount).transactionSuccess()) {
+				p.sendMessage(RED + "You don't have " + CompassEx.economy.format(amount) + " to pay this action!");
 				return false;
 			}
 		}

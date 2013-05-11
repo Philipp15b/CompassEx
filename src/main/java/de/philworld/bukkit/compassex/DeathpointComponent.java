@@ -23,16 +23,12 @@ public class DeathpointComponent extends Component implements Listener {
 
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
-		help("deathpoint", "Set to your latest death point",
-				"compassex.deathpoint");
+		help("deathpoint", "Set to your latest death point", "compassex.deathpoint");
 	}
 
 	@SuppressWarnings("unused")
-	@Command(
-			aliases = { "deathpoint", "dp", "death" },
-			permission = "compassex.deathpoint")
-	public void deathpoint(CommandContext context, Player p)
-			throws PermissionException {
+	@Command(aliases = { "deathpoint", "dp", "death" }, permission = "compassex.deathpoint")
+	public void deathpoint(CommandContext context, Player p) throws PermissionException {
 		Location dp = deathPoints.get(p.getName());
 		if (dp == null) {
 			sendMessage(p, "Could not find your latest death point.");

@@ -22,8 +22,7 @@ public class TrackingComponent extends Component implements Listener {
 	/**
 	 * Hashmap watcher => watched
 	 */
-	private final HashMap<String, String> watchList = new HashMap<String, String>(
-			2);
+	private final HashMap<String, String> watchList = new HashMap<String, String>(2);
 	private final long updateRate;
 	private final CompassUpdaterTask updater;
 
@@ -36,8 +35,7 @@ public class TrackingComponent extends Component implements Listener {
 
 	@Command(aliases = { "live" }, permission = "compassex.live")
 	public void live(CommandContext context, Player p) {
-		List<Player> foundPlayers = plugin.getServer()
-				.matchPlayer(context.arg1);
+		List<Player> foundPlayers = plugin.getServer().matchPlayer(context.arg1);
 
 		if (foundPlayers.size() != 1) {
 			sendMessage(p, "Player cannot be found.");
@@ -58,10 +56,7 @@ public class TrackingComponent extends Component implements Listener {
 			return;
 		}
 
-		sendMessage(
-				p,
-				"Your compass is now pointing live to " + BLUE
-						+ target.getDisplayName() + WHITE + ".");
+		sendMessage(p, "Your compass is now pointing live to " + BLUE + target.getDisplayName() + WHITE + ".");
 	}
 
 	/**
@@ -72,8 +67,7 @@ public class TrackingComponent extends Component implements Listener {
 	 */
 	public void setWatcher(Player watcher, Player watched) {
 		if (watcher.equals(watched))
-			throw new IllegalArgumentException(
-					"Watcher and watched player may not be the same!");
+			throw new IllegalArgumentException("Watcher and watched player may not be the same!");
 
 		watchList.put(watcher.getName(), watched.getName());
 		updater.start();
@@ -122,8 +116,7 @@ public class TrackingComponent extends Component implements Listener {
 		public void start() {
 			if (isRunning())
 				return;
-			taskId = plugin.getServer().getScheduler()
-					.scheduleSyncRepeatingTask(plugin, this, 40L, updateRate);
+			taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 40L, updateRate);
 		}
 
 		public boolean isRunning() {

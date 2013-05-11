@@ -14,8 +14,7 @@ public class CommandContext {
 	public final String arg2;
 	public final String arg3;
 
-	public CommandContext(org.bukkit.command.Command command, String label,
-			String[] args) {
+	public CommandContext(org.bukkit.command.Command command, String label, String[] args) {
 		this.command = command;
 		this.label = label;
 		base = args.length > 0 ? args[0].toLowerCase() : "";

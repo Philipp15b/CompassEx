@@ -32,15 +32,13 @@ public class Migration2 {
 	public Migration2(CompassEx plugin) {
 		this.plugin = plugin;
 		this.file = new File(plugin.getDataFolder(), "locations.yml");
-		ConfigurationSerialization.registerClass(OwnedLocationV2.class,
-				OwnedLocation.class.getName());
+		ConfigurationSerialization.registerClass(OwnedLocationV2.class, OwnedLocation.class.getName());
 		this.config = YamlConfiguration.loadConfiguration(file);
 	}
 
 	public PrivateLocationManager loadPrivateLocations() {
 		PrivateLocationManager locations = new PrivateLocationManager();
-		ConfigurationSection section = config
-				.getConfigurationSection("privates");
+		ConfigurationSection section = config.getConfigurationSection("privates");
 		for (String key : section.getKeys(false)) {
 			locations.add(((OwnedLocationV2) section.get(key)).loc);
 		}
@@ -49,8 +47,7 @@ public class Migration2 {
 
 	public Map<String, OwnedLocation> loadPublicLocations() {
 		Map<String, OwnedLocation> locations = new HashMap<String, OwnedLocation>();
-		ConfigurationSection section = config
-				.getConfigurationSection("publics");
+		ConfigurationSection section = config.getConfigurationSection("publics");
 		for (String key : section.getKeys(false)) {
 			OwnedLocation loc = ((OwnedLocationV2) section.get(key)).loc;
 			locations.put(loc.getId(), loc);
@@ -74,14 +71,11 @@ public class Migration2 {
 			String playerName = (String) map.get("playerName");
 
 			@SuppressWarnings("unchecked")
-			Map<String, Object> locationSection = (Map<String, Object>) map
-					.get("location");
+			Map<String, Object> locationSection = (Map<String, Object>) map.get("location");
 			Vector vec = (Vector) locationSection.get("vector");
 			String world = (String) locationSection.get("world");
 
-			Location location = new Location(
-					Bukkit.getServer().getWorld(world), vec.getX(), vec.getY(),
-					vec.getZ());
+			Location location = new Location(Bukkit.getServer().getWorld(world), vec.getX(), vec.getY(), vec.getZ());
 			loc = new OwnedLocation(id, playerName, location);
 		}
 

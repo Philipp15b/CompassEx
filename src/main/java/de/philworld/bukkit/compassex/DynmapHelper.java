@@ -35,8 +35,7 @@ class DynmapHelper {
 	public void setup() throws IllegalStateException {
 		set = marker.getMarkerSet("compassex.saves");
 		if (set == null) {
-			set = marker.createMarkerSet("compassex.saves", "Location", null,
-					false);
+			set = marker.createMarkerSet("compassex.saves", "Location", null, false);
 			set.setLabelShow(true);
 		}
 
@@ -54,10 +53,8 @@ class DynmapHelper {
 
 	public void set(OwnedLocation loc) {
 		remove(loc.getId());
-		set.createMarker(loc.getId(), loc.getId(), loc.getLocation().getWorld()
-				.getName(), loc.getLocation().getX(), loc.getLocation().getY(),
-				loc.getLocation().getZ(),
-				marker.getMarkerIcon(plugin.markerIcon), false);
+		set.createMarker(loc.getId(), loc.getId(), loc.getLocation().getWorld().getName(), loc.getLocation().getX(),
+				loc.getLocation().getY(), loc.getLocation().getZ(), marker.getMarkerIcon(plugin.markerIcon), false);
 	}
 
 	public void remove(String id) {

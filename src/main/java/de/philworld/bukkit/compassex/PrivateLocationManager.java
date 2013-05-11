@@ -62,17 +62,14 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 	public PrivateLocationManager(Map<String, Object> map) {
 		for (Entry<String, Object> entry : map.entrySet()) {
 			// this is just stupid
-			if (!entry.getKey().equals(
-					ConfigurationSerialization.SERIALIZED_TYPE_KEY))
-				locations.put(entry.getKey(),
-						(List<OwnedLocation>) entry.getValue());
+			if (!entry.getKey().equals(ConfigurationSerialization.SERIALIZED_TYPE_KEY))
+				locations.put(entry.getKey(), (List<OwnedLocation>) entry.getValue());
 		}
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> serialized = new HashMap<String, Object>(
-				locations.size());
+		Map<String, Object> serialized = new HashMap<String, Object>(locations.size());
 		for (Entry<String, List<OwnedLocation>> entry : locations.entrySet()) {
 			serialized.put(entry.getKey(), entry.getValue());
 		}

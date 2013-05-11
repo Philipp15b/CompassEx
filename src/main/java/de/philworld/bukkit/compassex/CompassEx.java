@@ -51,8 +51,7 @@ public class CompassEx extends JavaPlugin {
 		if (setupEconomy()) {
 			getLogger().log(Level.INFO, "Using Vault for payment.");
 		} else {
-			getLogger().log(Level.INFO,
-					"Vault was not found, all actions will be free!");
+			getLogger().log(Level.INFO, "Vault was not found, all actions will be free!");
 		}
 
 		if (enableDynmap) {
@@ -60,9 +59,7 @@ public class CompassEx extends JavaPlugin {
 			if (dynmapHelper != null) {
 				getLogger().log(Level.INFO, "Dynmap Support is enabled!");
 			} else {
-				getLogger()
-						.log(Level.WARNING,
-								"Dynmap Support could not be enabled: Dynmap not found!");
+				getLogger().log(Level.WARNING, "Dynmap Support could not be enabled: Dynmap not found!");
 			}
 		}
 
@@ -94,9 +91,8 @@ public class CompassEx extends JavaPlugin {
 
 	private boolean setupEconomy() {
 		try {
-			RegisteredServiceProvider<Economy> economyProvider = getServer()
-					.getServicesManager().getRegistration(
-							net.milkbowl.vault.economy.Economy.class);
+			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(
+					net.milkbowl.vault.economy.Economy.class);
 
 			if (economyProvider == null)
 				return false;

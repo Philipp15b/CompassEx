@@ -16,11 +16,8 @@ public class InfoComponent extends Component {
 	public InfoComponent(CompassEx plugin) {
 		super(plugin);
 
-		help("info [ID]",
-				"See the coordinates of your current compass target, or a saved location.",
-				"compassex.info");
-		help("height", "Height diff between you and the target",
-				"compassex.height");
+		help("info [ID]", "See the coordinates of your current compass target, or a saved location.", "compassex.info");
+		help("height", "Height diff between you and the target", "compassex.height");
 		help("distance", "Distance to your target", "compassex.distance");
 	}
 
@@ -32,66 +29,53 @@ public class InfoComponent extends Component {
 			sendMessage(p, "Current compass target info:");
 		} else {
 			boolean isPublic = false;
-			OwnedLocation owned = plugin.saving.privateLocations.get(
-					p.getName(), context.arg1);
+			OwnedLocation owned = plugin.saving.privateLocations.get(p.getName(), context.arg1);
 			if (owned == null) {
 				owned = plugin.saving.publicLocations.get(context.arg1);
 				if (owned != null) {
 					isPublic = true;
-					sendMessage(p,
-							"Public compass target " + BLUE + owned.getId()
-									+ WHITE + " info:");
+					sendMessage(p, "Public compass target " + BLUE + owned.getId() + WHITE + " info:");
 				}
 			} else {
-				sendMessage(p, "Private compass target " + BLUE + owned.getId()
-						+ WHITE + " info:");
+				sendMessage(p, "Private compass target " + BLUE + owned.getId() + WHITE + " info:");
 			}
 
 			if (owned == null) {
 				// specified target id does not exist
-				sendMessage(p, "Compass target \"" + context.arg1
-						+ "\" does not exist.");
+				sendMessage(p, "Compass target \"" + context.arg1 + "\" does not exist.");
 				return;
 			}
 
 			loc = owned.getLocation();
 
 			sendMessage(p, "Owned by: " + BLUE + owned.getPlayerName());
-			if (!isPublic && !owned.getPlayerName().equals(p.getName())
-					&& !p.hasPermission("compassex.info.any")) {
+			if (!isPublic && !owned.getPlayerName().equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
 				return;
 			}
 		}
 
 		// private/public/compass-target location found
 		// show info
-		sendMessage(p, BLUE + loc.getWorld().getName() + WHITE + " (X: " + BLUE
-				+ loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY()
-				+ WHITE + " Z: " + BLUE + loc.getBlockZ() + WHITE + ")");
+		sendMessage(p, BLUE + loc.getWorld().getName() + WHITE + " (X: " + BLUE + loc.getBlockX() + WHITE + " Y: "
+				+ BLUE + loc.getBlockY() + WHITE + " Z: " + BLUE + loc.getBlockZ() + WHITE + ")");
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "height", "h" }, permission = "compassex.height")
-	public void height(CommandContext context, Player p)
-			throws PermissionException {
-		int diff = (int) Math.ceil(p.getCompassTarget().getBlockY()
-				- p.getLocation().getY());
+	public void height(CommandContext context, Player p) throws PermissionException {
+		int diff = (int) Math.ceil(p.getCompassTarget().getBlockY() - p.getLocation().getY());
 
-		sendMessage(p,
-				"Height difference between you and your compass target: "
-						+ diff + " blocks.");
+		sendMessage(p, "Height difference between you and your compass target: " + diff + " blocks.");
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "distance", "d" }, permission = "compassex.distance")
-	public void distance(CommandContext context, Player p)
-			throws PermissionException {
+	public void distance(CommandContext context, Player p) throws PermissionException {
 		Vector current = p.getLocation().toVector();
 		Vector target = p.getCompassTarget().toVector();
 		int distance = (int) Math.ceil(current.subtract(target).length());
 
-		sendMessage(p, "Distance between you and your compass target: "
-				+ distance + " blocks.");
+		sendMessage(p, "Distance between you and your compass target: " + distance + " blocks.");
 	}
 
 }

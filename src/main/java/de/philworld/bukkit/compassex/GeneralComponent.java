@@ -23,13 +23,11 @@ public class GeneralComponent extends Component {
 	public GeneralComponent(CompassEx plugin) {
 		super(plugin);
 
-		helpPageNumCommands = plugin.getConfig().getInt(
-				"help-page-num-commands", 7);
+		helpPageNumCommands = plugin.getConfig().getInt("help-page-num-commands", 7);
 
 		help("reset", "Reset back to spawn", "compassex.reset");
 		help("here", "Set to your current position", "compassex.here");
-		help("north/east/south/west", "Set to a direction.",
-				"compassex.direction");
+		help("north/east/south/west", "Set to a direction.", "compassex.direction");
 		help("PLAYERNAME", "Set to a player", "compassex.player");
 		help("live", "Set to a player's pos & update", "compassex.live");
 		help("bed", "Set to your bed", "compassex.bed");
@@ -49,16 +47,14 @@ public class GeneralComponent extends Component {
 		int totalPages = total / helpPageNumCommands + 1;
 
 		if (page > totalPages) {
-			sendMessage(p, "Help page " + BLUE + page + WHITE
-					+ " does not exist.");
+			sendMessage(p, "Help page " + BLUE + page + WHITE + " does not exist.");
 			return;
 		}
 
 		int startIndex = (page - 1) * helpPageNumCommands;
 		int endIndex = startIndex + helpPageNumCommands;
 
-		p.sendMessage(GOLD + " ------ CompassEx Help (" + BLUE + page + GOLD
-				+ "/" + totalPages + ") ------ ");
+		p.sendMessage(GOLD + " ------ CompassEx Help (" + BLUE + page + GOLD + "/" + totalPages + ") ------ ");
 
 		for (int i = startIndex; i < endIndex && i < total; i++) {
 			Entry entry = plugin.helpManager.get(i);
@@ -67,23 +63,20 @@ public class GeneralComponent extends Component {
 		}
 
 		if (page < totalPages) {
-			p.sendMessage("To see the next page, type: " + GRAY + "/"
-					+ context.label + " help " + (page + 1));
+			p.sendMessage("To see the next page, type: " + GRAY + "/" + context.label + " help " + (page + 1));
 		}
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "reset" }, permission = "compassex.reset")
-	public void reset(CommandContext context, Player p)
-			throws PermissionException {
+	public void reset(CommandContext context, Player p) throws PermissionException {
 		setTarget(p, p.getWorld().getSpawnLocation());
 		sendMessage(p, "Your compass has been reset to spawn.");
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "here" }, permission = "compassex.here")
-	public void here(CommandContext context, Player p)
-			throws PermissionException {
+	public void here(CommandContext context, Player p) throws PermissionException {
 		requirePermission(p, "here");
 		setTarget(p, p.getLocation());
 		sendMessage(p, "Your compass has been set to your current location.");
@@ -91,8 +84,7 @@ public class GeneralComponent extends Component {
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "bed" }, permission = "compassex.bed")
-	public void bed(CommandContext context, Player p)
-			throws PermissionException {
+	public void bed(CommandContext context, Player p) throws PermissionException {
 		requirePermission(p, "bed");
 		if (p.getBedSpawnLocation() != null) {
 			setTarget(p, p.getBedSpawnLocation());
@@ -104,48 +96,41 @@ public class GeneralComponent extends Component {
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "north", "n" }, permission = "compassex.dir")
-	public void north(CommandContext context, Player p)
-			throws PermissionException {
+	public void north(CommandContext context, Player p) throws PermissionException {
 		direction(p, Direction.NORTH);
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "south", "s" }, permission = "compassex.dir")
-	public void south(CommandContext context, Player p)
-			throws PermissionException {
+	public void south(CommandContext context, Player p) throws PermissionException {
 		direction(p, Direction.SOUTH);
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "west", "w" }, permission = "compassex.dir")
-	public void west(CommandContext context, Player p)
-			throws PermissionException {
+	public void west(CommandContext context, Player p) throws PermissionException {
 		direction(p, Direction.WEST);
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "east", "e" }, permission = "compassex.dir")
-	public void east(CommandContext context, Player p)
-			throws PermissionException {
+	public void east(CommandContext context, Player p) throws PermissionException {
 		direction(p, Direction.EAST);
 	}
 
 	private void direction(Player p, Direction dir) {
 		setTarget(p, dir.getVector().toLocation(p.getWorld()));
-		sendMessage(p, "Your compass has been set " + BLUE + dir.getName()
-				+ WHITE + ".");
+		sendMessage(p, "Your compass has been set " + BLUE + dir.getName().toLowerCase() + WHITE + ".");
 	}
 
 	@Command(aliases = { "position", "pos" }, permission = "compassex.pos")
-	public void position(CommandContext context, Player p)
-			throws PermissionException {
+	public void position(CommandContext context, Player p) throws PermissionException {
 		requirePermission(p, "pos");
 		int x, y, z;
 		try {
 			if (context.base.equals("pos")) {
 				if (context.arg3.isEmpty()) {
-					sendMessage(p, "Wrong arguments:" + GRAY + "/"
-							+ context.label + " pos <x> <y> <z>" + WHITE + ".");
+					sendMessage(p, "Wrong arguments:" + GRAY + "/" + context.label + " pos <x> <y> <z>" + WHITE + ".");
 					return;
 				}
 
@@ -158,35 +143,29 @@ public class GeneralComponent extends Component {
 				z = Integer.parseInt(context.arg2);
 			}
 		} catch (NumberFormatException e) {
-			sendMessage(p, "Wrong argument format: " + GRAY + "/"
-					+ context.label + " pos <x> <y> <z>" + WHITE + ".");
+			sendMessage(p, "Wrong argument format: " + GRAY + "/" + context.label + " pos <x> <y> <z>" + WHITE + ".");
 			return;
 		}
 
 		setTarget(p, new Location(p.getWorld(), x, y, z));
 
-		sendMessage(p, "Your compass has been set to X: " + BLUE + x + WHITE
-				+ " Y: " + BLUE + y + WHITE + " Z: " + BLUE + z + WHITE + ".");
+		sendMessage(p, "Your compass has been set to X: " + BLUE + x + WHITE + " Y: " + BLUE + y + WHITE + " Z: "
+				+ BLUE + z + WHITE + ".");
 	}
 
 	@Command(aliases = { "player" }, permission = "compassex.player")
 	public void player(CommandContext context, Player p) {
-		final String name = context.base.equals("player") ? context.arg1
-				: context.base;
+		final String name = context.base.equals("player") ? context.arg1 : context.base;
 
 		List<Player> foundPlayers = plugin.getServer().matchPlayer(name);
 
 		if (foundPlayers.size() == 1
-				&& (!plugin.hiding.isHidden(foundPlayers.get(0)) || p
-						.hasPermission("compassex.admin"))) {
+				&& (!plugin.hiding.isHidden(foundPlayers.get(0)) || p.hasPermission("compassex.admin"))) {
 			Player target = foundPlayers.get(0);
 
 			setTarget(p, target.getLocation());
 
-			sendMessage(
-					p,
-					"Your compass is now pointing to " + BLUE
-							+ target.getDisplayName() + WHITE + ".");
+			sendMessage(p, "Your compass is now pointing to " + BLUE + target.getDisplayName() + WHITE + ".");
 
 		} else {
 			sendMessage(p, "Player cannot be found.");

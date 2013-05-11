@@ -30,8 +30,7 @@ public class HidingComponent extends Component {
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "hide" }, permission = "compassex.hide")
-	public void hide(CommandContext context, Player p)
-			throws PermissionException {
+	public void hide(CommandContext context, Player p) throws PermissionException {
 		if (!hiddenPlayers.contains(p.getName())) {
 			hiddenPlayers.add(p.getName());
 			sendMessage(p, "You are now hidden.");
@@ -43,8 +42,7 @@ public class HidingComponent extends Component {
 
 	@SuppressWarnings("unused")
 	@Command(aliases = { "hidden" }, permission = "compassex.hide")
-	public void hidden(CommandContext context, Player p)
-			throws PermissionException {
+	public void hidden(CommandContext context, Player p) throws PermissionException {
 		if (hiddenPlayers.contains(p.getName())) {
 			sendMessage(p, "You are hidden right now.");
 		} else {

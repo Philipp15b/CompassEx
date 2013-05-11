@@ -26,8 +26,7 @@ public class OwnedLocation implements ConfigurationSerializable {
 		this.playerName = (String) map.get("playerName");
 		Vector vec = (Vector) map.get("vector");
 		String world = (String) map.get("world");
-		this.location = new Location(Bukkit.getServer().getWorld(world),
-				vec.getX(), vec.getY(), vec.getZ());
+		this.location = new Location(Bukkit.getServer().getWorld(world), vec.getX(), vec.getY(), vec.getZ());
 	}
 
 	public static OwnedLocation deserialize(Map<String, Object> map) {

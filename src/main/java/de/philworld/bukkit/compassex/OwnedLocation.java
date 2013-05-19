@@ -10,6 +10,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import com.google.common.base.Preconditions;
+
 public class OwnedLocation implements ConfigurationSerializable {
 
 	public final String id;
@@ -18,24 +20,18 @@ public class OwnedLocation implements ConfigurationSerializable {
 	public final Vector vector;
 
 	public OwnedLocation(String id, String owner, String world, Vector vector) {
-		this.id = id;
-		this.owner = owner;
-		this.world = world;
-		this.vector = vector;
+		this.id = Preconditions.checkNotNull(id);
+		this.owner = Preconditions.checkNotNull(owner);
+		this.world = Preconditions.checkNotNull(world);
+		this.vector = Preconditions.checkNotNull(vector);
 	}
 
 	public OwnedLocation(String id, String owner, Location location) {
-		this.id = id;
-		this.owner = owner;
-		this.world = location.getWorld().getName();
-		this.vector = location.toVector();
+		this(id, owner, location.getWorld().getName(), location.toVector());
 	}
 
 	public OwnedLocation(Map<String, Object> map) {
-		this.id = (String) map.get("id");
-		this.owner = (String) map.get("owner");
-		this.world = (String) map.get("world");
-		this.vector = (Vector) map.get("vector");
+		this((String) map.get("id"), (String) map.get("owner"), (String) map.get("world"), (Vector) map.get("vector"));
 	}
 
 	public static OwnedLocation deserialize(Map<String, Object> map) {

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -78,25 +79,37 @@ public class TrackingComponent extends Component implements Listener {
 	 */
 	public void removePlayer(Player player) {
 		String name = player.getName();
-		// remove watched players
-		// TODO: send notification to watcher when the watched leaves
-		if (watchList.containsValue(name)) {
-			Iterator<String> iterator = watchList.values().iterator();
-			while (iterator.hasNext()) {
-				if (iterator.next().equals(name)) {
-					iterator.remove();
-				}
-			}
+
+		if (watchList.isEmpty()) {
+			disable();
+			return;
 		}
 
-		removeWatcher(player);
+		Iterator<Entry<String, String>> it = watchList.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, String> pair = it.next();
+			if (pair.getValue().equals(name)) {
+				Player watcher = Bukkit.getServer().getPlayer(pair.getKey());
+				if (watcher != null)
+					sendMessage(watcher, "Your watched player, " + BLUE + pair.getValue() + WHITE
+							+ ", has left the server.");
+			} else if (pair.getKey().equals(name)) {
+			} else {
+				continue;
+			}
+
+			it.remove();
+		}
+
+		if (watchList.isEmpty())
+			disable();
 	}
 
 	public void removeWatcher(Player player) {
 		String name = player.getName();
 		watchList.remove(name);
 		if (watchList.isEmpty()) {
-			updater.stop();
+			disable();
 		}
 	}
 

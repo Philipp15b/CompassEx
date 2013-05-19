@@ -13,6 +13,7 @@ public class CommandContext {
 	public final String arg1;
 	public final String arg2;
 	public final String arg3;
+	public final String arg4;
 
 	public CommandContext(org.bukkit.command.Command command, String label, String[] args) {
 		this.command = command;
@@ -21,6 +22,7 @@ public class CommandContext {
 		arg1 = args.length > 1 ? args[1].toLowerCase() : "";
 		arg2 = args.length > 2 ? args[2].toLowerCase() : "";
 		arg3 = args.length > 3 ? args[3].toLowerCase() : "";
+		arg4 = args.length > 4 ? args[4].toLowerCase() : "";
 	}
 
 }

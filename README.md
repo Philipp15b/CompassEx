@@ -157,6 +157,16 @@ To create public locations, first create a private one and then `publicize` it.
 			<td>List public compass targets.</td>
 		</tr>
 		<tr>
+			<td><code>/compass nearest</code></td>
+			<td><code>/compass near</code></td>
+			<td>Show the three nearest private compass targets.</td>
+		</tr>
+		<tr>
+			<td><code>/compass nearest public</code></td>
+			<td><code>/compass near public</code></td>
+			<td>Show the three nearest public compass targets.</td>
+		</tr>
+		<tr>
 			<td><code>/compass publicize ID</code></td>
 			<td><code>/compass public ID</code></td>
 			<td>Convert a private compass target to a public compass target.</td>
@@ -334,6 +344,14 @@ Heads up! The rename commands use the respective `compassex.remove`, `compassex.
 	<tr>
 		<td><code>compassex.list.private.any</code></td>
 		<td>Allows you to list all private locations.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.nearest.private</code></td>
+		<td>Access to <code>/compass nearest</code>.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.nearest.public</code></td>
+		<td>Access to <code>/compass nearest public</code>.</td>
 	</tr>
 	<tr>
 		<td><code>compassex.info</code></td>

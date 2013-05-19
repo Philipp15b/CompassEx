@@ -10,6 +10,9 @@ import static org.bukkit.ChatColor.WHITE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
@@ -50,6 +54,8 @@ public class SavingComponent extends Component {
 		help("remove public ID", "Remove an existing location", "compassex.remove.public");
 		help("load ID", "Set a saved location to your compass", "compassex.load");
 		help("list private|public", "List saved locations.", "compassex.list");
+		help("near", "Shows the 3 nearest private locations", "compassex.nearest.private");
+		help("near public", "Shows the 3 nearest public locations", "compassex.nearest.public");
 		help("privatize ID", "Make a location private.", "compassex.privatize");
 		help("publicize ID", "Make a location public.", "compassex.publicize");
 	}
@@ -402,6 +408,48 @@ public class SavingComponent extends Component {
 		}
 		p.sendMessage(DARK_AQUA + "See " + (showPublic ? "private" : "public") + " compass target list: " + GRAY + "/"
 				+ context.label + " list " + (showPublic ? "private" : "public"));
+	}
+
+	@Command(aliases = { "nearest", "near" })
+	public void nearest(CommandContext context, Player p) throws PermissionException {
+		if (context.arg1.equalsIgnoreCase("public")) {
+			requirePermission(p, "compassex.nearest.public");
+			sendNearest(p, publicLocations.values(), 3);
+		} else {
+			requirePermission(p, "compassex.nearest.private");
+			sendNearest(p, privateLocations.getLocations(p), 3);
+		}
+	}
+
+	private static void sendNearest(Player p, Collection<OwnedLocation> locs, int num) {
+		if (locs.size() == 0) {
+			sendMessage(p, " ( none ) ");
+			return;
+		}
+
+		List<OwnedLocation> sorted = new ArrayList<OwnedLocation>(locs);
+
+		final Vector loc = p.getLocation().toVector();
+		Collections.sort(sorted, new Comparator<OwnedLocation>() {
+			@Override
+			public int compare(OwnedLocation o1, OwnedLocation o2) {
+				double d1 = loc.distanceSquared(o1.vector);
+				double d2 = loc.distanceSquared(o2.vector);
+				if (d1 > d2) {
+					return -1;
+				} else if (d1 < d2) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
+
+		for (int i = 0; i < num && i < sorted.size(); i++) {
+			OwnedLocation l = sorted.get(i);
+			int distance = (int) loc.distance(l.vector);
+			sendMessage(p, " - " + BLUE + l.id + WHITE + " (" + BLUE + distance + WHITE + " blocks)");
+		}
 	}
 
 	@Command(aliases = { "privatize", "private" }, permission = "compassex.privatize")

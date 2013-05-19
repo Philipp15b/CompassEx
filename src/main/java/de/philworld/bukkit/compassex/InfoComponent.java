@@ -49,7 +49,7 @@ public class InfoComponent extends Component {
 			loc = owned.toLocation();
 
 			sendMessage(p, "Owned by: " + BLUE + owned.id);
-			if (!isPublic && !owned.id.equals(p.getName()) && !p.hasPermission("compassex.info.any")) {
+			if (!isPublic && !owned.isOwnedBy(p) && !p.hasPermission("compassex.info.any")) {
 				return;
 			}
 		}
@@ -58,6 +58,11 @@ public class InfoComponent extends Component {
 		// show info
 		sendMessage(p, BLUE + loc.getWorld().getName() + WHITE + " (X: " + BLUE + loc.getBlockX() + WHITE + " Y: "
 				+ BLUE + loc.getBlockY() + WHITE + " Z: " + BLUE + loc.getBlockZ() + WHITE + ")");
+
+		Vector current = p.getLocation().toVector();
+		if (p.hasPermission("compassex.distance"))
+			sendMessage(p, "Distance: " + BLUE + (int) Math.ceil(current.subtract(loc.toVector()).length()) + WHITE
+					+ " blocks.");
 	}
 
 	@SuppressWarnings("unused")

@@ -46,7 +46,7 @@
 
 		<dependency>
 			<groupId>org.mcstats</groupId>
-			<artifactId>metrics</artifactId>
+			<artifactId>metrics-lite</artifactId>
 			<version>1.1</version>
 		</dependency>
 		

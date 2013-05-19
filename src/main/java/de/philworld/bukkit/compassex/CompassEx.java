@@ -3,14 +3,13 @@ package de.philworld.bukkit.compassex;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
+import org.mcstats.MetricsLite;
 
 import de.philworld.bukkit.compassex.command.HelpManager;
+import net.milkbowl.vault.economy.Economy;
 
 public class CompassEx extends JavaPlugin {
 
@@ -64,7 +63,7 @@ public class CompassEx extends JavaPlugin {
 		}
 
 		try {
-			new Metrics(this).start();
+			new MetricsLite(this).start();
 		} catch (IOException e) {
 			getLogger().log(Level.WARNING, "Error enabling Metrics:", e);
 		}

@@ -78,6 +78,7 @@ public class CompassEx extends JavaPlugin {
 		} catch (IOException e) {
 			getLogger().log(Level.SEVERE, "Could not save locations!", e);
 		}
+		hiding.save();
 	}
 
 	/**

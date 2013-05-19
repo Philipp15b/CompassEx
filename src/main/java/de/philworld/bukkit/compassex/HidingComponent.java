@@ -1,7 +1,15 @@
 package de.philworld.bukkit.compassex;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 
@@ -18,6 +26,37 @@ public class HidingComponent extends Component {
 
 		help("hide", "Hide from being tracked", "compassex.hide");
 		help("hidden", "Are you hidden?", "compassex.hide");
+
+		load();
+	}
+
+	private void load() {
+		File f = new File(plugin.getDataFolder(), "hidden.db.txt");
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(f));
+			String line;
+			while ((line = in.readLine()) != null) {
+				hiddenPlayers.add(line);
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			// if the file doesn't exist yet, just don't read it
+		} catch (IOException e) {
+			plugin.getLogger().log(Level.SEVERE, "Could not read hidden players database!", e);
+		}
+	}
+
+	void save() {
+		File f = new File(plugin.getDataFolder(), "hidden.db.txt");
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(f));
+			for (String player : hiddenPlayers) {
+				out.write(player + "\n");
+			}
+			out.close();
+		} catch (IOException e) {
+			plugin.getLogger().log(Level.SEVERE, "Could not save hidden players database!", e);
+		}
 	}
 
 	public void hide(Player p) {

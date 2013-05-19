@@ -46,7 +46,8 @@ public class SavingComponent extends Component {
 
 		help("save ID", "Save your current compass target", "compassex.save");
 		help("save here ID", "Save your current location", "compassex.save");
-		help("remove ID", "Remove an existing location", "compassex.remove");
+		help("remove ID", "Remove an existing location", "compassex.remove.private");
+		help("remove public ID", "Remove an existing location", "compassex.remove.public");
 		help("load ID", "Set a saved location to your compass", "compassex.load");
 		help("list private|public", "List saved locations.", "compassex.list");
 		help("privatize ID", "Make a location private.", "compassex.privatize");
@@ -56,7 +57,7 @@ public class SavingComponent extends Component {
 	private void load() {
 		if (Migration2.should(plugin)) {
 			plugin.getLogger().log(Level.INFO,
-					"CompassEx v1/v2 config detected. The files will be loaded and then renamed.");
+					"CompassEx v1/v2 config detected. The files will be loaded and then migrated to v3-style config.");
 			Migration2 migration = new Migration2(plugin);
 			privateLocations = migration.loadPrivateLocations();
 			publicLocations = migration.loadPublicLocations();
@@ -234,21 +235,27 @@ public class SavingComponent extends Component {
 
 	}
 
-	@Command(aliases = { "list", "l" }, permission = "compassex.list")
-	public void list(CommandContext context, Player p) {
+	@Command(aliases = { "list", "l" })
+	public void list(CommandContext context, Player p) throws PermissionException {
 
 		boolean showPublic;
 		String pageArg;
 		if (context.arg1.equalsIgnoreCase("public")) {
 			// show public locations
+			if (!p.hasPermission("compassex.list.public"))
+				throw new PermissionException("You may not list public compass targets!");
 			showPublic = true;
 			pageArg = context.arg2;
 		} else if (context.arg1.equalsIgnoreCase("private")) {
 			// show private locations
+			if (!p.hasPermission("compassex.list.private"))
+				throw new PermissionException("You may not list private compass targets!");
 			showPublic = false;
 			pageArg = context.arg2;
 		} else {
 			// default, show public locations
+			if (!p.hasPermission("compassex.list.public"))
+				throw new PermissionException("You may not list public compass targets!");
 			showPublic = true;
 			pageArg = context.arg1;
 		}
@@ -266,7 +273,7 @@ public class SavingComponent extends Component {
 				locations.add(loc.id);
 			}
 		} else {
-			boolean any = p.hasPermission("compassex.list.any");
+			boolean any = p.hasPermission("compassex.list.private.any");
 			for (OwnedLocation loc : privateLocations.getLocations(p)) {
 				if (any || loc.isOwnedBy(p))
 					locations.add(loc.id);

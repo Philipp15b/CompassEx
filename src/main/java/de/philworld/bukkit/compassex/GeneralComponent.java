@@ -27,11 +27,11 @@ public class GeneralComponent extends Component {
 
 		help("reset", "Reset back to spawn", "compassex.reset");
 		help("here", "Set to your current position", "compassex.here");
+		help("bed", "Set to your bed", "compassex.bed");
 		help("north/east/south/west", "Set to a direction.", "compassex.direction");
+		help("X Y Z", "Set to coordinates", "compassex.pos");
 		help("PLAYERNAME", "Set to a player", "compassex.player");
 		help("live", "Set to a player's pos & update", "compassex.live");
-		help("bed", "Set to your bed", "compassex.bed");
-		help("X Y Z", "Set to coordinates", "compassex.pos");
 	}
 
 	@Command(aliases = { "help", "" }, permission = "compassex.help")

@@ -117,6 +117,21 @@ To create public locations, first create a private one and then `publicize` it.
 				to find a private location and then a public location.</td>
 		</tr>
 		<tr>
+			<td><code>/compass rename ID NEWID</code></td>
+			<td></td>
+			<td>Rename a private compass target.</td>
+		</tr>
+		<tr>
+			<td><code>/compass rename public ID NEWID</code></td>
+			<td></td>
+			<td>Rename a public compass target.</td>
+		</tr>
+		<tr>
+			<td><code>/compass rename OWNER ID NEWID</code></td>
+			<td>/compass rename private OWNER ID NEWID</td>
+			<td>Rename a private compass target.</td>
+		</tr>
+		<tr>
 			<td><code>/compass remove ID</code></td>
 			<td></td>
 			<td>Remove a private compass target.</td>
@@ -219,6 +234,9 @@ Just copy the jar file into your plugins folder, start your server so that the c
 Then edit the config file at will. Now start your server again.
 
 ### Permissions
+
+Heads up! The rename commands use the respective `compassex.remove`, `compassex.save` and
+`compassex.publicize` (if the location is public) permissions.
 
 <table>
 	<tr>

@@ -158,6 +158,101 @@ public class SavingComponent extends Component {
 				+ BLUE + loc.getBlockZ() + WHITE + ")");
 	}
 
+	private static boolean mayRename(Player p, OwnedLocation loc, boolean pub) {
+		String vis = pub ? "public" : "private";
+		String any = loc.isOwnedBy(p) ? "" : ".any";
+		return p.hasPermission("compassex.remove." + vis + any) && p.hasPermission("compassex.save")
+				&& (!pub || p.hasPermission("compassex.publicize" + any));
+	}
+
+	@Command(aliases = { "rename" })
+	public void rename(CommandContext context, Player p) throws PermissionException {
+		boolean hasPublicPerm = p.hasPermission("compassex.save")
+				&& (p.hasPermission("compassex.publicize") || p.hasPermission("compassex.publicize.any"))
+				&& (p.hasPermission("compassex.remove.public") || p.hasPermission("compassex.remove.public.any"));
+		boolean hasPrivatePerm = p.hasPermission("compassex.save")
+				&& (p.hasPermission("compassex.remove.private") || p.hasPermission("compassex.remove.private.any"));
+		if (!hasPrivatePerm && !hasPublicPerm)
+			throw new PermissionException();
+
+		if (context.arg1.isEmpty()) {
+			sendMessage(p, "Expected an ID: " + GRAY + "/compass rename <id> <newid>");
+			if (p.hasPermission("compassex.rename.private.any"))
+				sendMessage(p, "Or: " + GRAY + "/compass rename <owner> <id> <newid>");
+			return;
+		}
+
+		// /compassex rename <id> <newid>
+		if (context.arg3.isEmpty()) {
+			String id = context.arg1;
+			String newid = context.arg2;
+			OwnedLocation loc = privateLocations.get(p.getName(), id);
+			if (loc == null) {
+				sendMessage(p, "Could not find a private location named " + BLUE + id + WHITE + " owned by you!");
+				if (hasPublicPerm)
+					sendMessage(p, "If you want to rename a public location, type " + GRAY
+							+ "/compass rename public <id> <newid>");
+				return;
+			}
+
+			if (!mayRename(p, loc, false))
+				throw new PermissionException("You're not allowed to rename your locations!");
+
+			OwnedLocation old = privateLocations.get(p.getName(), id);
+			privateLocations.remove(loc.owner, id);
+			privateLocations.add(new OwnedLocation(newid, old.owner, old.world, old.vector));
+			sendMessage(p, "Renamed the private location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
+
+			// /compassex rename public <id> <newid>
+		} else if (context.arg1.equalsIgnoreCase("public")) {
+			String id = context.arg2;
+			String newid = context.arg3;
+			OwnedLocation loc = publicLocations.get(id);
+			if (loc == null) {
+				sendMessage(p, "Could not find public location!");
+				return;
+			}
+
+			if (!mayRename(p, loc, true))
+				throw new PermissionException("You're not allowed to rename that location!");
+
+			OwnedLocation old = privateLocations.get(loc.owner, id);
+			publicLocations.remove(id);
+			publicLocations.put(newid, new OwnedLocation(newid, old.owner, old.world, old.vector));
+			sendMessage(p, "Renamed the public location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
+
+			// /compassex rename <owner> <id> <newid> or
+			// /compassex rename private <owner> <id> <newid>
+		} else {
+			String owner, id, newid;
+			if (context.arg1.equalsIgnoreCase("private")) {
+				owner = context.arg2;
+				id = context.arg3;
+				newid = context.arg4;
+			} else {
+				owner = context.arg1;
+				id = context.arg2;
+				newid = context.arg3;
+			}
+
+			OwnedLocation loc = privateLocations.get(owner, id);
+
+			if (loc == null) {
+				sendMessage(p, "Could not find private location " + BLUE + id + WHITE + " owned by " + BLUE + owner
+						+ WHITE + "!");
+				return;
+			}
+
+			if (!mayRename(p, loc, false))
+				throw new PermissionException("You may not rename the location!");
+
+			OwnedLocation old = privateLocations.get(loc.owner, id);
+			privateLocations.remove(loc.owner, id);
+			privateLocations.add(new OwnedLocation(newid, old.owner, old.world, old.vector));
+			sendMessage(p, "Renamed the private location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
+		}
+	}
+
 	@Command(aliases = { "remove" })
 	public void remove(CommandContext context, Player p) throws PermissionException {
 		boolean hasPublicPerm = p.hasPermission("compassex.remove.public");
@@ -188,7 +283,7 @@ public class SavingComponent extends Component {
 					&& !(loc.isOwnedBy(p) && p.hasPermission("compassex.remove.private")))
 				throw new PermissionException("You're not allowed to remove your locations!");
 
-			privateLocations.remove(p.getName(), id);
+			privateLocations.remove(loc.owner, id);
 			sendMessage(p, "Removed the private location " + BLUE + id + WHITE + ".");
 
 			// /compassex remove public <id>

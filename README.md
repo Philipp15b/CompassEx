@@ -366,6 +366,9 @@ The configuration is really simple (you can find it in `plugins/CompassEx/config
 
 ## More
 
+This plugin uses mcstats.org's Plugin Metrics. That means it sends anonymous statistics to mcstats.org to help
+me develop the plugin. [You can find more about it and how to disable it here](http://mcstats.org/learn-more/).
+
 Do you think you found any bugs? [Submit one here](https://github.com/Philipp15b/CompassEx/issues).
 
 You think you can help by adding a feature or fixing a bug? Go to the [GitHub repository](https://github.com/Philipp15b/CompassEx).

@@ -40,7 +40,8 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.2-R0.2</version>
+			<version>1.5.2-R0.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -53,12 +54,14 @@
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
 			<version>1.2.18-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.dynmap</groupId>
 			<artifactId>DynmapCoreAPI</artifactId>
 			<version>1.3</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -125,19 +128,6 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<artifactSet>
-								<includes>
-									<include>org.mcstats:metrics:jar:*</include>
-								</includes>
-							</artifactSet>
-							<filters>
-								<filter>
-									<artifact>org.mcstats:metrics:jar:*</artifact>
-									<includes>
-										<include>org/mcstats/*</include>
-									</includes>
-								</filter>
-							</filters>
 							<relocations>
 								<relocation>
 									<pattern>org.mcstats</pattern>

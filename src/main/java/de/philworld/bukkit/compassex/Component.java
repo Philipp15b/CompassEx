@@ -30,7 +30,7 @@ abstract class Component {
 			throw new PermissionException();
 	}
 
-	protected static void sendMessage(Player p, String message) {
+	static void sendMessage(Player p, String message) {
 		p.sendMessage(GREEN + "[CompassEx]" + WHITE + " " + message);
 	}
 

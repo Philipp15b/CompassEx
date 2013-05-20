@@ -172,6 +172,11 @@ To create public locations, first create a private one and then `publicize` it.
 			<td>Convert a private compass target to a public compass target.</td>
 		</tr>
 		<tr>
+			<td><code>/compass publicize OWNER ID</code></td>
+			<td><code>/compass public OWNER ID</code></td>
+			<td>Convert a private compass target to a public compass target.</td>
+		</tr>
+		<tr>
 			<td><code>/compass privatize ID</code></td>
 			<td><code>/compass private ID</code></td>
 			<td>Convert a public compass target back to a private compass target.</td>
@@ -204,9 +209,12 @@ and the `/compass live` commands if they're not admins.
 	<tbody>
 </table>
 
-### Target Info Commands
+### Info Commands
 
-These commands show some information about your current compass target.
+These commands show some information about your current compass target or a saved location if an ID is given.
+
+An ID may be just an ID (your own private location), `public` followed by the ID (a public location) or a
+player name and the ID (a private location of someone).
 
 <table>
 	<thead>
@@ -216,24 +224,19 @@ These commands show some information about your current compass target.
 	</thead>
 	<tbody>
 		<tr>
-			<td><code>/compass info</code></td>
+			<td><code>/compass info [ID]</code></td>
 			<td></td>
-			<td>Show the coordinates of your current compass target.</td>
+			<td>Show the coordinates of the location.</td>
 		</tr>
 		<tr>
-			<td><code>/compass info ID</code></td>
-			<td></td>
-			<td>Show the coordinates of a saved compass target.</td>
+			<td><code>/compass distance [ID]</code></td>
+			<td><code>/compass d [ID]</code></td>
+			<td>Show the distance in blocks to the location.</td>
 		</tr>
 		<tr>
-			<td><code>/compass distance</code></td>
-			<td><code>/compass d</code></td>
-			<td>Show the distance in blocks to the compass target.</td>
-		</tr>
-		<tr>
-			<td><code>/compass height</code></td>
-			<td><code>/compass h</code></td>
-			<td>Show the height difference between you and the compasses target.</td>
+			<td><code>/compass height [ID]</code></td>
+			<td><code>/compass h [ID]</code></td>
+			<td>Show the height difference between you and the location.</td>
 		</tr>
 	<tbody>
 </table>
@@ -314,8 +317,16 @@ Heads up! The rename commands use the respective `compassex.remove`, `compassex.
 		<td>Users with this permission won't have to pay for saving a target.</td>
 	</tr>
 	<tr>
-		<td><code>compassex.load</code></td>
-		<td>Allows access to the load command.</td>
+		<td><code>compassex.load.public</code></td>
+		<td>Allows to access public locations via the load command or the info commands listed above.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.load.private</code></td>
+		<td>Allows to access own private locations via the load command or the info commands listed above.</td>
+	</tr>
+	<tr>
+		<td><code>compassex.load.private.any</code></td>
+		<td>Allows to access any private locations via the load command or the info commands listed above.</td>
 	</tr>
 	<tr>
 		<td><code>compassex.remove.private</code></td>

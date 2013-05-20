@@ -139,27 +139,21 @@ public class SavingComponent extends Component {
 		privateLocations.add(new OwnedLocation(id, p.getName(), loc));
 	}
 
-	@Command(aliases = { "load" }, permission = "compassex.load")
-	public void load(CommandContext context, Player p) {
-		String id = context.arg1;
+	@Command(aliases = { "load" })
+	public void load(CommandContext context, Player p) throws PermissionException {
+		QueryResult result = queryLocation(p, context.arg1, context.arg2);
 
-		if (id.isEmpty()) {
-			sendMessage(p, "Expected an ID: /compass load <id>");
+		if (result == null) {
+			sendMessage(p, "Expected an id: /" + context.label + " [OWNER/public] <id>");
 			return;
 		}
 
-		OwnedLocation location = privateLocations.get(p.getName(), id);
-		if (location == null) {
-			location = publicLocations.get(id);
-		}
-		if (location == null) {
-			sendMessage(p, "Compass target " + BLUE + id + WHITE + " does not exist.");
+		if (result.notifyIfNotFound(p))
 			return;
-		}
 
-		Location loc = location.toLocation();
+		Location loc = result.get().toLocation();
 		setTarget(p, loc);
-		sendMessage(p, "Your compass has been set to " + BLUE + id + WHITE + ".");
+		sendMessage(p, "Your compass has been set to " + BLUE + result.get().id + WHITE + ".");
 		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "
 				+ BLUE + loc.getBlockZ() + WHITE + ")");
 	}
@@ -480,23 +474,32 @@ public class SavingComponent extends Component {
 
 	@Command(aliases = { "publicize", "public" }, permission = "compassex.publicize")
 	public void publicize(CommandContext context, Player p) throws PermissionException {
-		String id = context.arg1;
-		if (id.isEmpty()) {
+		if (context.arg1.isEmpty()) {
 			sendMessage(p, "Expected an ID: " + GRAY + "/compass publicize <id>");
 			return;
 		}
 
-		OwnedLocation loc = privateLocations.get(p.getName(), id);
-		if (loc == null) {
-			sendMessage(p, "Private compass target " + BLUE + id + WHITE + " does not exist.");
-			return;
+		OwnedLocation loc;
+		if (context.arg3.isEmpty()) {
+			loc = privateLocations.get(p.getName(), context.arg1);
+			if (loc == null) {
+				sendMessage(p, "Private compass target " + BLUE + context.arg1 + WHITE + " does not exist.");
+				return;
+			}
+		} else {
+			loc = privateLocations.get(context.arg1, context.arg2);
+			if (loc == null) {
+				sendMessage(p, "Private compass target named " + BLUE + context.arg2 + WHITE + " and owned by " + BLUE
+						+ context.arg1 + WHITE + " does not exist.");
+				return;
+			}
 		}
 
 		if (!loc.isOwnedBy(p) && !p.hasPermission("compassex.publicize.any")) {
 			throw new PermissionException("You don't have permission to publicize other players' compass targets.");
 		}
 
-		if (publicLocations.containsKey(id)) {
+		if (publicLocations.containsKey(context.arg3.isEmpty() ? context.arg2 : context.arg3)) {
 			sendMessage(p, "A public location with this name already exists. Delete it first!");
 			return;
 		}
@@ -506,7 +509,39 @@ public class SavingComponent extends Component {
 
 		privateLocations.remove(loc.owner, loc.id);
 		publicLocations.put(loc.id, loc);
-		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now public!");
+		sendMessage(p, "Compass target " + BLUE + loc.id + WHITE + " is now public!");
 	}
 
+	public QueryResult queryLocation(Player p, String arg1, String arg2) throws PermissionException {
+		if (arg1.equalsIgnoreCase("public")) {
+			if (!p.hasPermission("compassex.load.public"))
+				throw new PermissionException("You're not allowed to load public locations!");
+			OwnedLocation loc = publicLocations.get(arg2);
+			if (loc == null) {
+				return new QueryResult.NotFoundResult(p.getName(), arg2);
+			}
+			return new QueryResult.FoundResult(loc, true);
+
+		} else if (!arg1.isEmpty()) {
+			if (arg2.isEmpty()) {
+				if (!p.hasPermission("compassex.load.private"))
+					throw new PermissionException("You're not allowed to load your own locations!");
+				OwnedLocation loc = privateLocations.get(p.getName(), arg1);
+				if (loc == null) {
+					return new QueryResult.NotFoundResult(p.getName(), arg1);
+				}
+				return new QueryResult.FoundResult(loc, false);
+			}
+
+			if (!p.hasPermission("compassex.load.private.any"))
+				throw new PermissionException("You're not allowed to load other's private locations!");
+			OwnedLocation loc = privateLocations.get(arg1, arg2);
+			if (loc == null) {
+				return new QueryResult.NotFoundResult(arg1, arg2);
+			}
+			return new QueryResult.FoundResult(loc, false);
+		} else {
+			return null; // no query
+		}
+	}
 }

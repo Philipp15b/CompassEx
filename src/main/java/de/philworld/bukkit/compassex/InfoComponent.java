@@ -17,45 +17,34 @@ public class InfoComponent extends Component {
 		super(plugin);
 
 		help("info [ID]", "See the coordinates of your current compass target, or a saved location.", "compassex.info");
-		help("height", "Height diff between you and the target", "compassex.height");
-		help("distance", "Distance to your target", "compassex.distance");
+		help("height [ID]", "Height diff between you and the target", "compassex.height");
+		help("distance [ID]", "Distance to your target", "compassex.distance");
 	}
 
 	@Command(aliases = { "info" }, permission = "compassex.info")
-	public void info(CommandContext context, Player p) {
-		Location loc;
-		if (context.arg1.isEmpty() || plugin.saving == null) {
-			loc = p.getCompassTarget();
-			sendMessage(p, "Current compass target info:");
-		} else {
-			boolean isPublic = false;
-			OwnedLocation owned = plugin.saving.privateLocations.get(p.getName(), context.arg1);
-			if (owned == null) {
-				owned = plugin.saving.publicLocations.get(context.arg1);
-				if (owned != null) {
-					isPublic = true;
-					sendMessage(p, "Public compass target " + BLUE + owned.id + WHITE + " info:");
-				}
-			} else {
-				sendMessage(p, "Private compass target " + BLUE + owned.id + WHITE + " info:");
-			}
+	public void info(CommandContext context, Player p) throws PermissionException {
+		Location loc = null;
+		if (!context.arg1.isEmpty() && plugin.saving != null) {
+			QueryResult result = plugin.saving.queryLocation(p, context.arg1, context.arg2);
 
-			if (owned == null) {
-				// specified target id does not exist
-				sendMessage(p, "Compass target " + BLUE + context.arg1 + WHITE + " does not exist.");
-				return;
-			}
+			if (result != null) {
+				if (result.notifyIfNotFound(p))
+					return;
 
-			loc = owned.toLocation();
+				sendMessage(p, "Private compass target " + BLUE + result.get().id + WHITE + " info:");
 
-			sendMessage(p, "Owned by: " + BLUE + owned.id);
-			if (!isPublic && !owned.isOwnedBy(p) && !p.hasPermission("compassex.info.any")) {
-				return;
+				loc = result.get().toLocation();
+
+				if (!result.get().isOwnedBy(p))
+					sendMessage(p, "Owned by: " + BLUE + result.get().id);
 			}
 		}
 
-		// private/public/compass-target location found
-		// show info
+		if (loc == null) {
+			loc = p.getCompassTarget();
+			sendMessage(p, "Current compass target info:");
+		}
+
 		sendMessage(p, BLUE + loc.getWorld().getName() + WHITE + " (X: " + BLUE + loc.getBlockX() + WHITE + " Y: "
 				+ BLUE + loc.getBlockY() + WHITE + " Z: " + BLUE + loc.getBlockZ() + WHITE + ")");
 
@@ -65,22 +54,36 @@ public class InfoComponent extends Component {
 					+ " blocks.");
 	}
 
-	@SuppressWarnings("unused")
 	@Command(aliases = { "height", "h" }, permission = "compassex.height")
 	public void height(CommandContext context, Player p) throws PermissionException {
-		int diff = (int) Math.ceil(p.getCompassTarget().getBlockY() - p.getLocation().getY());
-
-		sendMessage(p, "Height difference between you and your compass target: " + diff + " blocks.");
+		Location loc = queryLocationEx(p, context.arg1, context.arg2);
+		if (loc == null)
+			return;
+		int diff = (int) Math.ceil(p.getCompassTarget().getY() - p.getLocation().getY());
+		sendMessage(p, "Height difference: " + diff + " blocks.");
 	}
 
-	@SuppressWarnings("unused")
 	@Command(aliases = { "distance", "d" }, permission = "compassex.distance")
 	public void distance(CommandContext context, Player p) throws PermissionException {
+		Location loc = queryLocationEx(p, context.arg1, context.arg2);
+		if (loc == null)
+			return;
 		Vector current = p.getLocation().toVector();
-		Vector target = p.getCompassTarget().toVector();
-		int distance = (int) Math.ceil(current.subtract(target).length());
+		Vector target = loc.toVector();
+		int distance = (int) Math.ceil(current.distance(target));
+		sendMessage(p, "Distance: " + distance + " blocks.");
+	}
 
-		sendMessage(p, "Distance between you and your compass target: " + distance + " blocks.");
+	private Location queryLocationEx(Player p, String arg1, String arg2) throws PermissionException {
+		if (!arg1.isEmpty() && plugin.saving != null) {
+			QueryResult result = plugin.saving.queryLocation(p, arg1, arg2);
+			if (result != null) {
+				if (result.notifyIfNotFound(p))
+					return null;
+				return result.get().toLocation();
+			}
+		}
+		return p.getCompassTarget();
 	}
 
 }

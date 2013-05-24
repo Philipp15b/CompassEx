@@ -147,14 +147,14 @@ To create public locations, first create a private one and then `publicize` it.
 			<td>Remove a private compass target.</td>
 		</tr>
 		<tr>
-			<td><code>/compass list private PAGE-NUMBER</code></td>
+			<td><code>/compass list public PAGE-NUMBER</code></td>
 			<td></td>
-			<td>List your own compass targets (all if you have the <code>compassex.list.private.any</code> permission).</td>
+			<td>List public compass targets. </td>
 		</tr>
 		<tr>
 			<td><code>/compass list PAGE-NUMBER</code></td>
-			<td><code>/compass list public PAGE-NUMBER</code></td>
-			<td>List public compass targets.</td>
+			<td><code>/compass list private PAGE-NUMBER</code></td>
+			<td>List private compass targets (all if you have the <code>compassex.list.private.any</code> permission).</td>
 		</tr>
 		<tr>
 			<td><code>/compass nearest</code></td>

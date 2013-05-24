@@ -344,10 +344,10 @@ public class SavingComponent extends Component implements Persistable {
 			showPublic = false;
 			pageArg = context.arg2;
 		} else {
-			// default, show public locations
-			if (!p.hasPermission("compassex.list.public"))
-				throw new PermissionException("You may not list public compass targets!");
-			showPublic = true;
+			// default, show private locations
+			if (!p.hasPermission("compassex.list.private"))
+				throw new PermissionException("You may not list private compass targets!");
+			showPublic = false;
 			pageArg = context.arg1;
 		}
 

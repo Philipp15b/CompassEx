@@ -148,6 +148,11 @@ public class SavingComponent extends Component implements Persistable {
 			return;
 
 		Location loc = result.get().toLocation();
+		if (loc == null || !loc.getWorld().equals(p.getWorld())) {
+			sendMessage(p, "You can only load locations in your current world!");
+			return;
+		}
+
 		setTarget(p, loc);
 		sendMessage(p, "Your compass has been set to " + BLUE + result.get().id + WHITE + ".");
 		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "

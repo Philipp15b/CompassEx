@@ -38,7 +38,7 @@ public class CompassExCommandExecutor implements CommandExecutor {
 			} else if (p.hasPermission("compassex.player") && args.length == 1) {
 				plugin.general.player(new CommandContext(command, label, args), p);
 			} else {
-				plugin.general.help(new CommandContext(command, label, args), p);
+				plugin.general.help(new CommandContext(command, label, new String[] {}), p);
 			}
 		} catch (PermissionException e) {
 			e.send(p);

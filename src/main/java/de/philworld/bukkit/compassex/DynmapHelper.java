@@ -39,7 +39,7 @@ class DynmapHelper {
 			set.setLabelShow(true);
 		}
 
-		for (OwnedLocation loc : plugin.saving.publicLocations.values()) {
+		for (OwnedLocation loc : plugin.saving.publicLocations.getLocations()) {
 			set(loc);
 		}
 	}
@@ -53,8 +53,7 @@ class DynmapHelper {
 
 	public void set(OwnedLocation loc) {
 		remove(loc.id);
-		set.createMarker(loc.id, loc.id, loc.world, loc.vector.getX(), loc.vector.getY(), loc.vector.getZ(),
-				marker.getMarkerIcon(plugin.markerIcon), false);
+		set.createMarker(loc.id, loc.id, loc.world, loc.x, loc.y, loc.z, marker.getMarkerIcon(plugin.markerIcon), false);
 	}
 
 	public void remove(String id) {

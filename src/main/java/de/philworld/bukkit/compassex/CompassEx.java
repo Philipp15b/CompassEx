@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
 import de.philworld.bukkit.compassex.command.HelpManager;
+import de.philworld.bukkit.compassex.persistence.PersisterTask;
 import net.milkbowl.vault.economy.Economy;
 
 public class CompassEx extends JavaPlugin {
@@ -18,6 +19,7 @@ public class CompassEx extends JavaPlugin {
 	HelpManager helpManager = new HelpManager();
 
 	CompassExCommandExecutor executor;
+	PersisterTask persister;
 
 	FileConfiguration config;
 	DynmapHelper dynmapHelper;
@@ -30,6 +32,7 @@ public class CompassEx extends JavaPlugin {
 	GeneralComponent general;
 	InfoComponent info;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		loadConfiguration();
@@ -62,6 +65,9 @@ public class CompassEx extends JavaPlugin {
 			}
 		}
 
+		persister = new PersisterTask(death, saving, hiding);
+		getServer().getScheduler().scheduleAsyncRepeatingTask(this, persister, 5 * 20, 5 * 60 * 20);
+
 		try {
 			new MetricsLite(this).start();
 		} catch (IOException e) {
@@ -72,13 +78,7 @@ public class CompassEx extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		economy = null;
-		tracking.disable();
-		try {
-			saving.save();
-		} catch (IOException e) {
-			getLogger().log(Level.SEVERE, "Could not save locations!", e);
-		}
-		hiding.save();
+		persister.run();
 	}
 
 	/**

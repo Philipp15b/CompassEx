@@ -1,7 +1,6 @@
 package de.philworld.bukkit.compassex.migrations;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +12,8 @@ import org.bukkit.util.Vector;
 import de.philworld.bukkit.compassex.CompassEx;
 import de.philworld.bukkit.compassex.OwnedLocation;
 import de.philworld.bukkit.compassex.PrivateLocationManager;
+import de.philworld.bukkit.compassex.PublicLocationManager;
+import de.philworld.bukkit.compassex.util.BlockLocation;
 
 /**
  * Loads v2-style configs.
@@ -43,12 +44,12 @@ public class Migration2 {
 		return locations;
 	}
 
-	public Map<String, OwnedLocation> loadPublicLocations() {
-		Map<String, OwnedLocation> locations = new HashMap<String, OwnedLocation>();
+	public PublicLocationManager loadPublicLocations() {
+		PublicLocationManager locations = new PublicLocationManager();
 		ConfigurationSection section = config.getConfigurationSection("publics");
 		for (String key : section.getKeys(false)) {
 			OwnedLocation loc = ((OwnedLocationV2) section.get(key)).loc;
-			locations.put(loc.id, loc);
+			locations.add(loc);
 		}
 		return locations;
 	}
@@ -73,7 +74,8 @@ public class Migration2 {
 			Vector vec = (Vector) locationSection.get("vector");
 			String world = (String) locationSection.get("world");
 
-			loc = new OwnedLocation(id, owner, world, vec);
+			loc = new OwnedLocation(id, owner, new BlockLocation(world, vec.getBlockX(), vec.getBlockY(),
+					vec.getBlockZ()));
 		}
 
 		@Override

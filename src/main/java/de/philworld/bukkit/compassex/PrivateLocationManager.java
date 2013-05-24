@@ -1,6 +1,7 @@
 package de.philworld.bukkit.compassex;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 
 public class PrivateLocationManager implements ConfigurationSerializable {
 
@@ -18,18 +18,21 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 	public PrivateLocationManager() {
 	}
 
-	public void add(OwnedLocation loc) {
+	public synchronized void add(OwnedLocation loc) {
+		if (loc.id.equals(ConfigurationSerialization.SERIALIZED_TYPE_KEY))
+			throw new IllegalArgumentException(ConfigurationSerialization.SERIALIZED_TYPE_KEY
+					+ " may not be used as a location id!");
 		if (!locations.containsKey(loc.owner)) {
 			locations.put(loc.owner, new ArrayList<OwnedLocation>(2));
 		}
 		locations.get(loc.owner).add(loc);
 	}
 
-	public List<OwnedLocation> getLocations(Player player) {
-		return locations.get(player.getName());
+	public synchronized List<OwnedLocation> getLocations(String player) {
+		return Collections.unmodifiableList(locations.get(player));
 	}
 
-	public OwnedLocation get(String player, String id) {
+	public synchronized OwnedLocation get(String player, String id) {
 		List<OwnedLocation> l = locations.get(player);
 		if (l == null)
 			return null;
@@ -40,7 +43,7 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 		return null;
 	}
 
-	public boolean remove(String player, String id) {
+	public synchronized boolean remove(String player, String id) {
 		List<OwnedLocation> l = locations.get(player);
 		if (l == null)
 			return false;
@@ -68,7 +71,7 @@ public class PrivateLocationManager implements ConfigurationSerializable {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
+	public synchronized Map<String, Object> serialize() {
 		Map<String, Object> serialized = new HashMap<String, Object>(locations.size());
 		for (Entry<String, List<OwnedLocation>> entry : locations.entrySet()) {
 			serialized.put(entry.getKey(), entry.getValue());

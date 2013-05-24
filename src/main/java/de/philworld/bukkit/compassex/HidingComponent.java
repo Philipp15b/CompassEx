@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -15,9 +17,10 @@ import org.bukkit.entity.Player;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
+import de.philworld.bukkit.compassex.persistence.Persistable;
 import de.philworld.bukkit.compassex.util.PermissionException;
 
-public class HidingComponent extends Component {
+public class HidingComponent extends Component implements Persistable {
 
 	private final Set<String> hiddenPlayers = new HashSet<String>(2);
 
@@ -46,21 +49,22 @@ public class HidingComponent extends Component {
 		}
 	}
 
-	void save() {
+	@Override
+	public void save() {
 		File f = new File(plugin.getDataFolder(), "hidden.db.txt");
+		List<String> hp;
+		synchronized (hiddenPlayers) {
+			hp = new ArrayList<String>(hiddenPlayers);
+		}
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(f));
-			for (String player : hiddenPlayers) {
+			for (String player : hp) {
 				out.write(player + "\n");
 			}
 			out.close();
 		} catch (IOException e) {
 			plugin.getLogger().log(Level.SEVERE, "Could not save hidden players database!", e);
 		}
-	}
-
-	public void hide(Player p) {
-		hiddenPlayers.add(p.getName());
 	}
 
 	public boolean isHidden(Player p) {
@@ -71,10 +75,14 @@ public class HidingComponent extends Component {
 	@Command(aliases = { "hide" }, permission = "compassex.hide")
 	public void hide(CommandContext context, Player p) throws PermissionException {
 		if (!hiddenPlayers.contains(p.getName())) {
-			hiddenPlayers.add(p.getName());
+			synchronized (hiddenPlayers) {
+				hiddenPlayers.add(p.getName());
+			}
 			sendMessage(p, "You are now hidden.");
 		} else {
-			hiddenPlayers.remove(p.getName());
+			synchronized (hiddenPlayers) {
+				hiddenPlayers.remove(p.getName());
+			}
 			sendMessage(p, "You are now visible again.");
 		}
 	}

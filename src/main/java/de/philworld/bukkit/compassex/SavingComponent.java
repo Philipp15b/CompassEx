@@ -13,13 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -28,16 +25,17 @@ import org.bukkit.util.Vector;
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
 import de.philworld.bukkit.compassex.migrations.Migration2;
+import de.philworld.bukkit.compassex.persistence.Persistable;
 import de.philworld.bukkit.compassex.util.PermissionException;
 
-public class SavingComponent extends Component {
+public class SavingComponent extends Component implements Persistable {
 
 	private final double saveCost;
 	private final double publicizeCost;
 	private final double privatizeCost;
 
 	PrivateLocationManager privateLocations;
-	Map<String, OwnedLocation> publicLocations;
+	PublicLocationManager publicLocations;
 
 	public SavingComponent(CompassEx plugin) {
 		super(plugin);
@@ -74,33 +72,31 @@ public class SavingComponent extends Component {
 
 		ConfigurationSerialization.registerClass(OwnedLocation.class);
 		ConfigurationSerialization.registerClass(PrivateLocationManager.class);
+		ConfigurationSerialization.registerClass(PublicLocationManager.class);
 
 		File f = new File(plugin.getDataFolder(), "locations.db.yml");
-		publicLocations = new HashMap<String, OwnedLocation>();
+		publicLocations = new PublicLocationManager();
 		if (f.exists()) {
 			YamlConfiguration config = YamlConfiguration.loadConfiguration(f);
-
 			privateLocations = (PrivateLocationManager) config.get("private");
-			if (privateLocations == null)
-				privateLocations = new PrivateLocationManager();
-
-			ConfigurationSection spublic = config.getConfigurationSection("public");
-			for (String key : spublic.getKeys(false)) {
-				publicLocations.put(key, (OwnedLocation) spublic.get(key));
-			}
-		} else {
-			privateLocations = new PrivateLocationManager();
+			publicLocations = (PublicLocationManager) config.get("public");
 		}
+		if (privateLocations == null)
+			privateLocations = new PrivateLocationManager();
+		if (publicLocations == null)
+			publicLocations = new PublicLocationManager();
 	}
 
-	public void save() throws IOException {
-		ConfigurationSerialization.registerClass(OwnedLocation.class);
-		ConfigurationSerialization.registerClass(PrivateLocationManager.class);
-
+	@Override
+	public void save() {
 		YamlConfiguration config = new YamlConfiguration();
 		config.set("private", privateLocations);
 		config.set("public", publicLocations);
-		config.save(new File(plugin.getDataFolder(), "locations.db.yml"));
+		try {
+			config.save(new File(plugin.getDataFolder(), "locations.db.yml"));
+		} catch (IOException e) {
+			plugin.getLogger().log(Level.SEVERE, "Could not save locations!", e);
+		}
 	}
 
 	@Command(aliases = { "save" }, permission = "compassex.save")
@@ -200,7 +196,7 @@ public class SavingComponent extends Component {
 
 			OwnedLocation old = privateLocations.get(p.getName(), id);
 			privateLocations.remove(loc.owner, id);
-			privateLocations.add(new OwnedLocation(newid, old.owner, old.world, old.vector));
+			privateLocations.add(new OwnedLocation(newid, old.owner, old));
 			sendMessage(p, "Renamed the private location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
 
 			// /compassex rename public <id> <newid>
@@ -218,7 +214,7 @@ public class SavingComponent extends Component {
 
 			OwnedLocation old = privateLocations.get(loc.owner, id);
 			publicLocations.remove(id);
-			publicLocations.put(newid, new OwnedLocation(newid, old.owner, old.world, old.vector));
+			publicLocations.add(new OwnedLocation(newid, old.owner, old));
 			sendMessage(p, "Renamed the public location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
 
 			// /compassex rename <owner> <id> <newid> or
@@ -248,7 +244,7 @@ public class SavingComponent extends Component {
 
 			OwnedLocation old = privateLocations.get(loc.owner, id);
 			privateLocations.remove(loc.owner, id);
-			privateLocations.add(new OwnedLocation(newid, old.owner, old.world, old.vector));
+			privateLocations.add(new OwnedLocation(newid, old.owner, old));
 			sendMessage(p, "Renamed the private location " + BLUE + id + WHITE + " to " + BLUE + newid + WHITE + ".");
 		}
 	}
@@ -364,12 +360,12 @@ public class SavingComponent extends Component {
 
 		List<String> locations = new ArrayList<String>();
 		if (showPublic) {
-			for (OwnedLocation loc : publicLocations.values()) {
+			for (OwnedLocation loc : publicLocations.getLocations()) {
 				locations.add(loc.id);
 			}
 		} else {
 			boolean any = p.hasPermission("compassex.list.private.any");
-			for (OwnedLocation loc : privateLocations.getLocations(p)) {
+			for (OwnedLocation loc : privateLocations.getLocations(p.getName())) {
 				if (any || loc.isOwnedBy(p))
 					locations.add(loc.id);
 			}
@@ -408,10 +404,10 @@ public class SavingComponent extends Component {
 	public void nearest(CommandContext context, Player p) throws PermissionException {
 		if (context.arg1.equalsIgnoreCase("public")) {
 			requirePermission(p, "compassex.nearest.public");
-			sendNearest(p, publicLocations.values(), 3);
+			sendNearest(p, publicLocations.getLocations(), 3);
 		} else {
 			requirePermission(p, "compassex.nearest.private");
-			sendNearest(p, privateLocations.getLocations(p), 3);
+			sendNearest(p, privateLocations.getLocations(p.getName()), 3);
 		}
 	}
 
@@ -427,8 +423,8 @@ public class SavingComponent extends Component {
 		Collections.sort(sorted, new Comparator<OwnedLocation>() {
 			@Override
 			public int compare(OwnedLocation o1, OwnedLocation o2) {
-				double d1 = loc.distanceSquared(o1.vector);
-				double d2 = loc.distanceSquared(o2.vector);
+				double d1 = loc.distanceSquared(o1.toVector());
+				double d2 = loc.distanceSquared(o2.toVector());
 				if (d1 > d2) {
 					return -1;
 				} else if (d1 < d2) {
@@ -441,7 +437,7 @@ public class SavingComponent extends Component {
 
 		for (int i = 0; i < num && i < sorted.size(); i++) {
 			OwnedLocation l = sorted.get(i);
-			int distance = (int) loc.distance(l.vector);
+			int distance = (int) loc.distance(l.toVector());
 			sendMessage(p, " - " + BLUE + l.id + WHITE + " (" + BLUE + distance + WHITE + " blocks)");
 		}
 	}
@@ -468,7 +464,7 @@ public class SavingComponent extends Component {
 			return;
 
 		privateLocations.remove(loc.owner, loc.id);
-		publicLocations.put(loc.id, loc);
+		publicLocations.add(loc);
 		sendMessage(p, "Compass target " + BLUE + id + WHITE + " is now private!");
 	}
 
@@ -499,7 +495,7 @@ public class SavingComponent extends Component {
 			throw new PermissionException("You don't have permission to publicize other players' compass targets.");
 		}
 
-		if (publicLocations.containsKey(context.arg3.isEmpty() ? context.arg2 : context.arg3)) {
+		if (publicLocations.get(context.arg3.isEmpty() ? context.arg2 : context.arg3) != null) {
 			sendMessage(p, "A public location with this name already exists. Delete it first!");
 			return;
 		}
@@ -508,7 +504,7 @@ public class SavingComponent extends Component {
 			return;
 
 		privateLocations.remove(loc.owner, loc.id);
-		publicLocations.put(loc.id, loc);
+		publicLocations.add(loc);
 		sendMessage(p, "Compass target " + BLUE + loc.id + WHITE + " is now public!");
 	}
 

@@ -283,7 +283,7 @@ public class SavingComponent extends Component implements Persistable {
 			sendMessage(p, "Removed the private location " + BLUE + id + WHITE + ".");
 
 			// /compassex remove public <id>
-		} else if (context.arg2.equalsIgnoreCase("public")) {
+		} else if (context.arg1.equalsIgnoreCase("public")) {
 			String id = context.arg2;
 			OwnedLocation loc = publicLocations.get(id);
 			if (loc == null) {

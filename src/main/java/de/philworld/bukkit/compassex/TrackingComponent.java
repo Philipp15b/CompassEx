@@ -3,16 +3,19 @@ package de.philworld.bukkit.compassex;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.WHITE;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import de.philworld.bukkit.compassex.command.Command;
@@ -21,9 +24,9 @@ import de.philworld.bukkit.compassex.command.CommandContext;
 public class TrackingComponent extends Component implements Listener {
 
 	/**
-	 * Hashmap watcher => watched
+	 * Map watcher => watched
 	 */
-	private final HashMap<String, String> watchList = new HashMap<String, String>(2);
+	private final Map<String, String> watchMap = new LinkedHashMap<String, String>(2);
 	private final long updateRate;
 	private final CompassUpdaterTask updater;
 
@@ -64,35 +67,36 @@ public class TrackingComponent extends Component implements Listener {
 	 * Sets a watcher and the watched player, starts the task if not running.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If both players are the same entity.
+	 *             If both players are the same.
 	 */
-	public void setWatcher(Player watcher, Player watched) {
+	private void setWatcher(Player watcher, Player watched) {
 		if (watcher.equals(watched))
 			throw new IllegalArgumentException("Watcher and watched player may not be the same!");
 
-		watchList.put(watcher.getName(), watched.getName());
+		watchMap.put(watcher.getName(), watched.getName());
 		updater.start();
 	}
 
-	/**
-	 * Removes a player from the watchList, watchers as well as watched
-	 */
-	public void removePlayer(Player player) {
+	boolean removeWatcher(Player player) {
 		String name = player.getName();
+		boolean success = watchMap.remove(name) != null;
+		if (watchMap.isEmpty())
+			updater.stop();
+		return success;
+	}
 
-		if (watchList.isEmpty()) {
-			disable();
+	private void removePlayer(Player p, String reason) {
+		if (watchMap.isEmpty())
 			return;
-		}
 
-		Iterator<Entry<String, String>> it = watchList.entrySet().iterator();
+		String name = p.getName();
+		Iterator<Entry<String, String>> it = watchMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, String> pair = it.next();
 			if (pair.getValue().equals(name)) {
 				Player watcher = Bukkit.getServer().getPlayer(pair.getKey());
 				if (watcher != null)
-					sendMessage(watcher, "Your watched player, " + BLUE + pair.getValue() + WHITE
-							+ ", has left the server.");
+					sendMessage(watcher, "Your watched player, " + BLUE + name + WHITE + ", " + reason);
 			} else if (pair.getKey().equals(name)) {
 			} else {
 				continue;
@@ -101,25 +105,20 @@ public class TrackingComponent extends Component implements Listener {
 			it.remove();
 		}
 
-		if (watchList.isEmpty())
-			disable();
+		if (watchMap.isEmpty())
+			updater.stop();
 	}
 
-	public void removeWatcher(Player player) {
-		String name = player.getName();
-		watchList.remove(name);
-		if (watchList.isEmpty()) {
-			disable();
-		}
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+		if (watchMap.containsKey(event.getPlayer().getName()))
+			sendMessage(event.getPlayer(), "You're now in a different world. Stopped tracking.");
+		removePlayer(event.getPlayer(), "is now in a different world. Stopped tracking.");
 	}
 
-	public void disable() {
-		updater.stop();
-	}
-
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		removePlayer(event.getPlayer());
+		removePlayer(event.getPlayer(), "has left the server. Stopped tracking.");
 	}
 
 	private class CompassUpdaterTask implements Runnable {
@@ -146,7 +145,7 @@ public class TrackingComponent extends Component implements Listener {
 		@Override
 		public void run() {
 			Server server = plugin.getServer();
-			for (Entry<String, String> entry : watchList.entrySet()) {
+			for (Entry<String, String> entry : watchMap.entrySet()) {
 				Player watcher = server.getPlayer(entry.getKey());
 				Player watched = server.getPlayer(entry.getValue());
 				watcher.setCompassTarget(watched.getLocation());

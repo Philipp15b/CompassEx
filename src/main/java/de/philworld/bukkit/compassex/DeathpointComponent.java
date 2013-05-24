@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -65,6 +66,11 @@ public class DeathpointComponent extends Component implements Listener, Persista
 		BlockLocation dp = deathPoints.get(p.getName());
 		if (dp == null) {
 			sendMessage(p, "Could not find your last death point.");
+			return;
+		}
+		Location loc = dp.toLocation();
+		if (loc == null || !loc.getWorld().equals(p.getWorld())) {
+			sendMessage(p, "Your deathpoint is in another world!");
 			return;
 		}
 		setTarget(p, dp.toLocation());

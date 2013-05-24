@@ -77,6 +77,7 @@ public class GeneralComponent extends Component {
 	public void reset(CommandContext context, Player p) throws PermissionException {
 		setTarget(p, p.getWorld().getSpawnLocation());
 		sendMessage(p, "Your compass has been reset to spawn.");
+		sendCoords(p, p.getWorld().getSpawnLocation());
 	}
 
 	@SuppressWarnings("unused")
@@ -85,6 +86,7 @@ public class GeneralComponent extends Component {
 		requirePermission(p, "here");
 		setTarget(p, p.getLocation());
 		sendMessage(p, "Your compass has been set to your current location.");
+		sendCoords(p, p.getLocation());
 	}
 
 	@SuppressWarnings("unused")
@@ -94,6 +96,7 @@ public class GeneralComponent extends Component {
 		if (p.getBedSpawnLocation() != null) {
 			setTarget(p, p.getBedSpawnLocation());
 			sendMessage(p, "Your compass has been set to your bed.");
+			sendCoords(p, p.getBedSpawnLocation());
 		} else {
 			sendMessage(p, "Could not find your bed!");
 		}
@@ -152,10 +155,10 @@ public class GeneralComponent extends Component {
 			return;
 		}
 
-		setTarget(p, new Location(p.getWorld(), x, y, z));
-
-		sendMessage(p, "Your compass has been set to X: " + BLUE + x + WHITE + " Y: " + BLUE + y + WHITE + " Z: "
-				+ BLUE + z + WHITE + ".");
+		Location loc = new Location(p.getWorld(), x, y, z);
+		setTarget(p, loc);
+		sendMessage(p, "Your compass has been set to:");
+		sendCoords(p, loc);
 	}
 
 	@Command(aliases = { "player" }, permission = "compassex.player")
@@ -169,9 +172,8 @@ public class GeneralComponent extends Component {
 			Player target = foundPlayers.get(0);
 
 			setTarget(p, target.getLocation());
-
 			sendMessage(p, "Your compass is now pointing to " + BLUE + target.getDisplayName() + WHITE + ".");
-
+			sendCoords(p, target.getLocation());
 		} else {
 			sendMessage(p, "Player cannot be found.");
 		}

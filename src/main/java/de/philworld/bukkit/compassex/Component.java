@@ -1,5 +1,6 @@
 package de.philworld.bukkit.compassex;
 
+import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.WHITE;
@@ -7,6 +8,7 @@ import static org.bukkit.ChatColor.WHITE;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import de.philworld.bukkit.compassex.util.BlockLocation;
 import de.philworld.bukkit.compassex.util.PermissionException;
 
 abstract class Component {
@@ -32,6 +34,16 @@ abstract class Component {
 
 	static void sendMessage(Player p, String message) {
 		p.sendMessage(GREEN + "[CompassEx]" + WHITE + " " + message);
+	}
+
+	protected static void sendCoords(Player p, BlockLocation loc) {
+		sendMessage(p, "(X: " + BLUE + loc.x + WHITE + " Y: " + BLUE + loc.y + WHITE + " Z: " + BLUE + loc.z + WHITE
+				+ ")");
+	}
+
+	protected static void sendCoords(Player p, Location loc) {
+		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "
+				+ BLUE + loc.getBlockZ() + WHITE + ")");
 	}
 
 	protected void setTarget(Player p, Location loc) {

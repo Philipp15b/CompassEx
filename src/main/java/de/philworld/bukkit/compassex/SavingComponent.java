@@ -154,9 +154,9 @@ public class SavingComponent extends Component implements Persistable {
 		}
 
 		setTarget(p, loc);
+
 		sendMessage(p, "Your compass has been set to " + BLUE + result.get().id + WHITE + ".");
-		sendMessage(p, "(X: " + BLUE + loc.getBlockX() + WHITE + " Y: " + BLUE + loc.getBlockY() + WHITE + " Z: "
-				+ BLUE + loc.getBlockZ() + WHITE + ")");
+		sendCoords(p, result.get());
 	}
 
 	private static boolean mayRename(Player p, OwnedLocation loc, boolean pub) {

@@ -148,6 +148,14 @@ public class TrackingComponent extends Component implements Listener {
 			for (Entry<String, String> entry : watchMap.entrySet()) {
 				Player watcher = server.getPlayer(entry.getKey());
 				Player watched = server.getPlayer(entry.getValue());
+
+				// it seems that sometimes the task is run after a player has
+				// left the server, but before the appropriate events are thrown
+				// and the player can be removed from the watchMap. In this
+				// case, we just ignore it.
+				if (watched == null || watcher == null)
+					continue;
+
 				watcher.setCompassTarget(watched.getLocation());
 				watcher.saveData();
 			}

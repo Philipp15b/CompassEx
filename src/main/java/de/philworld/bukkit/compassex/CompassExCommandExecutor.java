@@ -3,6 +3,7 @@ package de.philworld.bukkit.compassex;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import de.philworld.bukkit.compassex.command.CommandContext;
@@ -24,7 +25,10 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		commands.register(plugin.death);
 		commands.register(plugin.general);
 
-		plugin.getCommand("compass").setExecutor(this);
+		PluginCommand cmd = plugin.getCommand("compassex");
+		if (cmd == null)
+			throw new IllegalStateException("Another plugin has already registered a /compassex command!");
+		cmd.setExecutor(this);
 	}
 
 	@Override

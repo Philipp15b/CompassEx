@@ -3,6 +3,6 @@ main: de.philworld.bukkit.compassex.CompassEx
 version: $MAVEN-VERSION-NUMBER$
 softdepend: [dynmap]
 commands:
-   compass:
-      description: Points your compass towards something.
-      aliases: [cp, compassex]
+   compassex:
+      description: Main CompassEx command.
+      aliases: [cp, compass]

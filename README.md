@@ -21,7 +21,11 @@ You can set it to coordinates, players and of course, back to spawn.
 
 ## Commands
 
-The original CompassEx command `/compass` has also aliases: `/cp` and `/compassex`.
+The original CompassEx command `/compassex` has also aliases: `/cp` and `/compass`.
+
+**Warning: Since CompassEx 3.0.2 only the `/compassex` command will always be available,
+`/compass` may be used by another plugin!**. See [Bukkit aliases](http://wiki.bukkit.org/Bukkit.yml#aliases)
+for more information about how to set `/compass` to `/compassex` for conflicts.
 
 ### Basics
 

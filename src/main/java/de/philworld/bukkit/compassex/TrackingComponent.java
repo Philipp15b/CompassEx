@@ -54,6 +54,11 @@ public class TrackingComponent extends Component implements Listener {
 			return;
 		}
 
+		if (!target.getWorld().equals(p.getWorld())) {
+			sendMessage(p, BLUE + target.getName() + WHITE + " is in another world!");
+			return;
+		}
+
 		try {
 			setWatcher(p, target);
 		} catch (IllegalArgumentException e) {

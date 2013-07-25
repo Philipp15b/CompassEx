@@ -206,6 +206,16 @@ and the `/compass live` commands if they're not admins.
 			<td>Toggles the player's visibility.</td>
 		</tr>
 		<tr>
+			<td><code>/compass hide on</code></td>
+			<td><code>/compass hon</code></td>
+			<td>Specifically hides the player.</td>
+		</tr>
+		<tr>
+			<td><code>/compass hide off</code></td>
+			<td><code>/compass hoff</code></td>
+			<td>Specifically sets the player trackable.</td>
+		</tr>
+		<tr>
 			<td><code>/compass hidden</code></td>
 			<td></td>
 			<td>Show if the player is hidden right now.</td>

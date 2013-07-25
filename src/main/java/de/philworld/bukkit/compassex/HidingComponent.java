@@ -74,17 +74,49 @@ public class HidingComponent extends Component implements Persistable {
 	@SuppressWarnings("unused")
 	@Command(aliases = { "hide" }, permission = "compassex.hide")
 	public void hide(CommandContext context, Player p) throws PermissionException {
-		if (!hiddenPlayers.contains(p.getName())) {
-			synchronized (hiddenPlayers) {
-				hiddenPlayers.add(p.getName());
-			}
-			sendMessage(p, "You are now hidden.");
+		if (context.arg1.equalsIgnoreCase("on")) {
+			hideOn(context, p);
+		} else if (context.arg1.equalsIgnoreCase("off")) {
+			hideOff(context, p);
 		} else {
-			synchronized (hiddenPlayers) {
-				hiddenPlayers.remove(p.getName());
+			if (!hiddenPlayers.contains(p.getName())) {
+				synchronized (hiddenPlayers) {
+					hiddenPlayers.add(p.getName());
+				}
+				sendMessage(p, "You are now hidden.");
+			} else {
+				synchronized (hiddenPlayers) {
+					hiddenPlayers.remove(p.getName());
+				}
+				sendMessage(p, "You are now visible again.");
 			}
-			sendMessage(p, "You are now visible again.");
 		}
+	}
+
+	@SuppressWarnings("unused")
+	@Command(aliases = "hon", permission = "compassex.hide")
+	public void hideOn(CommandContext context, Player p) {
+		if (hiddenPlayers.contains(p.getName())) {
+			sendMessage(p, "You are already hidden!");
+			return;
+		}
+		synchronized (hiddenPlayers) {
+			hiddenPlayers.add(p.getName());
+		}
+		sendMessage(p, "You are now hidden.");
+	}
+
+	@SuppressWarnings("unused")
+	@Command(aliases = "hoff", permission = "compassex.hide")
+	public void hideOff(CommandContext context, Player p) {
+		if (!hiddenPlayers.contains(p.getName())) {
+			sendMessage(p, "You are already trackable!");
+			return;
+		}
+		synchronized (hiddenPlayers) {
+			hiddenPlayers.add(p.getName());
+		}
+		sendMessage(p, "You are now trackable.");
 	}
 
 	@SuppressWarnings("unused")

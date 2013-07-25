@@ -35,6 +35,7 @@ public class TrackingComponent extends Component implements Listener {
 		updateRate = plugin.getConfig().getInt("live-update-rate", 200);
 		updater = new CompassUpdaterTask();
 		updater.start();
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@Command(aliases = { "live" }, permission = "compassex.live")

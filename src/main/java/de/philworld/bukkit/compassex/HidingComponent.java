@@ -14,13 +14,17 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
 import de.philworld.bukkit.compassex.persistence.Persistable;
 import de.philworld.bukkit.compassex.util.PermissionException;
 
-public class HidingComponent extends Component implements Persistable {
+public class HidingComponent extends Component implements Persistable, Listener {
 
 	private final Set<String> hiddenPlayers = new HashSet<String>(2);
 
@@ -31,6 +35,8 @@ public class HidingComponent extends Component implements Persistable {
 		help("hidden", "Are you hidden?", "compassex.hide");
 
 		load();
+
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	private void load() {
@@ -69,6 +75,15 @@ public class HidingComponent extends Component implements Persistable {
 
 	public boolean isHidden(Player p) {
 		return hiddenPlayers.contains(p.getName());
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		if (event.getPlayer().hasPermission("compassex.autohide") && !isHidden(event.getPlayer())) {
+			synchronized (hiddenPlayers) {
+				hiddenPlayers.add(event.getPlayer().getName());
+			}
+		}
 	}
 
 	@SuppressWarnings("unused")

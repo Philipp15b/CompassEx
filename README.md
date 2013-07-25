@@ -265,6 +265,9 @@ Then edit the config file at will. Now start your server again.
 Heads up! The rename commands use the respective `compassex.remove`, `compassex.save` and
 `compassex.publicize` (if the location is public) permissions.
 
+Extra: If you want to have players automatically hidden when they join, give
+them the `compassex.autohide` permission.
+
 <table>
 	<tr>
 		<th>Permission node</th>

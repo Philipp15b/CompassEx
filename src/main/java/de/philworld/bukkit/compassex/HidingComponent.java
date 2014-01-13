@@ -73,7 +73,21 @@ public class HidingComponent extends Component implements Persistable, Listener 
 		}
 	}
 
+	public boolean hide(Player p) {
+		synchronized (hiddenPlayers) {
+			return hiddenPlayers.add(p.getName());
+		}
+	}
+
+	public boolean unhide(Player p) {
+		synchronized (hiddenPlayers) {
+			return hiddenPlayers.remove(p.getName());
+		}
+	}
+
 	public boolean isHidden(Player p) {
+		// this does not need to be locked, because it is only used to read in
+		// the single thread that's allowed to write.
 		return hiddenPlayers.contains(p.getName());
 	}
 
@@ -95,14 +109,10 @@ public class HidingComponent extends Component implements Persistable, Listener 
 			hideOff(context, p);
 		} else {
 			if (!hiddenPlayers.contains(p.getName())) {
-				synchronized (hiddenPlayers) {
-					hiddenPlayers.add(p.getName());
-				}
+				hide(p);
 				sendMessage(p, "You are now hidden.");
 			} else {
-				synchronized (hiddenPlayers) {
-					hiddenPlayers.remove(p.getName());
-				}
+				unhide(p);
 				sendMessage(p, "You are now visible again.");
 			}
 		}
@@ -111,26 +121,22 @@ public class HidingComponent extends Component implements Persistable, Listener 
 	@SuppressWarnings("unused")
 	@Command(aliases = "hon", permission = "compassex.hide")
 	public void hideOn(CommandContext context, Player p) {
-		if (hiddenPlayers.contains(p.getName())) {
+		if (isHidden(p)) {
 			sendMessage(p, "You are already hidden!");
 			return;
 		}
-		synchronized (hiddenPlayers) {
-			hiddenPlayers.add(p.getName());
-		}
+		hide(p);
 		sendMessage(p, "You are now hidden.");
 	}
 
 	@SuppressWarnings("unused")
 	@Command(aliases = "hoff", permission = "compassex.hide")
 	public void hideOff(CommandContext context, Player p) {
-		if (!hiddenPlayers.contains(p.getName())) {
+		if (!isHidden(p)) {
 			sendMessage(p, "You are already trackable!");
 			return;
 		}
-		synchronized (hiddenPlayers) {
-			hiddenPlayers.add(p.getName());
-		}
+		unhide(p);
 		sendMessage(p, "You are now trackable.");
 	}
 

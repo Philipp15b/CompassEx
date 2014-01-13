@@ -22,8 +22,11 @@ public class CompassEx extends JavaPlugin {
 	PersisterTask persister;
 
 	FileConfiguration config;
+
 	DynmapHelper dynmapHelper;
 	String markerIcon;
+
+	VanishHelper vanish;
 
 	TrackingComponent tracking;
 	SavingComponent saving;
@@ -47,7 +50,6 @@ public class CompassEx extends JavaPlugin {
 
 		executor = new CompassExCommandExecutor(this);
 
-		boolean enableDynmap = getConfig().getBoolean("enable-dynmap", true);
 		markerIcon = getConfig().getString("dynmap-icon", "compass");
 
 		if (setupEconomy()) {
@@ -56,12 +58,21 @@ public class CompassEx extends JavaPlugin {
 			getLogger().log(Level.INFO, "Vault was not found, all actions will be free!");
 		}
 
-		if (enableDynmap) {
+		if (getConfig().getBoolean("enable-dynmap", true)) {
 			dynmapHelper = DynmapHelper.init(this);
 			if (dynmapHelper != null) {
 				getLogger().log(Level.INFO, "Dynmap Support is enabled!");
 			} else {
 				getLogger().log(Level.WARNING, "Dynmap Support could not be enabled: Dynmap not found!");
+			}
+		}
+
+		if (getConfig().getBoolean("enable-vanish", true)) {
+			vanish = VanishHelper.get();
+			if (vanish != null) {
+				getLogger().log(Level.INFO, "Vanish support is enabled!");
+			} else {
+				getLogger().log(Level.WARNING, "Vanish support could not be enabled: Vanish not found!");
 			}
 		}
 

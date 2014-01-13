@@ -17,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.kitteh.vanish.event.VanishStatusChangeEvent;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
@@ -91,7 +92,7 @@ public class TrackingComponent extends Component implements Listener {
 		return success;
 	}
 
-	private void removePlayer(Player p, String reason) {
+	private void removePlayer(Player p, String reason, boolean hideOnly) {
 		if (watchMap.isEmpty())
 			return;
 
@@ -101,9 +102,10 @@ public class TrackingComponent extends Component implements Listener {
 			Entry<String, String> pair = it.next();
 			if (pair.getValue().equals(name)) {
 				Player watcher = Bukkit.getServer().getPlayer(pair.getKey());
-				if (watcher != null)
-					sendMessage(watcher, "Your watched player, " + BLUE + name + WHITE + ", " + reason);
-			} else if (pair.getKey().equals(name)) {
+				if (watcher == null || (hideOnly && !watcher.hasPermission("compassex.admin")))
+					continue;
+				sendMessage(watcher, "Your watched player, " + BLUE + name + WHITE + ", " + reason);
+			} else if (pair.getKey().equals(name) && !hideOnly) {
 			} else {
 				continue;
 			}
@@ -116,15 +118,22 @@ public class TrackingComponent extends Component implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onVanishStatusChange(VanishStatusChangeEvent event) {
+		if (!event.isVanishing())
+			return;
+		removePlayer(event.getPlayer(), "has vanished!", true);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
 		if (watchMap.containsKey(event.getPlayer().getName()))
 			sendMessage(event.getPlayer(), "You're now in a different world. Stopped tracking.");
-		removePlayer(event.getPlayer(), "is now in a different world. Stopped tracking.");
+		removePlayer(event.getPlayer(), "is now in a different world. Stopped tracking.", false);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		removePlayer(event.getPlayer(), "has left the server. Stopped tracking.");
+		removePlayer(event.getPlayer(), "has left the server. Stopped tracking.", false);
 	}
 
 	private class CompassUpdaterTask implements Runnable {

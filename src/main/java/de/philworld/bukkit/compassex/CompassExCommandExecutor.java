@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import de.philworld.bukkit.compassex.command.CommandContext;
 import de.philworld.bukkit.compassex.command.CommandManager;
-import de.philworld.bukkit.compassex.util.PermissionException;
 
 public class CompassExCommandExecutor implements CommandExecutor {
 
@@ -36,16 +35,12 @@ public class CompassExCommandExecutor implements CommandExecutor {
 		if (commands.onCommand(sender, command, label, args))
 			return true;
 		Player p = (Player) sender;
-		try {
-			if (args.length == 3) {
-				plugin.general.position(new CommandContext(command, label, args), p);
-			} else if (p.hasPermission("compassex.player") && args.length == 1) {
-				plugin.general.player(new CommandContext(command, label, args), p);
-			} else {
-				plugin.general.help(new CommandContext(command, label, new String[] {}), p);
-			}
-		} catch (PermissionException e) {
-			e.send(p);
+		if (args.length == 3) {
+			plugin.general.position(new CommandContext(command, label, args), p);
+		} else if (p.hasPermission("compassex.player") && args.length == 1) {
+			plugin.general.player(new CommandContext(command, label, args), p);
+		} else {
+			plugin.general.help(new CommandContext(command, label, new String[] {}), p);
 		}
 		return true;
 	}

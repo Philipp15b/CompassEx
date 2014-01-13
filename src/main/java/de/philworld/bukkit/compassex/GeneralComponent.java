@@ -83,7 +83,6 @@ public class GeneralComponent extends Component {
 	@SuppressWarnings("unused")
 	@Command(aliases = { "here" }, permission = "compassex.here")
 	public void here(CommandContext context, Player p) throws PermissionException {
-		requirePermission(p, "here");
 		setTarget(p, p.getLocation());
 		sendMessage(p, "Your compass has been set to your current location.");
 		sendCoords(p, p.getLocation());
@@ -92,7 +91,6 @@ public class GeneralComponent extends Component {
 	@SuppressWarnings("unused")
 	@Command(aliases = { "bed" }, permission = "compassex.bed")
 	public void bed(CommandContext context, Player p) throws PermissionException {
-		requirePermission(p, "bed");
 		if (p.getBedSpawnLocation() != null) {
 			setTarget(p, p.getBedSpawnLocation());
 			sendMessage(p, "Your compass has been set to your bed.");
@@ -132,8 +130,7 @@ public class GeneralComponent extends Component {
 	}
 
 	@Command(aliases = { "position", "pos" }, permission = "compassex.pos")
-	public void position(CommandContext context, Player p) throws PermissionException {
-		requirePermission(p, "pos");
+	public void position(CommandContext context, Player p) {
 		int x, y, z;
 		try {
 			if (context.base.equals("pos")) {

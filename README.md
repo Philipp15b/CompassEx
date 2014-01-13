@@ -9,11 +9,12 @@ You can set it to coordinates, players and of course, back to spawn.
 
 ## Features
 
-* Set your compass to players, coordinates and your current position
+* Set your compass to players, coordinates, your current position, your latest death point and more
+* Give players a compass pointed at their last death point
 * Save your location or current compass target for later use
 * Make saved locations private or public
 * Automatic updates to player positions
-* Set yourself as hidden, so that you cant be tracked by others
+* Set yourself as hidden, so that you can't be tracked by others
 * Admins can follow even hidden users
 * Economy support with Vault for `save`, `private`, and `public` commands
 * Dynmap support
@@ -268,6 +269,9 @@ Heads up! The rename commands use the respective `compassex.remove`, `compassex.
 
 Extra: If you want to have players automatically hidden when they join, give
 them the `compassex.autohide` permission.
+
+Also: If you want to give players a compass pointed at their death point on (re)spawn,
+give them the `compassex.giveondeath` permission.
 
 <table>
 	<tr>

@@ -8,12 +8,15 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
@@ -81,11 +84,36 @@ public class DeathpointComponent extends Component implements Listener, Persista
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof Player) {
-			String name = ((Player) entity).getName();
+			Player p = (Player) entity;
 			synchronized (deathPoints) {
-				deathPoints.put(name, new BlockLocation(entity.getLocation()));
+				deathPoints.put(p.getName(), new BlockLocation(entity.getLocation()));
 			}
 		}
+	}
+
+	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		if (event.getPlayer().hasPermission("compassex.giveondeath")) {
+			synchronized (deathPoints) {
+				if (!deathPoints.containsKey(event.getPlayer().getName()))
+					return;
+			}
+			givePlayerDPCompass(event.getPlayer());
+		}
+	}
+
+	/**
+	 * Gives a player a compass pointed to his/her death point.
+	 */
+	private void givePlayerDPCompass(Player p) {
+		p.getInventory().addItem(new ItemStack(Material.COMPASS));
+
+		BlockLocation dp = deathPoints.get(p.getName());
+		Location loc = dp.toLocation();
+		if (loc == null || !loc.getWorld().equals(p.getWorld()))
+			return; // other world
+
+		setTarget(p, loc);
 	}
 
 }

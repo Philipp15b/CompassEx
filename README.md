@@ -18,6 +18,7 @@ You can set it to coordinates, players and of course, back to spawn.
 * Economy support with Vault for `save`, `private`, and `public` commands
 * Dynmap support
 * Multiworld support
+* Vanish support
 
 ## Commands
 
@@ -427,6 +428,7 @@ The configuration is really simple (you can find it in `plugins/CompassEx/config
 * `publicize-cost`: How much a user without <code>compassex.publicize.free</code> permission has to pay to publicize a target.
 * `enable-dynmap`: Whether to show public locations in dynmap.
 * `dynmap-icon`: Set a dynmap icon for CompassEx markers.
+* `enable-vanish`: Enable automatically hiding vanishing players.
 
 ## More
 

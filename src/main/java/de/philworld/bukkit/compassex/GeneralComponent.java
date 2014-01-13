@@ -134,21 +134,22 @@ public class GeneralComponent extends Component {
 		int x, y, z;
 		try {
 			if (context.base.equals("pos")) {
-				if (context.arg3.isEmpty()) {
-					sendMessage(p, "Wrong arguments:" + GRAY + "/" + context.label + " pos <x> <y> <z>" + WHITE + ".");
+				if (context.arg2.isEmpty()) {
+					sendMessage(p, "Wrong arguments:" + GRAY + "/" + context.label + " pos <x> [y=64] <z>" + WHITE
+							+ ".");
 					return;
 				}
 
 				x = Integer.parseInt(context.arg1);
-				y = Integer.parseInt(context.arg2);
-				z = Integer.parseInt(context.arg3);
+				y = !context.arg3.isEmpty() ? Integer.parseInt(context.arg2) : 64;
+				z = !context.arg3.isEmpty() ? Integer.parseInt(context.arg3) : Integer.parseInt(context.arg2);
 			} else {
 				x = Integer.parseInt(context.base);
-				y = Integer.parseInt(context.arg1);
-				z = Integer.parseInt(context.arg2);
+				y = !context.arg2.isEmpty() ? Integer.parseInt(context.arg1) : 64;
+				z = !context.arg2.isEmpty() ? Integer.parseInt(context.arg2) : Integer.parseInt(context.arg1);
 			}
 		} catch (NumberFormatException e) {
-			sendMessage(p, "Wrong argument format: " + GRAY + "/" + context.label + " pos <x> <y> <z>" + WHITE + ".");
+			sendMessage(p, "Wrong argument format: " + GRAY + "/" + context.label + " pos <x> [y=64] <z>" + WHITE + ".");
 			return;
 		}
 

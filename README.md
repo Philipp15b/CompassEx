@@ -64,9 +64,9 @@ Basic commands to set your compass target.
 			<td>Sets the compass to a specific direction.</td>
 		</tr>
 		<tr>
-			<td><code>/compass X Y Z</code></td>
-			<td><code>/compass pos X Y Z</code></td>
-			<td>Sets the compass to the given coordinates.</td>
+			<td><code>/compass X [Y] Z</code></td>
+			<td><code>/compass pos X [Y] Z</code></td>
+			<td>Sets the compass to the given coordinates. Y defaults to 64 when omitted.</td>
 		</tr>
 		<tr>
 			<td><code>/compass deathpoint</code></td>

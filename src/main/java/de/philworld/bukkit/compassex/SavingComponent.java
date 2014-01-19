@@ -26,6 +26,7 @@ import de.philworld.bukkit.compassex.command.Command;
 import de.philworld.bukkit.compassex.command.CommandContext;
 import de.philworld.bukkit.compassex.migrations.Migration2;
 import de.philworld.bukkit.compassex.persistence.Persistable;
+import de.philworld.bukkit.compassex.util.BlockLocation;
 import de.philworld.bukkit.compassex.util.PermissionException;
 
 public class SavingComponent extends Component implements Persistable {
@@ -73,6 +74,7 @@ public class SavingComponent extends Component implements Persistable {
 		ConfigurationSerialization.registerClass(OwnedLocation.class);
 		ConfigurationSerialization.registerClass(PrivateLocationManager.class);
 		ConfigurationSerialization.registerClass(PublicLocationManager.class);
+		ConfigurationSerialization.registerClass(BlockLocation.class);
 
 		File f = new File(plugin.getDataFolder(), "locations.db.yml");
 		publicLocations = new PublicLocationManager();

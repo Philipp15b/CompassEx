@@ -76,7 +76,7 @@ public class CompassEx extends JavaPlugin {
 			}
 		}
 
-		persister = new PersisterTask(death, saving, hiding);
+		persister = new PersisterTask(saving, death, hiding);
 		getServer().getScheduler().scheduleAsyncRepeatingTask(this, persister, 5 * 20, 5 * 60 * 20);
 
 		try {

@@ -28,7 +28,7 @@ abstract class Component {
 	}
 
 	protected static void requirePermission(Player p, String permission) throws PermissionException {
-		if (!p.hasPermission(permission))
+		if (!p.hasPermission("compassex." + permission))
 			throw new PermissionException();
 	}
 

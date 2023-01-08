@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,6 +43,8 @@ public class DeathpointComponent extends Component implements Listener, Persista
 		File f = new File(plugin.getDataFolder(), "deathpoints.db.yml");
 		if (!f.exists())
 			return;
+                // hopefully fix https://github.com/Philipp15b/CompassEx/issues/25
+                ConfigurationSerialization.registerClass(BlockLocation.class);
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(f);
 		for (String player : config.getKeys(false)) {
 			deathPoints.put(player, (BlockLocation) config.get(player));
